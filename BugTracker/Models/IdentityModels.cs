@@ -19,7 +19,6 @@ namespace BugTracker.Models
         public string LastName { get; set; }
         [Display(Name="Display Name")]
         [StringLength(50, MinimumLength = 1, ErrorMessage = "Display Name must be between 1 and 50 characters")]
-
         public string DisplayName { get; set; }
         public virtual ICollection<TicketComment> TicketComments { get; set; }
         public virtual ICollection<Project> Projects { get; set; }
@@ -56,5 +55,17 @@ namespace BugTracker.Models
         {
             return new ApplicationDbContext();
         }
+        public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<TicketPriority> Priorities { get; set; }
+        public DbSet<TicketStatus> Statuses { get; set; }
+        public DbSet<TicketAttachment> Attachments { get; set; }
+        public DbSet<TicketComment> Comments { get; set; }
+        public DbSet<TicketHistory> Histories { get; set; }
+        public DbSet<TicketType> Types { get; set; }
+
+        public System.Data.Entity.DbSet<BugTracker.Models.TicketNotification> TicketNotifications { get; set; }
+
+        public System.Data.Entity.DbSet<BugTracker.Models.ApplicationUser> ApplicationUsers { get; set; }
     }
 }
