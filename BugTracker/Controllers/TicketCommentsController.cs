@@ -17,7 +17,7 @@ namespace BugTracker.Controllers
         // GET: TicketComments
         public ActionResult Index()
         {
-            var ticketComments = db.TicketComments.Include(t => t.Ticket).Include(t => t.User);
+            var ticketComments = db.Comments.Include(t => t.Ticket).Include(t => t.User);
             return View(ticketComments.ToList());
         }
 
@@ -28,7 +28,7 @@ namespace BugTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            TicketComment ticketComment = db.TicketComments.Find(id);
+            TicketComment ticketComment = db.Comments.Find(id);
             if (ticketComment == null)
             {
                 return HttpNotFound();
@@ -53,7 +53,7 @@ namespace BugTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.TicketComments.Add(ticketComment);
+                db.Comments.Add(ticketComment);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -70,7 +70,7 @@ namespace BugTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            TicketComment ticketComment = db.TicketComments.Find(id);
+            TicketComment ticketComment = db.Comments.Find(id);
             if (ticketComment == null)
             {
                 return HttpNotFound();
@@ -105,7 +105,7 @@ namespace BugTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            TicketComment ticketComment = db.TicketComments.Find(id);
+            TicketComment ticketComment = db.Comments.Find(id);
             if (ticketComment == null)
             {
                 return HttpNotFound();
@@ -118,8 +118,8 @@ namespace BugTracker.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            TicketComment ticketComment = db.TicketComments.Find(id);
-            db.TicketComments.Remove(ticketComment);
+            TicketComment ticketComment = db.Comments.Find(id);
+            db.Comments.Remove(ticketComment);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
