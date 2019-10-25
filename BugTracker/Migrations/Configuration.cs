@@ -126,6 +126,26 @@ namespace BugTracker.Migrations
             var demoSubmitterId = userManager.FindByEmail("DemoSubmitter@mailinator.com").Id;
             userManager.AddToRole(demoSubmitterId, "Submitter");
 
+            /*context.Statuses.AddOrUpdate(
+                t => t.Name,
+                    new TicketStatus { Name = "Open", Description = ""} // assigned, in progressn resolved, archived.
+            ); // the same can be done for ticket priority, projects, and tickets.
+
+
+            var blogId = context.Projects.FirstOrDefault(p => p.Name == "Test").Id;
+            var projects = context.Projects;
+            context.Projects.AddOrUpdate(
+                p => p.Name,
+                new Project { Name = "Test", Description = "Description", Id = blogId}
+            );
+
+            context.Tickets.AddOrUpdate(
+                t => t.Title,
+                new Ticket { Title = "Ticket title", Description = "Description"} // set parrents.
+            );*/
+
+            context.SaveChanges();
+            // if I want to seed a ticket, I need the fk of at least the project.
 
         }
     }

@@ -64,7 +64,16 @@ namespace BugTracker.Models
 
     public class RegisterViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "Enter a name.")]
+        public string FirstName { get; set; }
+
+        [Required(ErrorMessage = "Enter a name.")]
+        public string LastName { get; set; }
+
+        [Required(ErrorMessage = "Enter a name.")]
+        public string DisplayName { get; set; }
+
+        [Required(ErrorMessage = "Enter an email.")]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
@@ -108,5 +117,17 @@ namespace BugTracker.Models
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
+    }
+    public class LoginRegisterViewModel
+    {
+        public LoginViewModel LoginVM { get; set; }
+        public RegisterViewModel RegisterVM { get; set; }
+        public ForgotPasswordViewModel ForgotPVM { get; set; }
+        public LoginRegisterViewModel()
+        {
+            LoginVM = new LoginViewModel();
+            RegisterVM = new RegisterViewModel();
+            ForgotPVM = new ForgotPasswordViewModel();
+        }
     }
 }

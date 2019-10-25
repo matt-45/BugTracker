@@ -1,41 +1,142 @@
 ﻿@model BugTracker.Models.RegisterViewModel
 @{
-    ViewBag.Title = "Register";
+    Layout = null;
 }
 
-<h2>@ViewBag.Title.</h2>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>AdminLTE 3 | Registration Page</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-{
-    @Html.AntiForgeryToken()
-    <h4>Create a new account.</h4>
-    <hr />
-    @Html.ValidationSummary("", new { @class = "text-danger" })
-    <div class="form-group">
-        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="../../Content/fontawesome-free/css/all.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- icheck bootstrap -->
+    <link rel="stylesheet" href="../../Content/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="../../Content/dist/css/adminlte.min.css">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+</head>
+<body class="hold-transition register-page">
+    <div class="register-box">
+        <div class="register-logo">
+            <a href="../../index2.html"><b>Bug</b>Tracker</a>
         </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-default" value="Register" />
-        </div>
-    </div>
-}
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+        <div class="card">
+            <div class="card-body register-card-body">
+                <p class="login-box-msg">Register a new account</p>
+
+                @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationMessage("firstName", new { @class = "text-danger" })
+                    <div class="input-group mb-3">
+                        @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", @placeholder = "First name" })
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-user"></span>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.ValidationMessage("lastName", new { @class = "text-danger" })
+                    <div class="input-group mb-3">
+                        @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", @placeholder = "Last name" })
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-user"></span>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.ValidationMessage("displayName", new { @class = "text-danger" })
+                    <div class="input-group mb-3">
+                        @Html.TextBoxFor(m => m.DisplayName, new { @class = "form-control", @placeholder = "Display name" })
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-user"></span>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                    <div class="input-group mb-3">
+                        @*<input type="email" class="form-control" placeholder="Email">*@
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Email" })
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-envelope"></span>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                    <div class="input-group mb-3">
+                        @*<input type="password" class="form-control" placeholder="Password">*@
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Password" })
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                    <div class="input-group mb-3">
+                        @*<input type="password" class="form-control" placeholder="Retype password">*@
+                        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @placeholder = "Retype Password" })
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- /.col -->
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-block btn-flat">Register</button>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                }
+
+                <!--<div class="social-auth-links text-center">
+      <p>- OR -</p>
+      <a href="#" class="btn btn-block btn-primary">
+        <i class="fab fa-facebook mr-2"></i>
+        Sign up using Facebook
+      </a>
+      <a href="#" class="btn btn-block btn-danger">
+        <i class="fab fa-google-plus mr-2"></i>
+        Sign up using Google+
+      </a>
+    </div>-->
+                <div class="col-12 text-center" style="padding-top:5%">
+                    @Html.ActionLink("I already have an account.", "Login", "Account", new { @class = "text-center"})
+                </div>
+
+            </div>
+            <!-- /.form-box -->
+        </div><!-- /.card -->
+    </div>
+    <!-- /.register-box -->
+    <!-- jQuery -->
+    <script src="../../Scripts/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="../../Scripts/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="../../Scripts/dist/js/adminlte.min.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

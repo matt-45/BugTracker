@@ -18,6 +18,8 @@ namespace BugTracker.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
+        private ApplicationDbContext db = new ApplicationDbContext();
+
         public AccountController()
         {
         }
@@ -151,7 +153,18 @@ namespace BugTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                if (db.Users.Any(u => u.Email == model.Email))
+                {
+                    ModelState.AddModelError("Email", "Email already used.");
+                    return View(model);
+                }
+                var user = new ApplicationUser { 
+                    UserName = model.Email, 
+                    Email = model.Email,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    DisplayName = model.DisplayName
+                };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
