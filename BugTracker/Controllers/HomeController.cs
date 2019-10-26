@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BugTracker.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,9 +9,16 @@ namespace BugTracker.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        private ApplicationDbContext db = new ApplicationDbContext();
+
+        // GET: Projects
+        public ActionResult Index(DashboardViewModel viewModel)
         {
-            return View();
+            viewModel.Projects = db.Projects.ToList();
+            viewModel.ApplicationUsers = db.Users.ToList();
+            viewModel.Tickets = db.Tickets.ToList();
+            // load the dashboard viewmodel
+            return View(viewModel);
         }
 
         public ActionResult About()

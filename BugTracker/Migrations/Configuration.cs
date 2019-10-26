@@ -126,23 +126,57 @@ namespace BugTracker.Migrations
             var demoSubmitterId = userManager.FindByEmail("DemoSubmitter@mailinator.com").Id;
             userManager.AddToRole(demoSubmitterId, "Submitter");
 
-            /*context.Statuses.AddOrUpdate(
+            context.Statuses.AddOrUpdate(
                 t => t.Name,
-                    new TicketStatus { Name = "Open", Description = ""} // assigned, in progressn resolved, archived.
+                    new TicketStatus { Name = "Unassigned", Description = "This ticket has not been assigned yet."}, // assigned, in progressn resolved, archived.
+                    new TicketStatus { Name = "Assigned", Description = "This ticket has been assigned to a developer."},
+                    new TicketStatus { Name = "Resolved", Description = "This ticket has been resolved."},
+                    new TicketStatus { Name = "Archived", Description = "This ticket has been archived."}
             ); // the same can be done for ticket priority, projects, and tickets.
 
+            context.Types.AddOrUpdate(
+                s => s.Name,
+                    new TicketType { Name = "UI", Description = "There is a problem with the UI."},
+                    new TicketType { Name = "Server", Description = "There is a server issue."},
+                    new TicketType { Name = "Feature Request", Description = "There is a feature request."},
+                    new TicketType { Name = "Defect", Description = "There is an important defect in the software."}
+            );
 
-            var blogId = context.Projects.FirstOrDefault(p => p.Name == "Test").Id;
-            var projects = context.Projects;
+            context.Priorities.AddOrUpdate(
+                p => p.Name,
+                    new TicketPriority { Name = "Low", Description = "This ticket has a low priority." },
+                    new TicketPriority { Name = "Medium", Description = "This ticket has a medium priority." },
+                    new TicketPriority { Name = "High", Description = "This ticket has a high priority." }
+            );
+
             context.Projects.AddOrUpdate(
                 p => p.Name,
-                new Project { Name = "Test", Description = "Description", Id = blogId}
+                new Project { Name = "Project 1", Description = "This is a short description of project 1" }
             );
+
+            context.SaveChanges();
+
+            var projects = context.Projects;
+            var statuses = context.Statuses;
+            var priorities = context.Priorities;
+            var types = context.Types;
+            var users = context.Users;
+            var roles = context.Roles;
 
             context.Tickets.AddOrUpdate(
                 t => t.Title,
-                new Ticket { Title = "Ticket title", Description = "Description"} // set parrents.
-            );*/
+                new Ticket
+                {
+                    ProjectId = projects.FirstOrDefault(p => p.Name.Contains("Project 1")).Id,
+                    TicketTypeId = types.FirstOrDefault(t => t.Name.Contains("UI")).Id,
+                    TicketPriorityId = priorities.FirstOrDefault(p => p.Name.Contains("High")).Id,
+                    TicketStatusId = statuses.FirstOrDefault(s => s.Name.Contains("Assigned")).Id,
+                    OwnerUserId = users.FirstOrDefault(u => u.Email.Contains("DemoSubmitter@mailinator.com")).Id,
+                    AssignedToUserId = users.FirstOrDefault(u => u.Email.Contains("DemoDeveloper@mailinator.com")).Id,
+                    Title = "Demo Ticket 1",
+                    Description = "A demo ticket that beings assigned to a developer at high priority",
+                    Created = DateTime.Now
+                });
 
             context.SaveChanges();
             // if I want to seed a ticket, I need the fk of at least the project.

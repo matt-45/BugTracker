@@ -1,31 +1,270 @@
-﻿@{
-    ViewBag.Title = "Home Page";
-}
+﻿@using BugTracker.Models
+@model DashboardViewModel
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Your Dashboard</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">Your Dashboard</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+
+            <!-- Info boxes -->
+            <div class="row">
+                <div class="col">
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-info elevation-1"><i class="fas fa-edit"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Projects</span>
+                            <span class="info-box-number">@Model.Projects.Count</span>
+
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+                <div class="col">
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-ticket-alt"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Tickets</span>
+                            <span class="info-box-number">@Model.Tickets.Where(t => t.TicketStatus.Name.Contains("Assigned")).Count() <small>Active</small></span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+                <!-- fix for small devices only -->
+                <div class="clearfix hidden-md-up"></div>
+
+                <div class="col">
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-success elevation-1"><i class="fas fa-male"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Managers</span>
+                            <span class="info-box-number">7</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+                <div class="col">
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-info elevation-1"><i class="fas fa-laptop"></i></span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-text">Developers</span>
+                            <span class="info-box-number">513</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+                <div class="col">
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-check"></i></span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-text">Submitters</span>
+                            <span class="info-box-number">15,285</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- Projects -->
+            <div class="row">
+                @foreach (var project in Model.Projects.Take(3))
+                {
+                    <div class="col-lg-3 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-info">
+                            <div class="inner">
+                                <h3>@project.Name</h3>
+                                <p>
+                                    <b>@project.Tickets.Count</b> Active Tickets<br />
+                                    @project.Description
+                                </p>
+                            </div>
+                            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                }
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-danger">
+                        <div class="inner">
+                            @if (Model.Projects.Count() >= 3)
+                            {
+                                <h3>View All</h3>
+                                <p>
+                                    <b>@Model.Projects.Count</b> Projects<br />
+                                    Click below to view all projects.
+                                </p>
+                            }
+                            else
+                            {
+                                <h3>Create New</h3>
+                                <p>
+                                    <b>@Model.Projects.Count</b> Projects<br />
+                                    Click below to create a new project.
+                                </p>
+                            }
+
+
+                        </div>
+                        @if (Model.Projects.Count() >= 3)
+                        {
+                            <a href=@Url.Action("Index", "Projects") class="small-box-footer">View All <i class="fas fa-arrow-circle-right"></i></a> // call projects index action
+                        }
+                        else
+                        {
+                            <a href=@Url.Action("Create", "Projects") class="small-box-footer">Create New <i class="fas fa-plus-circle"></i></a> // call create projet action
+                        }
+
+                    </div>
+                </div>
+                <!-- ./col -->
+            </div>
+            <!-- Tables -->
+            <div class="row">
+                <!-- TABLE: ALL TICKETS -->
+                <div class="col-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">All Tickets</h3>
+                            <!--Drop downs for filtering-->
+                        </div>
+                        <div class="card-body">
+                            <table id="example1" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Owner</th>
+                                        <th>Priority</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th>Updated</th>
+                                        <th>Created</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Problem with UI</td>
+                                        <td>Jason</td>
+                                        <td>High</td>
+                                        <td>UI</td>
+                                        <td>Active</td>
+                                        <td>08/21/18</td>
+                                        <td>07/30/17</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Problem with UI</td>
+                                        <td>Jason</td>
+                                        <td>High</td>
+                                        <td>UI</td>
+                                        <td>Active</td>
+                                        <td>08/21/18</td>
+                                        <td>07/30/17</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Problem with UI</td>
+                                        <td>Jason</td>
+                                        <td>High</td>
+                                        <td>UI</td>
+                                        <td>Active</td>
+                                        <td>08/21/18</td>
+                                        <td>07/30/17</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Problem with UI</td>
+                                        <td>Jason</td>
+                                        <td>High</td>
+                                        <td>UI</td>
+                                        <td>Active</td>
+                                        <td>08/21/18</td>
+                                        <td>07/30/17</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Owner</th>
+                                        <th>Priority</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th>Updated</th>
+                                        <th>Created</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- TABLE: ALL USERS -->
+                <div class="col-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">All Users</h3>
+                        </div>
+                        <div class="card-body">
+                            <table id="example1" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Role</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Matt</td>
+                                        <td>Park</td>
+                                        <td>Admin</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Matt</td>
+                                        <td>Park</td>
+                                        <td>Admin</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Matt</td>
+                                        <td>Park</td>
+                                        <td>Admin</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Role</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
