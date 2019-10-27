@@ -56,17 +56,24 @@ namespace BugTracker.Controllers
             }
         }
 
-
+        private UserRoleHelper RoleHelper = new UserRoleHelper();
         public ActionResult Index(string id)
         {
-            UserRoleHelper roleHelper = new UserRoleHelper();
             UserViewModel viewModel = new UserViewModel();
             var user = db.Users.Find(id);
             viewModel.Projects = user.Projects;
             viewModel.User = user;
             viewModel.Tickets = db.Tickets.Where(t => t.OwnerUserId == id).ToList();
+            viewModel.UserRoles = RoleHelper.ListUserRoles(id).ToList();
             // load the dashboard viewmodel
             return View(viewModel);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public ActionResult ChangeRole(string id, string role)
+        {
+            RoleHelper.ChangeUserRoleTo(id, role);
+            return RedirectToAction("Index", "Account", new { id = id});
         }
 
         //

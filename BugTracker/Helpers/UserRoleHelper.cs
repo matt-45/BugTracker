@@ -12,6 +12,7 @@ namespace BugTracker.Models
         private UserManager<ApplicationUser> userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        
         private bool IsUserInRole(string userId, string roleName)
         {
             return userManager.IsInRole(userId, roleName);
@@ -55,6 +56,14 @@ namespace BugTracker.Models
                 }
             }
             return resultList;
+        }
+        public void ChangeUserRoleTo(string userId, string roleName)
+        {
+            RemoveUserFromRole(userId, "Admin");
+            RemoveUserFromRole(userId, "Manager");
+            RemoveUserFromRole(userId, "Developer");
+            RemoveUserFromRole(userId, "Submitter");
+            AddUserToRole(userId, roleName);
         }
 
     }
