@@ -128,8 +128,8 @@ namespace BugTracker.Migrations
 
             context.Statuses.AddOrUpdate(
                 t => t.Name,
-                    new TicketStatus { Name = "Unassigned", Description = "This ticket has not been assigned yet."}, // assigned, in progressn resolved, archived.
-                    new TicketStatus { Name = "Assigned", Description = "This ticket has been assigned to a developer."},
+                    new TicketStatus { Name = "Assigned", Description = "This ticket has been assigned to a developer." },
+                    new TicketStatus { Name = "Unassigned", Description = "This ticket has not been assigned yet."},
                     new TicketStatus { Name = "Resolved", Description = "This ticket has been resolved."},
                     new TicketStatus { Name = "Archived", Description = "This ticket has been archived."}
             ); // the same can be done for ticket priority, projects, and tickets.

@@ -26,27 +26,31 @@
             <!-- Info boxes -->
             <div class="row">
                 <div class="col">
-                    <div class="info-box mb-3">
-                        <span class="info-box-icon bg-info elevation-1"><i class="fas fa-edit"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Projects</span>
-                            <span class="info-box-number">@Model.Projects.Count</span>
+                    <a href=@Url.Action("Index", "Projects") style="color: black">
+                        <div class="info-box mb-3">
+                            <span class="info-box-icon bg-info elevation-1"><i class="fas fa-edit"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Projects</span>
+                                <span class="info-box-number">@Model.Projects.Count</span>
 
+                            </div>
+                            <!-- /.info-box-content -->
                         </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                    <!-- /.info-box -->
+                    </a>
+                        <!-- /.info-box -->
                 </div>
                 <!-- /.col -->
                 <div class="col">
-                    <div class="info-box mb-3">
-                        <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-ticket-alt"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Tickets</span>
-                            <span class="info-box-number">@Model.Tickets.Where(t => t.TicketStatus.Name.Contains("Assigned")).Count() <small>Active</small></span>
+                    <a href=@Url.Action("Index", "Tickets") style="color: black">
+                        <div class="info-box mb-3">
+                            <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-ticket-alt"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Tickets</span>
+                                <span class="info-box-number">@Model.Tickets.Where(t => t.TicketStatus.Name.Contains("Assigned")).Count() <small>Active</small></span>
+                            </div>
+                            <!-- /.info-box-content -->
                         </div>
-                        <!-- /.info-box-content -->
-                    </div>
+                    </a>
                     <!-- /.info-box -->
                 </div>
                 <!-- /.col -->
@@ -102,11 +106,11 @@
                             <div class="inner">
                                 <h3>@project.Name</h3>
                                 <p>
-                                    <b>@project.Tickets.Count</b> Active Tickets<br />
+                                    <b>@project.Tickets.Where(t => t.TicketStatus.Name.Contains("Assigned")).Count()</b> Active Tickets<br />
                                     @project.Description
                                 </p>
                             </div>
-                            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            <a href=@Url.Action("Details", "Projects", new { id = project.Id}) class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
                 }
@@ -170,42 +174,26 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @foreach (var ticket in Model.Tickets)
+                                    {
                                     <tr>
-                                        <td>Problem with UI</td>
-                                        <td>Jason</td>
-                                        <td>High</td>
-                                        <td>UI</td>
-                                        <td>Active</td>
-                                        <td>08/21/18</td>
-                                        <td>07/30/17</td>
+                                        <td>@ticket.Title</td>
+                                        <td>@ticket.OwnerUser.DisplayName</td>
+                                        <td>@ticket.TicketPriority.Name</td>
+                                        <td>@ticket.TicketType.Name</td>
+                                        <td>@ticket.TicketStatus.Name</td>
+                                        @if (ticket.Updated != null)
+                                        {
+                                            <td>@ticket.Updated</td>
+                                        }
+                                        else
+                                        {
+                                            <td>N/A</td>
+                                        }
+
+                                        <td>@ticket.Created</td>
                                     </tr>
-                                    <tr>
-                                        <td>Problem with UI</td>
-                                        <td>Jason</td>
-                                        <td>High</td>
-                                        <td>UI</td>
-                                        <td>Active</td>
-                                        <td>08/21/18</td>
-                                        <td>07/30/17</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Problem with UI</td>
-                                        <td>Jason</td>
-                                        <td>High</td>
-                                        <td>UI</td>
-                                        <td>Active</td>
-                                        <td>08/21/18</td>
-                                        <td>07/30/17</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Problem with UI</td>
-                                        <td>Jason</td>
-                                        <td>High</td>
-                                        <td>UI</td>
-                                        <td>Active</td>
-                                        <td>08/21/18</td>
-                                        <td>07/30/17</td>
-                                    </tr>
+                                    }
                                 </tbody>
                                 <tfoot>
                                     <tr>
@@ -238,21 +226,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>Matt</td>
-                                        <td>Park</td>
-                                        <td>Admin</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Matt</td>
-                                        <td>Park</td>
-                                        <td>Admin</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Matt</td>
-                                        <td>Park</td>
-                                        <td>Admin</td>
-                                    </tr>
+                                    @foreach (var user in Model.ApplicationUsers)
+                                    {
+                                        <tr onclick="location.href = '@Url.Action("Index", "Account", new { id=user.Id })'" style="cursor: pointer">
+                                            <td>@user.FirstName</td>
+                                            <td>@user.LastName</td>
+                                            <td></td>
+                                        </tr>
+                                    }
                                 </tbody>
                                 <tfoot>
                                     <tr>

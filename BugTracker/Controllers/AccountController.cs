@@ -24,6 +24,8 @@ namespace BugTracker.Controllers
         {
         }
 
+
+
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
         {
             UserManager = userManager;
@@ -52,6 +54,19 @@ namespace BugTracker.Controllers
             {
                 _userManager = value;
             }
+        }
+
+
+        public ActionResult Index(string id)
+        {
+            UserRoleHelper roleHelper = new UserRoleHelper();
+            UserViewModel viewModel = new UserViewModel();
+            var user = db.Users.Find(id);
+            viewModel.Projects = user.Projects;
+            viewModel.User = user;
+            viewModel.Tickets = db.Tickets.Where(t => t.OwnerUserId == id).ToList();
+            // load the dashboard viewmodel
+            return View(viewModel);
         }
 
         //
