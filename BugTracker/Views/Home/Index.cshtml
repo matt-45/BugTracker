@@ -1,7 +1,7 @@
 ﻿@using BugTracker.Models
 @model DashboardViewModel
 
-@{ 
+@{
     UserRoleHelper RoleHelper = new UserRoleHelper();
 }
 
@@ -255,7 +255,7 @@
 @section scripts {
     <script>
         $(document).ready(function () {
-            $('#allTicketsTable').DataTable();
+            $("#allTicketsTable").DataTable();
             $('#allUsersTable').DataTable();
         });
     </script>
