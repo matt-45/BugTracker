@@ -54,40 +54,108 @@
                         <!-- /.row -->
                     </div>
                 </div>
-                <div class="info-box mb-3">
-                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-edit"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text">Add to Project</span>
+
+                
+
+                <div class="accordion" id="profileAccordion">
+                    <div id="headingOne" class="info-box mb-3" style="cursor: pointer" data-target="#projectCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="projectCollapse">
+                        <span class="info-box-icon bg-gradient-indigo elevation-1"><i class="fas fa-user"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Add to Project</span>
+                        </div>
+                        <i class="fas fa-chevron-down float-right"></i>
+                        <!-- /.info-box-content -->
                     </div>
-                    <i class="fas fa-plus-circle float-right"></i>
-                    <!-- /.info-box-content -->
+                    <div id="projectCollapse" class="collapse" aria-labelledby="headingOne"
+                         data-parent="#profileAccordion">
+                        @foreach (var project in Model.AllProjects)
+                        {
+                            <a href=@Url.Action("ToggleUserOnProject", "Account", new { id = Model.User.Id, projectId = project.Id}) style="color:black">
+                                <div id="headingOne" class="info-box mb-3" style="cursor: pointer" data-target="#projectCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="projectCollapse">
+                                    <span class="info-box-icon bg-info elevation-1"><i class="far fa-square"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">@project.Name</span>
+                                        <span class="info-box-text">- @project.Description</span>
+                                    </div>
+                                    <!-- /.info-box-content -->
+                                </div>
+                            </a>
+                        }
+                    </div>
+
+
+                    <div id="headingTwo" class="info-box mb-3" style="cursor: pointer" data-target="#roleCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
+                        <span class="info-box-icon bg-blue elevation-1"><i class="fas fa-edit"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Change Role</span>
+                        </div>
+                        <i class="fas fa-chevron-down float-right"></i>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <div id="roleCollapse" class="collapse" aria-labelledby="headingTwo"
+                         data-parent="#profileAccordion">
+                        <a href=@Url.Action("ChangeRole", "Account", new { id = Model.User.Id, role = "Admin"}) style="color:black">
+                            <div id="headingTwo" class="info-box mb-3" style="cursor: pointer" data-target="#roleCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
+                                <span class="info-box-icon bg-red elevation-1"><i class="fas fa-user-tie"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Admin</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                        </a>
+                        <a href=@Url.Action("ChangeRole", "Account", new { id = Model.User.Id, role = "Manager"}) style="color:black">
+                            <div id="headingTwo" class="info-box mb-3" style="cursor: pointer" data-target="#roleCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
+                                <span class="info-box-icon bg-green elevation-1"><i class="fas fa-male"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Manager</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                        </a>
+                        <a href=@Url.Action("ChangeRole", "Account", new { id = Model.User.Id, role = "Developer"}) style="color:black">
+                            <div id="headingTwo" class="info-box mb-3" style="cursor: pointer" data-target="#roleCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
+                                <span class="info-box-icon bg-cyan elevation-1"><i class="fas fa-laptop"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Developer</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                        </a>
+                        <a href=@Url.Action("ChangeRole", "Account", new { id = Model.User.Id, role = "Submitter"}) style="color:black">
+                            <div id="headingTwo" class="info-box mb-3" style="cursor: pointer" data-target="#roleCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
+                                <span class="info-box-icon bg-yellow elevation-1"><i class="fas fa-check"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Submitter</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                        </a>
+                    </div>
+
+
                 </div>
+
+
+
+
+
+
+
+
                 <div class="info-box mb-3">
-                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-ticket-alt"></i></span>
+                    <span class="info-box-icon bg-orange elevation-1"><i class="fas fa-ticket-alt"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text">Assign a Ticket</span>
                     </div>
                     <i class="fas fa-plus-circle float-right"></i>
                     <!-- /.info-box-content -->
                 </div>
-                <a id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer">
-                    <div class="info-box mb-3">
-                        <span class="info-box-icon bg-info elevation-1"><i class="fas fa-user"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Change Role</span>
-                        </div>
-                        <i class="fas fa-chevron-down float-right"></i>
-                    </div>
-                    <!-- /.info-box-content -->
-                </a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href=@Url.Action("ChangeRole", "Account", new { id = Model.User.Id, role = "Admin"})> Admin<i class="fas fa-user-tie float-right"></i></a>
-                    <a class="dropdown-item" href=@Url.Action("ChangeRole", "Account", new { id = Model.User.Id, role = "Manager"})> Project Manager<i class="fas fa-male float-right"></i></a>
-                    <a class="dropdown-item" href=@Url.Action("ChangeRole", "Account", new { id = Model.User.Id, role = "Developer"})> Developer<i class="fas fa-laptop float-right"></i></a>
-                    <a class="dropdown-item" href=@Url.Action("ChangeRole", "Account", new { id = Model.User.Id, role = "Submitter"})> Submitter<i class="fas fa-check float-right"></i></a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Current Role: @Model.UserRoles[0]</a>
-                </div>
+
+
+
+                <!-- /.info-box-content -->
+
+
 
 
                 <div class="info-box mb-3">
@@ -99,157 +167,157 @@
                     <!-- /.info-box-content -->
                 </div>
             </div>
-            <div class="col-8">
-                <!-- TABLE: ALL TICKETS -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Assigned Projects</h3>
-                        <!--Drop downs for filtering-->
+                <div class="col-8">
+                    <!-- TABLE: ALL TICKETS -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Assigned Projects</h3>
+                            <!--Drop downs for filtering-->
+                        </div>
+                        <div class="card-body">
+                            <table id="example1" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Owner</th>
+                                        <th>Priority</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th>Updated</th>
+                                        <th>Created</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Problem with UI</td>
+                                        <td>Jason</td>
+                                        <td>High</td>
+                                        <td>UI</td>
+                                        <td>Active</td>
+                                        <td>08/21/18</td>
+                                        <td>07/30/17</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Problem with UI</td>
+                                        <td>Jason</td>
+                                        <td>High</td>
+                                        <td>UI</td>
+                                        <td>Active</td>
+                                        <td>08/21/18</td>
+                                        <td>07/30/17</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Problem with UI</td>
+                                        <td>Jason</td>
+                                        <td>High</td>
+                                        <td>UI</td>
+                                        <td>Active</td>
+                                        <td>08/21/18</td>
+                                        <td>07/30/17</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Problem with UI</td>
+                                        <td>Jason</td>
+                                        <td>High</td>
+                                        <td>UI</td>
+                                        <td>Active</td>
+                                        <td>08/21/18</td>
+                                        <td>07/30/17</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Owner</th>
+                                        <th>Priority</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th>Updated</th>
+                                        <th>Created</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <table id="example1" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Owner</th>
-                                    <th>Priority</th>
-                                    <th>Type</th>
-                                    <th>Status</th>
-                                    <th>Updated</th>
-                                    <th>Created</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Problem with UI</td>
-                                    <td>Jason</td>
-                                    <td>High</td>
-                                    <td>UI</td>
-                                    <td>Active</td>
-                                    <td>08/21/18</td>
-                                    <td>07/30/17</td>
-                                </tr>
-                                <tr>
-                                    <td>Problem with UI</td>
-                                    <td>Jason</td>
-                                    <td>High</td>
-                                    <td>UI</td>
-                                    <td>Active</td>
-                                    <td>08/21/18</td>
-                                    <td>07/30/17</td>
-                                </tr>
-                                <tr>
-                                    <td>Problem with UI</td>
-                                    <td>Jason</td>
-                                    <td>High</td>
-                                    <td>UI</td>
-                                    <td>Active</td>
-                                    <td>08/21/18</td>
-                                    <td>07/30/17</td>
-                                </tr>
-                                <tr>
-                                    <td>Problem with UI</td>
-                                    <td>Jason</td>
-                                    <td>High</td>
-                                    <td>UI</td>
-                                    <td>Active</td>
-                                    <td>08/21/18</td>
-                                    <td>07/30/17</td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Owner</th>
-                                    <th>Priority</th>
-                                    <th>Type</th>
-                                    <th>Status</th>
-                                    <th>Updated</th>
-                                    <th>Created</th>
-                                </tr>
-                            </tfoot>
-                        </table>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Assigned Tickets</h3> <!--change for submitters-->
+                            <!--Drop downs for filtering-->
+                        </div>
+                        <div class="card-body">
+                            <table id="example1" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Owner</th>
+                                        <th>Priority</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th>Updated</th>
+                                        <th>Created</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Problem with UI</td>
+                                        <td>Jason</td>
+                                        <td>High</td>
+                                        <td>UI</td>
+                                        <td>Active</td>
+                                        <td>08/21/18</td>
+                                        <td>07/30/17</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Problem with UI</td>
+                                        <td>Jason</td>
+                                        <td>High</td>
+                                        <td>UI</td>
+                                        <td>Active</td>
+                                        <td>08/21/18</td>
+                                        <td>07/30/17</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Problem with UI</td>
+                                        <td>Jason</td>
+                                        <td>High</td>
+                                        <td>UI</td>
+                                        <td>Active</td>
+                                        <td>08/21/18</td>
+                                        <td>07/30/17</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Problem with UI</td>
+                                        <td>Jason</td>
+                                        <td>High</td>
+                                        <td>UI</td>
+                                        <td>Active</td>
+                                        <td>08/21/18</td>
+                                        <td>07/30/17</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Owner</th>
+                                        <th>Priority</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th>Updated</th>
+                                        <th>Created</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Assigned Tickets</h3> <!--change for submitters-->
-                        <!--Drop downs for filtering-->
-                    </div>
-                    <div class="card-body">
-                        <table id="example1" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Owner</th>
-                                    <th>Priority</th>
-                                    <th>Type</th>
-                                    <th>Status</th>
-                                    <th>Updated</th>
-                                    <th>Created</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Problem with UI</td>
-                                    <td>Jason</td>
-                                    <td>High</td>
-                                    <td>UI</td>
-                                    <td>Active</td>
-                                    <td>08/21/18</td>
-                                    <td>07/30/17</td>
-                                </tr>
-                                <tr>
-                                    <td>Problem with UI</td>
-                                    <td>Jason</td>
-                                    <td>High</td>
-                                    <td>UI</td>
-                                    <td>Active</td>
-                                    <td>08/21/18</td>
-                                    <td>07/30/17</td>
-                                </tr>
-                                <tr>
-                                    <td>Problem with UI</td>
-                                    <td>Jason</td>
-                                    <td>High</td>
-                                    <td>UI</td>
-                                    <td>Active</td>
-                                    <td>08/21/18</td>
-                                    <td>07/30/17</td>
-                                </tr>
-                                <tr>
-                                    <td>Problem with UI</td>
-                                    <td>Jason</td>
-                                    <td>High</td>
-                                    <td>UI</td>
-                                    <td>Active</td>
-                                    <td>08/21/18</td>
-                                    <td>07/30/17</td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Owner</th>
-                                    <th>Priority</th>
-                                    <th>Type</th>
-                                    <th>Status</th>
-                                    <th>Updated</th>
-                                    <th>Created</th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
+                <!-- TABLE: ALL USERS -->
             </div>
-            <!-- TABLE: ALL USERS -->
-        </div>
     </div>
 </section>
 
 <!-- The Modal -->
-<div class="modal" id="changeRoleModal">
-    <div class="modal-dialog">
+<div class="modal" id="addToProjectModal">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
 
             <!-- Modal Header -->
@@ -260,20 +328,54 @@
 
             <!-- Modal body -->
             <div class="modal-body">
-                <div class="row">
-                    <div class="col">
-                        <button>Admin</button>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">All Projects</h3>
+                        <!--Drop downs for filtering-->
                     </div>
-                    <div class="col">
-                        <button>Project Manager</button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <button>Developer</button>
-                    </div>
-                    <div class="col">
-                        <button>Submitter</button>
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Managers</th>
+                                    <th>Developers</th>
+                                    <th>Submitters</th>
+                                    <th>Select</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                <tr>
+                                    <td>This is a project title</td>
+                                    <td>5</td>
+                                    <td>20</td>
+                                    <td>100</td>
+                                    <td><input type="checkbox" href=@Url.Action("AssignUserToProject", "Account", new { id = Model.User.Id, role = "project 1"}) /></td>
+                                </tr>
+                                <tr>
+                                    <td>This is a project title</td>
+                                    <td>5</td>
+                                    <td>20</td>
+                                    <td>100</td>
+                                </tr>
+                                <tr>
+                                    <td>This is a project title</td>
+                                    <td>5</td>
+                                    <td>20</td>
+                                    <td>100</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Managers</th>
+                                    <th>Developers</th>
+                                    <th>Submitters</th>
+                                    <th>Select</th>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
             </div>

@@ -57,14 +57,23 @@ namespace BugTracker.Controllers
         }
 
         private UserRoleHelper RoleHelper = new UserRoleHelper();
+        private ProjectsHelper ProjectHelper = new ProjectsHelper();
         public ActionResult Index(string id)
         {
             UserViewModel viewModel = new UserViewModel();
-            var user = db.Users.Find(id);
-            viewModel.Projects = user.Projects;
+            var userTemp = db.Users.Find(id);
+            var user = db.Users.FirstOrDefault(u => u.Id == id);
+            viewModel.Projects = ProjectHelper.ListUserProjects(id);
+            viewModel.AllProjects = db.Projects.ToList();
             viewModel.User = user;
             viewModel.Tickets = db.Tickets.Where(t => t.OwnerUserId == id).ToList();
             viewModel.UserRoles = RoleHelper.ListUserRoles(id).ToList();
+
+            
+
+
+
+
             // load the dashboard viewmodel
             return View(viewModel);
         }
@@ -74,7 +83,17 @@ namespace BugTracker.Controllers
         {
             RoleHelper.ChangeUserRoleTo(id, role);
             return RedirectToAction("Index", "Account", new { id = id});
+            
+         }
+
+        [Authorize(Roles = "Admin, Manager")]
+        public ActionResult ToggleUserOnProject(string id, int projectId)
+        {
+            ProjectHelper.ToggleUserOnProject(id, projectId);
+            return RedirectToAction("Index", "Account", new { id = id });
         }
+
+
 
         //
         // GET: /Account/Login

@@ -1,34 +1,253 @@
-﻿@model BugTracker.Models.Project
+﻿@using BugTracker.Models
+@model ProjectDetailsViewModel
 
-@{
-    ViewBag.Title = "Details";
+@{ 
+    UserRoleHelper RoleHelper = new UserRoleHelper();
+    ProjectsHelper ProjectHelper = new ProjectsHelper();
 }
 
-<h2>Details</h2>
 
-<div>
-    <h4>Project</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-
-    </dl>
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0 text-dark">@Model.Project.Name</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Your Dashboard</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+<!-- /.content-header -->
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+
+        <!-- Info boxes -->
+        <div class="row">
+            <div class="col">
+                <div class="info-box mb-3">
+                    <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-ticket-alt"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Tickets</span>
+                        <span class="info-box-number">@Model.Tickets.Where(t => t.TicketStatus.Name.Contains("Assigned")).Count() <small>Active</small></span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <!-- fix for small devices only -->
+            <div class="clearfix hidden-md-up"></div>
+
+            <div class="col">
+                <div class="info-box mb-3">
+                    <span class="info-box-icon bg-success elevation-1"><i class="fas fa-male"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Managers</span>
+                        <span class="info-box-number">@Model.Managers.Count()</span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <div class="col">
+                <div class="info-box mb-3">
+                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-laptop"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">Developers</span>
+                        <span class="info-box-number">@Model.Developers.Count()</span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <div class="col">
+                <div class="info-box mb-3">
+                    <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-check"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">Submitters</span>
+                        <span class="info-box-number">@Model.Submitters.Count()</span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- Tables -->
+        <div class="row">
+            <!-- TABLE: ALL TICKETS -->
+            <div class="col-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Tickets</h3>
+                        <!--Drop downs for filtering-->
+                    </div>
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Owner</th>
+                                    <th>Priority</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Updated</th>
+                                    <th>Created</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var ticket in Model.Tickets)
+                                {
+                                    <tr onclick="location.href = '@Url.Action("Details", "Tickets", new { id = ticket.Id })'" style="cursor: pointer">
+                                        <td>@ticket.Title</td>
+                                        <td>@ticket.OwnerUser.DisplayName</td>
+                                        <td>@ticket.TicketPriority.Name</td>
+                                        <td>@ticket.TicketType.Name</td>
+                                        <td>@ticket.TicketStatus.Name</td>
+                                        @if (ticket.Updated != null)
+                                        {
+                                            <td>@ticket.Updated</td>
+                                        }
+                                        else
+                                        {
+                                            <td>N/A</td>
+                                        }
+                                        <td>@ticket.Created</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Owner</th>
+                                    <th>Priority</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Updated</th>
+                                    <th>Created</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-4">
+                <a style="color: black; cursor:pointer" data-target="#addUsersModal" data-toggle="modal">
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-blue elevation-1"><i class="fas fa-user-plus"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Add Users to Project</span>
+                            <span class="info-box-number">@Model.Users.Count <small>Total Users</small></span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                </a>
+                <!-- TABLE: ALL USERS -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Users</h3>
+                    </div>
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Role</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var user in Model.Users)
+                                {
+                                    <tr onclick="location.href = '@Url.Action("Index", "Account", new { id=user.Id })'" style="cursor: pointer">
+                                        <td>@user.FirstName</td>
+                                        <td>@user.LastName</td>
+                                        <td>@RoleHelper.ListUserRoles(user.Id).ToList()[0]</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Role</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- The Modal -->
+    <div class="modal fade" id="addUsersModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">All Users</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                    <div class="modal-body">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Select a user to add them to the project.</h3>
+                            </div>
+                            <div class="card-body">
+                                <table id="example1" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>First Name</th>
+                                            <th>Last Name</th>
+                                            <th>Role</th>
+                                            <th>Number of Projects</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var user in Model.AllUsers)
+                                        {
+                                            <tr onclick="location.href = '@Url.Action("AddUserToProject", "Projects", new { userId = user.Id, projectId = Model.Project.Id })'" style="cursor: pointer">
+                                                <td>@user.FirstName</td>
+                                                <td>@user.LastName</td>
+                                                <td>@RoleHelper.ListUserRoles(user.Id).ToList()[0]</td>
+                                                <td>@ProjectHelper.ListUserProjects(user.Id).Count()</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>First Name</th>
+                                            <th>Last Name</th>
+                                            <th>Role</th>
+                                            <th>Number of Projects</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    </div>
+
+                </div>
+        </div>
+    </div>
+</section>

@@ -17,7 +17,7 @@ namespace BugTracker.Models
         public string Description { get; set; }
 
         public virtual ICollection<Ticket> Tickets { get; set; }
-        public ICollection<ApplicationUser> Users { get; set; }
+        public virtual ICollection<ApplicationUser> Users { get; set; }
 
 
     }

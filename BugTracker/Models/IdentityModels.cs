@@ -33,8 +33,9 @@ namespace BugTracker.Models
             TicketAttachments = new HashSet<TicketAttachment>();
             TicketHistorys = new HashSet<TicketHistory>();
             TicketNotifications = new HashSet<TicketNotification>();
-        }
 
+        }
+        
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType

@@ -7,12 +7,16 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using BugTracker.Models;
+using Microsoft.Exchange.WebServices.Data;
 
 namespace BugTracker.Controllers
 {
     public class ProjectsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+
+        private UserRoleHelper RoleHelper = new UserRoleHelper();
+        private ProjectsHelper ProjectHelper = new ProjectsHelper();
 
         // GET: Projects
         public ActionResult Index()
@@ -23,16 +27,31 @@ namespace BugTracker.Controllers
         // GET: Projects/Details/5
         public ActionResult Details(int? id)
         {
+            ProjectDetailsViewModel viewModel = new ProjectDetailsViewModel();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Project project = db.Projects.Find(id);
+            viewModel.Project = project;
+            viewModel.Tickets = project.Tickets.ToList();
+            viewModel.Managers = project.Users.Where(x => RoleHelper.ListUserRoles(x.Id).FirstOrDefault() == "Manager").ToList();
+            viewModel.Developers = project.Users.Where(x => RoleHelper.ListUserRoles(x.Id).FirstOrDefault() == "Developer").ToList();
+            viewModel.Submitters = project.Users.Where(x => RoleHelper.ListUserRoles(x.Id).FirstOrDefault() == "Submitter").ToList();
+            viewModel.Users = ProjectHelper.UsersOnProject((int)id);
+            viewModel.AllUsers = db.Users.ToList();
+
             if (project == null)
             {
                 return HttpNotFound();
             }
-            return View(project);
+            return View(viewModel);
+        }
+
+        public ActionResult AddUserToProject(string userId, int projectId)
+        {
+            ProjectHelper.AddUserToProject(userId, projectId);
+            return RedirectToAction("Details", "Projects", new { id = projectId });
         }
 
         // GET: Projects/Create
