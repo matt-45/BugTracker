@@ -28,12 +28,19 @@ namespace BugTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Ticket ticket = db.Tickets.Find(id);
             if (ticket == null)
             {
                 return HttpNotFound();
             }
-            return View(ticket);
+            TicketDetailsViewModel viewModel = new TicketDetailsViewModel();
+            viewModel.ticket = ticket;
+            viewModel.TicketPriorities = db.Priorities.ToList();
+            viewModel.TicketStatuses = db.Statuses.ToList();
+            viewModel.TicketTypes = db.Types.ToList();
+
+            return View(viewModel);
         }
 
         // GET: Tickets/Create
@@ -70,6 +77,38 @@ namespace BugTracker.Controllers
             ViewBag.TicketTypeId = new SelectList(db.Types, "Id", "Name", ticket.TicketTypeId);
             return View(ticket);
         }
+
+        public ActionResult EditStatus(int id, int statusId)
+        {
+            var ticket = db.Tickets.FirstOrDefault(t => t.Id == id);
+            var status = db.Statuses.FirstOrDefault(p => p.Id == statusId);
+
+            ticket.TicketStatus = status;
+            db.SaveChanges();
+
+            return RedirectToAction("Details", "Tickets", new { id });
+        }
+        public ActionResult EditPriority(int id, int priorityId)
+        {
+            var ticket = db.Tickets.FirstOrDefault(t => t.Id == id);
+            var priority = db.Priorities.FirstOrDefault(p => p.Id == priorityId);
+
+            ticket.TicketPriority = priority;
+            db.SaveChanges();
+
+            return RedirectToAction("Details", "Tickets", new { id });
+        }
+        public ActionResult EditType(int id, int typeId)
+        {
+            var ticket = db.Tickets.FirstOrDefault(t => t.Id == id);
+            var type = db.Types.FirstOrDefault(p => p.Id == typeId);
+
+            ticket.TicketType = type;
+            db.SaveChanges();
+
+            return RedirectToAction("Details", "Tickets", new { id });
+        }
+
 
         // GET: Tickets/Edit/5
         public ActionResult Edit(int? id)

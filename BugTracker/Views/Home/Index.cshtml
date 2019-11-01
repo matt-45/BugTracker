@@ -197,26 +197,53 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var ticket in Model.Tickets)
+                                    @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Admin")
                                     {
-                                        <tr>
-                                            <td>@ticket.Title</td>
-                                            <td>@ticket.OwnerUser.DisplayName</td>
-                                            <td>@ticket.TicketPriority.Name</td>
-                                            <td>@ticket.TicketType.Name</td>
-                                            <td>@ticket.TicketStatus.Name</td>
-                                            @if (ticket.Updated != null)
-                                            {
-                                                <td>@ticket.Updated</td>
-                                            }
-                                            else
-                                            {
-                                                <td>N/A</td>
-                                            }
+                                        foreach (var ticket in Model.Tickets)
+                                        {
+                                            <tr onclick="location.href = '@Url.Action("Details", "Tickets", new { id=ticket.Id })'" style="cursor: pointer">
+                                                <td>@ticket.Title</td>
+                                                <td>@ticket.OwnerUser.DisplayName</td>
+                                                <td>@ticket.TicketPriority.Name</td>
+                                                <td>@ticket.TicketType.Name</td>
+                                                <td>@ticket.TicketStatus.Name</td>
+                                                @if (ticket.Updated != null)
+                                                {
+                                                    <td>@ticket.Updated</td>
+                                                }
+                                                else
+                                                {
+                                                    <td>N/A</td>
+                                                }
 
-                                            <td>@ticket.Created</td>
-                                        </tr>
+                                                <td>@ticket.Created</td>
+                                            </tr>
+                                        }
                                     }
+                                    @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Manager")
+                                    {
+                                        foreach (var ticket in Model.Tickets)
+                                        {
+                                            <tr onclick="location.href = '@Url.Action("Details", "Tickets", new { id=ticket.Id })'" style="cursor: pointer">
+                                                <td>@ticket.Title</td>
+                                                <td>@ticket.OwnerUser.DisplayName</td>
+                                                <td>@ticket.TicketPriority.Name</td>
+                                                <td>@ticket.TicketType.Name</td>
+                                                <td>@ticket.TicketStatus.Name</td>
+                                                @if (ticket.Updated != null)
+                                                {
+                                                    <td>@ticket.Updated</td>
+                                                }
+                                                else
+                                                {
+                                                    <td>N/A</td>
+                                                }
+
+                                                <td>@ticket.Created</td>
+                                            </tr>
+                                        }
+                                    }
+
                                 </tbody>
                                 <tfoot>
                                     <tr>
@@ -249,14 +276,30 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var user in Model.ApplicationUsers)
+                                    @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Admin")
                                     {
-                                        <tr onclick="location.href = '@Url.Action("Index", "Account", new { id=user.Id })'" style="cursor: pointer">
-                                            <td>@user.FirstName</td>
-                                            <td>@user.LastName</td>
-                                            <td>@RoleHelper.ListUserRoles(user.Id).ToList()[0]</td>
-                                        </tr>
+                                        foreach (var user in Model.ApplicationUsers)
+                                        {
+                                            <tr onclick="location.href = '@Url.Action("Index", "Account", new { id=user.Id })'" style="cursor: pointer">
+                                                <td>@user.FirstName</td>
+                                                <td>@user.LastName</td>
+                                                <td>@RoleHelper.ListUserRoles(user.Id).ToList()[0]</td>
+                                            </tr>
+                                        }
                                     }
+
+                                    @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Manager")
+                                    {
+                                        foreach (var user in Model.ApplicationUsers)
+                                        {
+                                            <tr onclick="location.href = '@Url.Action("Index", "Account", new { id=user.Id })'" style="cursor: pointer">
+                                                <td>@user.FirstName</td>
+                                                <td>@user.LastName</td>
+                                                <td>@RoleHelper.ListUserRoles(user.Id).ToList()[0]</td>
+                                            </tr>
+                                        }
+                                    }
+
                                 </tbody>
                                 <tfoot>
                                     <tr>

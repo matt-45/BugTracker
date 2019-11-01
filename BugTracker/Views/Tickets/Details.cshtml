@@ -1,4 +1,5 @@
-﻿@model BugTracker.Models.Ticket
+﻿@using BugTracker.Models
+@model TicketDetailsViewModel
 
 <div class="content-header">
     <div class="container-fluid">
@@ -27,15 +28,15 @@
                             <span class="info-box-icon bg-white elevation-1"><i class="fas fa-laptop" style="color: #208637"></i></span>
                             <div class="info-box-content">
                                 <span class="info-box-text" style="font-size: large; font-weight: bold">Assigned Developer:</span>
-                                <span class="info-box-text">@Model.AssignedToUser.DisplayName</span>
+                                <span class="info-box-text">@Model.ticket.AssignedToUser.DisplayName</span>
                             </div>
                             <!-- /.info-box-content -->
                         </div>
-                        <div id="headingOne" class="info-box mb-3" style="cursor: pointer" data-target="#statusCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="statusCollapse">
-                            <span class="info-box-icon bg-info elevation-1"><i class="fas fa-check"></i></span>
+                        <div id="statusHeader" class="info-box mb-3" style="cursor: pointer" data-target="#statusCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="statusCollapse">
+                            <span id="statusBgSpan" class="info-box-icon elevation-1 bg-gray"><i id="statusIcon" class="iStatusClass"></i></span>
                             <div class="info-box-content">
                                 <span class="info-box-text" style="font-size: large; font-weight: bold">Status:</span>
-                                <span class="info-box-text">@Model.TicketStatus.Name</span>
+                                <span id="statusSpan" class="info-box-text"></span>
                             </div>
                             <i class="fas fa-chevron-down float-right"></i>
                             <!-- /.info-box-content -->
@@ -43,9 +44,9 @@
                         <div id="statusCollapse" class="collapse" aria-labelledby="headingOne"
                              data-parent="#ticketAccordion">
                             <div style="padding-left: 20%">
-                                <a href="#" style="color:black">
-                                    <div id="headingOne" class="info-box mb-3" style="cursor: pointer" data-target="#roleCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
-                                        <span class="info-box-icon bg-green elevation-1"><i class="fas fa-check-double"></i></span>
+                                <a class="aStatusClass" onclick="editTicketStatus(@Model.TicketStatuses.FirstOrDefault(t => t.Name == "Resolved").Id)" style="color:black; cursor:pointer">
+                                    <div id="headingOne" class="info-box mb-3" style="cursor: pointer" data-target="#statusCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
+                                        <span class="info-box-icon bg-green elevation-1"><i class="fas fa-check-double iStatusClass"></i></span>
                                         <div class="info-box-content">
                                             <span class="info-box-text" style="font-size: large; font-weight: bold">Resolved</span>
                                         </div>
@@ -54,9 +55,9 @@
                                 </a>
                             </div>
                             <div style="padding-left: 20%">
-                                <a href="#" style="color:black">
-                                    <div id="headingOne" class="info-box mb-3" style="cursor: pointer" data-target="#roleCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
-                                        <span class="info-box-icon bg-yellow elevation-1"><i class="fas fa-check"></i></span>
+                                <a class="aStatusClass" onclick="editTicketStatus(@Model.TicketStatuses.FirstOrDefault(t => t.Name == "Assigned").Id)" style="color:black; cursor:pointer">
+                                    <div id="headingOne" class="info-box mb-3" style="cursor: pointer" data-target="#statusCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
+                                        <span class="info-box-icon bg-yellow elevation-1"><i class="fas fa-check iStatusClass"></i></span>
                                         <div class="info-box-content">
                                             <span class="info-box-text" style="font-size: large; font-weight: bold">Assigned</span>
                                         </div>
@@ -65,9 +66,9 @@
                                 </a>
                             </div>
                             <div style="padding-left: 20%">
-                                <a href="#" style="color:black">
-                                    <div id="headingOne" class="info-box mb-3" style="cursor: pointer" data-target="#roleCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
-                                        <span class="info-box-icon bg-red elevation-1"><i class="fas fa-exclamation-triangle"></i></span>
+                                <a class="aStatusClass" onclick="editTicketStatus(@Model.TicketStatuses.FirstOrDefault(t => t.Name == "Unassigned").Id)" style="color:black; cursor:pointer">
+                                    <div id="headingOne" class="info-box mb-3" style="cursor: pointer" data-target="#statusCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
+                                        <span class="info-box-icon bg-red elevation-1"><i class="fas fa-exclamation-triangle iStatusClass"></i></span>
                                         <div class="info-box-content">
                                             <span class="info-box-text" style="font-size: large; font-weight: bold">Unassigned</span>
                                         </div>
@@ -76,22 +77,22 @@
                                 </a>
                             </div>
                             <div style="padding-left: 20%">
-                                <a href="#" style="color:black">
-                                    <div id="headingOne" class="info-box mb-3" style="cursor: pointer" data-target="#roleCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
-                                        <span class="info-box-icon bg-gray elevation-1"><i class="fas fa-archive"></i></span>
+                                <a class="aStatusClass" onclick="editTicketStatus(@Model.TicketStatuses.FirstOrDefault(t => t.Name == "Archived").Id)" style="color:black; cursor:pointer">
+                                    <div id="headingOne" class="info-box mb-3" style="cursor: pointer" data-target="#statusCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
+                                        <span class="info-box-icon bg-gray elevation-1"><i class="fas fa-archive iStatusClass"></i></span>
                                         <div class="info-box-content">
-                                            <span class="info-box-text" style="font-size: large; font-weight: bold">Archive</span>
+                                            <span class="info-box-text" style="font-size: large; font-weight: bold">Archived</span>
                                         </div>
                                         <!-- /.info-box-content -->
                                     </div>
                                 </a>
                             </div>
                         </div>
-                        <div id="headingTwo" class="info-box mb-3" style="cursor: pointer" data-target="#priorityCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="priorityCollapse">
-                            <span class="info-box-icon bg-info elevation-1"><i class="fas fa-exclamation-triangle"></i></span>
+                        <div id="priorityHeader" class="info-box mb-3" style="cursor: pointer" data-target="#priorityCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="priorityCollapse">
+                            <span id="priorityBgSpan" class="info-box-icon elevation-1 bg-gray"><i class="iTypeClass" id="priorityIcon"></i></span>
                             <div class="info-box-content">
                                 <span class="info-box-text" style="font-size: large; font-weight: bold">Priority:</span>
-                                <span class="info-box-text">@Model.TicketPriority.Name</span>
+                                <span id="prioritySpan" class="info-box-text"></span>
                             </div>
                             <i class="fas fa-chevron-down float-right"></i>
                             <!-- /.info-box-content -->
@@ -99,9 +100,9 @@
                         <div id="priorityCollapse" class="collapse" aria-labelledby="headingTwo"
                              data-parent="#ticketAccordion">
                             <div style="padding-left: 20%">
-                                <a href="#" style="color:black">
-                                    <div id="headingTwo" class="info-box mb-3" style="cursor: pointer" data-target="#roleCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
-                                        <span class="info-box-icon bg-yellow elevation-1"><i class="fas fa-angle-up"></i></span>
+                                <a class="aPriorityClass" onclick="editTicketPriority(@Model.TicketPriorities.FirstOrDefault(p => p.Name == "Low").Id)" style="color:black; cursor:pointer">
+                                    <div id="headingTwo" class="info-box mb-3" style="cursor: pointer" data-target="#priorityCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
+                                        <span class="info-box-icon bg-yellow elevation-1"><i class="fas fa-angle-up iPriorityClass"></i></span>
                                         <div class="info-box-content">
                                             <span class="info-box-text" style="font-size: large; font-weight: bold">Low</span>
                                         </div>
@@ -110,9 +111,9 @@
                                 </a>
                             </div>
                             <div style="padding-left: 20%">
-                                <a href="#" style="color:black">
-                                    <div id="headingTwo" class="info-box mb-3" style="cursor: pointer" data-target="#roleCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
-                                        <span class="info-box-icon bg-orange elevation-1"><i class="fas fa-angle-double-up"></i></span>
+                                <a class="aPriorityClass" onclick="editTicketPriority(@Model.TicketPriorities.FirstOrDefault(p => p.Name == "Medium").Id)" style="color:black; cursor:pointer">
+                                    <div id="headingTwo" class="info-box mb-3" style="cursor: pointer" data-target="#priorityCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
+                                        <span class="info-box-icon bg-orange elevation-1"><i class="fas fa-angle-double-up iPriorityClass"></i></span>
                                         <div class="info-box-content">
                                             <span class="info-box-text" style="font-size: large; font-weight: bold">Medium</span>
                                         </div>
@@ -121,9 +122,9 @@
                                 </a>
                             </div>
                             <div style="padding-left: 20%">
-                                <a href="#" style="color:black">
-                                    <div id="headingTwo" class="info-box mb-3" style="cursor: pointer" data-target="#roleCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
-                                        <span class="info-box-icon bg-red elevation-1"><i class="fas fa-exclamation-triangle"></i></span>
+                                <a class="aPriorityClass" onclick="editTicketPriority(@Model.TicketPriorities.FirstOrDefault(p => p.Name == "High").Id)" style="color:black; cursor:pointer">
+                                    <div id="headingTwo" class="info-box mb-3" style="cursor: pointer" data-target="#priorityCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
+                                        <span class="info-box-icon bg-red elevation-1"><i class="fas fa-exclamation-triangle iPriorityClass"></i></span>
                                         <div class="info-box-content">
                                             <span class="info-box-text" style="font-size: large; font-weight: bold">High</span>
                                         </div>
@@ -132,11 +133,11 @@
                                 </a>
                             </div>
                         </div>
-                        <div id="headingThree" class="info-box mb-3" style="cursor: pointer" data-target="#typeCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="typeCollapse">
-                            <span class="info-box-icon bg-info elevation-1"><i class="fas fa-server"></i></span>
+                        <div id="typeHeader" class="info-box mb-3" style="cursor: pointer" data-target="#typeCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="typeCollapse">
+                            <span id="typeBgSpan" class="info-box-icon elevation-1 bg-gray"><i id="typeIcon" class=""></i></span>
                             <div class="info-box-content">
                                 <span class="info-box-text" style="font-size: large; font-weight: bold">Type:</span>
-                                <span class="info-box-text">@Model.TicketType.Name</span>
+                                <span id="typeSpan" class="info-box-text"></span>
                             </div>
                             <i class="fas fa-chevron-down float-right"></i>
                             <!-- /.info-box-content -->
@@ -144,9 +145,9 @@
                         <div id="typeCollapse" class="collapse" aria-labelledby="headingThree"
                              data-parent="#ticketAccordion">
                             <div style="padding-left: 20%">
-                                <a href="#" style="color:black">
-                                    <div id="headingThree" class="info-box mb-3" style="cursor: pointer" data-target="#roleCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
-                                        <span class="info-box-icon bg-green elevation-1"><i class="fas fa-hand-paper"></i></span>
+                                <a class="aTypeClass" onclick="editTicketType(@Model.TicketTypes.FirstOrDefault(p => p.Name == "Feature Request").Id)" style="color:black; cursor:pointer">
+                                    <div id="headingThree" class="info-box mb-3" style="cursor: pointer" data-target="#typeCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
+                                        <span class="info-box-icon bg-green elevation-1"><i class="fas fa-hand-paper iTypeClass"></i></span>
                                         <div class="info-box-content">
                                             <span class="info-box-text" style="font-size: large; font-weight: bold">Feature Request</span>
                                         </div>
@@ -155,9 +156,9 @@
                                 </a>
                             </div>
                             <div style="padding-left: 20%">
-                                <a href="#" style="color:black">
+                                <a class="aTypeClass" onclick="editTicketType(@Model.TicketTypes.FirstOrDefault(p => p.Name == "UI").Id)" style="color:black; cursor:pointer">
                                     <div id="headingThree" class="info-box mb-3" style="cursor: pointer" data-target="#typeCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="typeCollapse">
-                                        <span class="info-box-icon bg-yellow elevation-1"><i class="fas fa-mouse-pointer"></i></span>
+                                        <span class="info-box-icon bg-yellow elevation-1"><i class="fas fa-mouse-pointer iTypeClass"></i></span>
                                         <div class="info-box-content">
                                             <span class="info-box-text" style="font-size: large; font-weight: bold">UI</span>
                                         </div>
@@ -166,9 +167,9 @@
                                 </a>
                             </div>
                             <div style="padding-left: 20%">
-                                <a href="#" style="color:black">
-                                    <div id="headingThree" class="info-box mb-3" style="cursor: pointer" data-target="#roleCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
-                                        <span class="info-box-icon bg-orange elevation-1"><i class="fas fa-server"></i></span>
+                                <a class="aTypeClass" onclick="editTicketType(@Model.TicketTypes.FirstOrDefault(p => p.Name == "Server").Id)" style="color:black; cursor:pointer">
+                                    <div id="headingThree" class="info-box mb-3" style="cursor: pointer" data-target="#typeCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
+                                        <span class="info-box-icon bg-orange elevation-1"><i class="fas fa-server iTypeClass"></i></span>
                                         <div class="info-box-content">
                                             <span class="info-box-text" style="font-size: large; font-weight: bold">Server</span>
                                         </div>
@@ -177,9 +178,9 @@
                                 </a>
                             </div>
                             <div style="padding-left: 20%">
-                                <a href="#" style="color:black">
-                                    <div id="headingThree" class="info-box mb-3" style="cursor: pointer" data-target="#roleCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
-                                        <span class="info-box-icon bg-red elevation-1"><i class="fas fa-exclamation-triangle"></i></span>
+                                <a class="aTypeClass" onclick="editTicketType(@Model.TicketTypes.FirstOrDefault(p => p.Name == "Defect").Id)" style="color:black; cursor:pointer">
+                                    <div id="headingThree" class="info-box mb-3" style="cursor: pointer" data-target="#typeCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
+                                        <span class="info-box-icon bg-red elevation-1"><i class="fas fa-exclamation-triangle iTypeClass"></i></span>
                                         <div class="info-box-content">
                                             <span class="info-box-text" style="font-size: large; font-weight: bold">Defect</span>
                                         </div>
@@ -281,3 +282,176 @@
         </div>
     </div>
 </section>
+
+@section scripts {
+
+
+    <script>
+        $(document).ready(loadTicketData());
+
+        function editTicketStatus(statusId) {
+            $.ajax({
+                type: "POST",
+                url: "https://localhost:44301/Tickets/EditStatus/",
+                data: {
+                        "id": @Model.ticket.Id,
+                        "statusId": statusId
+                },
+                success: function () {
+                }
+                });
+        }
+
+        function editTicketPriority(priorityId) {
+            $.ajax({
+                type: "POST",
+                url: "https://localhost:44301/Tickets/EditPriority/",
+                data: {
+                        "id": @Model.ticket.Id,
+                        "priorityId": priorityId
+                },
+                success: function () {
+                }
+                });
+        }
+
+        function editTicketType(typeId) {
+            $.ajax({
+                type: "POST",
+                url: "https://localhost:44301/Tickets/EditType/",
+                data: {
+                        "id": @Model.ticket.Id,
+                        "typeId": typeId
+                },
+                success: function () {
+                }
+                });
+        }
+
+        
+
+        function loadTicketData() {
+            var status = "@Model.ticket.TicketStatus.Name";
+            var statusIcon = ""
+            var statusBg = ""
+
+            if (status == "Resolved") {
+                statusIcon = "fas fa-check-double"
+                statusBg = "info-box-icon elevation-1 bg-green"
+            } else if (status == "Assigned") {
+                statusIcon = "fas fa-check"
+                statusBg = "info-box-icon elevation-1 bg-yellow"
+            } else if (status == "Unassigned") {
+                statusIcon = "fas fa-exclamation-triangle"
+                statusBg = "info-box-icon elevation-1 bg-red"
+            } else if (status == "Archived") {
+                statusIcon = "fas fa-archive"
+                statusBg = "info-box-icon elevation-1 bg-gray"
+            }
+
+            $("#statusBgSpan").removeClass();
+            $("#statusIcon").removeClass();
+            $("#statusSpan").text("");
+
+            $("#statusBgSpan").addClass(statusBg);
+            $("#statusIcon").addClass(statusIcon);
+            $("#statusSpan").text(status);
+
+
+
+            var priority = "@Model.ticket.TicketPriority.Name";
+            var priotityIcon = ""
+            var priorityBg = ""
+
+            if (priority == "Low") {
+                priotityIcon = "fas fa-angle-up"
+                priorityBg = "info-box-icon elevation-1 bg-yellow"
+            } else if (priority == "Medium") {
+                priotityIcon = "fas fa-angle-double-up"
+                priorityBg = "info-box-icon elevation-1 bg-orange"
+            } else if (priority == "High") {
+                priotityIcon = "fas fa-exclamation-triangle"
+                priorityBg = "info-box-icon elevation-1 bg-red"
+            }
+
+            $("#priorityBgSpan").removeClass();
+            $("#priorityIcon").removeClass();
+            $("#prioritySpan").text("");
+
+            $("#priorityBgSpan").addClass(priorityBg);
+            $("#priorityIcon").addClass(priotityIcon);
+            $("#prioritySpan").text(priority);
+
+
+            var type = "@Model.ticket.TicketType.Name";
+            var typeIcon = ""
+            var typeBg = ""
+
+            if (type == "Feature Request") {
+                typeIcon = "fas fa-hand-paper"
+                typeBg = "info-box-icon elevation-1 bg-green"
+            } else if (type == "UI") {
+                typeIcon = "fas fa-mouse-pointer"
+                typeBg = "info-box-icon elevation-1 bg-yellow"
+            } else if (type == "Server") {
+                typeIcon = "fas fa-server"
+                typeBg = "info-box-icon elevation-1 bg-orange"
+            } else if (type == "Defect") {
+                typeIcon = "fas fa-exclamation-triangle"
+                typeBg = "info-box-icon elevation-1 bg-red"
+            }
+
+            $("#typeBgSpan").removeClass();
+            $("#typeIcon").removeClass();
+            $("#typeSpan").text("");
+
+            $("#typeBgSpan").addClass(typeBg);
+            $("#typeIcon").addClass(typeIcon);
+            $("#typeSpan").text(type);
+        }
+
+        $(".aStatusClass").on("click", function () {
+            var icon = $(this).find(".iStatusClass").attr("class").replace("iStatusClass", "");
+            var bgColor = $(this).find(".elevation-1").attr("class");
+            var text = $(this).find(".info-box-content > span").text();
+            var bgClass = $("#statusBgSpan").attr("class");
+            $("#statusBgSpan").removeClass(bgClass);
+            $("#statusBgSpan").addClass(bgColor);
+
+            var icoClass = $("#statusIcon").attr("class");
+            $("#statusIcon").removeClass(icoClass);
+            $("#statusIcon").addClass(icon);
+            $("#statusSpan").text(text);
+        })
+
+        $(".aPriorityClass").on("click", function () {
+            var icon = $(this).find(".iPriorityClass").attr("class").replace("iPriorityClass", "");
+            var bgColor = $(this).find(".elevation-1").attr("class");
+            var text = $(this).find(".info-box-content > span").text();
+            var bgClass = $("#priorityBgSpan").attr("class");
+            $("#priorityBgSpan").removeClass(bgClass);
+            $("#priorityBgSpan").addClass(bgColor);
+
+            var icoClass = $("#priorityIcon").attr("class");
+            $("#priorityIcon").removeClass(icoClass);
+            $("#priorityIcon").addClass(icon);
+            $("#prioritySpan").text(text);
+        })
+
+        $(".aTypeClass").on("click", function () {
+            var icon = $(this).find(".iTypeClass").attr("class").replace("iTypeClass", "");
+            var bgColor = $(this).find(".elevation-1").attr("class");
+            var text = $(this).find(".info-box-content > span").text();
+            var bgClass = $("#typeBgSpan").attr("class");
+            $("#typeBgSpan").removeClass(bgClass);
+            $("#typeBgSpan").addClass(bgColor);
+
+            var icoClass = $("#typeIcon").attr("class");
+            $("#typeIcon").removeClass(icoClass);
+            $("#typeIcon").addClass(icon);
+            $("#typeSpan").text(text);
+        })
+
+    </script>
+
+}
