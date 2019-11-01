@@ -212,6 +212,8 @@
   <ItemGroup>
     <Content Include="Content\datatables-bs4\css\dataTables.bootstrap4.css" />
     <Content Include="Content\datatables-bs4\css\dataTables.bootstrap4.min.css" />
+    <Content Include="Content\datatables-select\css\select.bootstrap4.css" />
+    <Content Include="Content\datatables-select\css\select.bootstrap4.min.css" />
     <Content Include="Content\daterangepicker\daterangepicker.css" />
     <Content Include="Content\daterangepicker\website.css" />
     <Content Include="Content\dist\css\adminlte.css" />
@@ -373,6 +375,10 @@
     <Content Include="Scripts\chart.js\Chart.min.js" />
     <Content Include="Scripts\datatables-bs4\js\dataTables.bootstrap4.js" />
     <Content Include="Scripts\datatables-bs4\js\dataTables.bootstrap4.min.js" />
+    <Content Include="Scripts\datatables-select\js\dataTables.select.js" />
+    <Content Include="Scripts\datatables-select\js\dataTables.select.min.js" />
+    <Content Include="Scripts\datatables-select\js\select.bootstrap4.js" />
+    <Content Include="Scripts\datatables-select\js\select.bootstrap4.min.js" />
     <Content Include="Scripts\datatables\jquery.dataTables.js" />
     <Content Include="Scripts\datatables\jquery.dataTables.min.js" />
     <Content Include="Scripts\daterangepicker\daterangepicker.js" />
@@ -431,6 +437,7 @@
     <Content Include="Scripts\jqvmap\maps\jquery.vmap.usa.districts.js" />
     <Content Include="Scripts\jqvmap\maps\jquery.vmap.usa.js" />
     <Content Include="Scripts\jqvmap\maps\jquery.vmap.world.js" />
+    <Content Include="Scripts\lodash.js" />
     <Content Include="Scripts\moment\locales.js" />
     <Content Include="Scripts\moment\locales.min.js" />
     <Content Include="Scripts\moment\locale\af.js" />

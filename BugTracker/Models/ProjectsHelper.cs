@@ -30,6 +30,12 @@ namespace BugTracker.Models
             var projects = user.Projects.ToList();
             return projects;
         }
+
+        public ICollection<Project> ListAllProjects()
+        {
+            var projects = db.Projects.ToList();
+            return projects;
+        }
         public void AddUserToProject(string userId, int projectId)
         {
             if (!IsUserOnProject(userId, projectId))

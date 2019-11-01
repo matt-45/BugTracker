@@ -48,9 +48,30 @@ namespace BugTracker.Controllers
             return View(viewModel);
         }
 
-        public ActionResult AddUserToProject(string userId, int projectId)
+        public ActionResult AddUserToProject(string[] userIds, int projectId)
         {
-            ProjectHelper.AddUserToProject(userId, projectId);
+            var project = db.Projects.FirstOrDefault(p => p.Id == projectId);
+
+            var allUsers = project.Users.ToList();
+
+            if (userIds == null)
+            {
+                foreach (var user in allUsers)
+                {
+                    ProjectHelper.RemoveUserFromProject(user.Id, project.Id);
+                }
+            }
+            else 
+            {
+                foreach (var user in allUsers)
+                {
+                    ProjectHelper.RemoveUserFromProject(user.Id, project.Id);
+                }
+                foreach (var userId in userIds)
+                {
+                    ProjectHelper.AddUserToProject(userId, project.Id);
+                }
+            }
             return RedirectToAction("Details", "Projects", new { id = projectId });
         }
 

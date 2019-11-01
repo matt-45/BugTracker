@@ -1,26 +1,35 @@
-﻿@model IEnumerable<BugTracker.Models.Project>
+﻿@using BugTracker.Models
+@using Microsoft.AspNet.Identity;
+@model IEnumerable<BugTracker.Models.Project>
+
+@{
+    ProjectsHelper ProjectHelper = new ProjectsHelper();
+    UserRoleHelper RoleHelper = new UserRoleHelper();
+}
 
 
-    <div class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0 text-dark">All Projects</h1>
-                </div><!-- /.col -->
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Your Dashboard</li>
-                    </ol>
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </div>
-    <section class="content">
-        <div class="container-fluid">
-            <!-- Projects -->
-            <div class="row">
-                @foreach (var project in Model)
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0 text-dark">All Projects</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Your Dashboard</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<section class="content">
+    <div class="container-fluid">
+        <!-- Projects -->
+        <div class="row">
+            @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Admin")
+            {
+                foreach (var project in Model)
                 {
                     <div class="col-lg-3 col-6">
                         <!-- small box -->
@@ -36,7 +45,29 @@
                         </div>
                     </div>
                 }
+            }
+            else
+            {
+                foreach (var project in ProjectHelper.ListUserProjects(User.Identity.GetUserId()))
+                {
+                    <div class="col-lg-3 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-info">
+                            <div class="inner">
+                                <h3>@project.Name</h3>
+                                <p>
+                                    <b>@project.Tickets.Where(t => t.TicketStatus.Name.Contains("Assigned")).Count()</b> Active Tickets<br />
+                                    @project.Description
+                                </p>
+                            </div>
+                            <a href=@Url.Action("Details", "Projects", new { id = project.Id}) class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                }
+            }
 
+            @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Admin")
+            {
                 <div class="col-lg-3 col-6">
                     <!-- small box -->
                     <div class="small-box bg-success">
@@ -50,7 +81,9 @@
                         <a href="#" class="small-box-footer">Create New <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
-                <!-- ./col -->
-            </div>
+            }
+
+            <!-- ./col -->
         </div>
-    </section>
+    </div>
+</section>

@@ -1,9 +1,12 @@
 ﻿@using BugTracker.Models
+@using Microsoft.AspNet.Identity;
 @model ProjectDetailsViewModel
 
 @{
     UserRoleHelper RoleHelper = new UserRoleHelper();
     ProjectsHelper ProjectHelper = new ProjectsHelper();
+
+    string[] array = new string[2];
 }
 
 
@@ -34,7 +37,7 @@
                 <div class="info-box mb-3">
                     <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-ticket-alt"></i></span>
                     <div class="info-box-content">
-                        <span class="info-box-text">Tickets</span>
+                        <span class="info-box-text" style="font-size: large; font-weight: bold">Tickets</span>
                         <span class="info-box-number">@Model.Tickets.Where(t => t.TicketStatus.Name.Contains("Assigned")).Count() <small>Active</small></span>
                     </div>
                     <!-- /.info-box-content -->
@@ -49,7 +52,7 @@
                 <div class="info-box mb-3">
                     <span class="info-box-icon bg-success elevation-1"><i class="fas fa-male"></i></span>
                     <div class="info-box-content">
-                        <span class="info-box-text">Managers</span>
+                        <span class="info-box-text" style="font-size: large; font-weight: bold">Managers</span>
                         <span class="info-box-number">@Model.Managers.Count()</span>
                     </div>
                     <!-- /.info-box-content -->
@@ -62,7 +65,7 @@
                     <span class="info-box-icon bg-info elevation-1"><i class="fas fa-laptop"></i></span>
 
                     <div class="info-box-content">
-                        <span class="info-box-text">Developers</span>
+                        <span class="info-box-text" style="font-size: large; font-weight: bold">Developers</span>
                         <span class="info-box-number">@Model.Developers.Count()</span>
                     </div>
                     <!-- /.info-box-content -->
@@ -75,7 +78,7 @@
                     <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-check"></i></span>
 
                     <div class="info-box-content">
-                        <span class="info-box-text">Submitters</span>
+                        <span class="info-box-text" style="font-size: large; font-weight: bold">Submitters</span>
                         <span class="info-box-number">@Model.Submitters.Count()</span>
                     </div>
                     <!-- /.info-box-content -->
@@ -144,16 +147,38 @@
             </div>
 
             <div class="col-4">
-                <a style="color: black; cursor:pointer" data-target="#addUsersModal" data-toggle="modal">
-                    <div class="info-box mb-3">
-                        <span class="info-box-icon bg-blue elevation-1"><i class="fas fa-user-plus"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Add Users to Project</span>
-                            <span class="info-box-number">@Model.Users.Count <small>Total Users</small></span>
+                @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Admin" || RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Manager")
+                {
+                    <a style="color: black; cursor:pointer" data-target="#addUsersModal" data-toggle="modal">
+                        <div class="info-box mb-3 bg-blue">
+                            <span class="info-box-icon bg-white elevation-1"><i class="fas fa-user-plus" style="color: #0067d6"></i></span>
+                            <span class="info-box-content" style="font-size: x-large; font-weight: bold">Manage Users</span>
+                            <!-- /.info-box-content -->
                         </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                </a>
+                    </a>
+                }
+                @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Developer")
+                {
+                    <a style="color: black; cursor:pointer" data-target="#addUsersModal" data-toggle="modal">
+                        <div class="info-box mb-3 bg-blue">
+                            <span class="info-box-icon bg-white elevation-1"><i class="fas fa-ticket-alt" style="color: #0067d6"></i></span>
+                            <span class="info-box-content" style="font-size: x-large; font-weight: bold">View My Tickets</span>
+                            <!-- /.info-box-content -->
+                        </div>
+                    </a>
+                }
+                @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Submitter")
+                {
+                    <a style="color: black; cursor:pointer" data-target="#addUsersModal" data-toggle="modal">
+                        <div class="info-box mb-3 bg-blue">
+                            <span class="info-box-icon bg-white elevation-1"><i class="fas fa-ticket-alt" style="color: #0067d6"></i></span>
+                            <span class="info-box-content" style="font-size: x-large; font-weight: bold">Create A Ticket</span>
+                            <i class="fas fa-plus-circle pull-right" style="color: white"></i>
+                            <!-- /.info-box-content -->
+                        </div>
+                    </a>
+                }
+
                 <!-- TABLE: ALL USERS -->
                 <div class="card">
                     <div class="card-header">
@@ -196,6 +221,8 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
 
+
+
                 <!-- Modal Header -->
                 <div class="modal-header">
                     <h4 class="modal-title">All Users</h4>
@@ -209,24 +236,40 @@
                             <h3 class="card-title">Select a user to add them to the project.</h3>
                         </div>
                         <div class="card-body">
-                            <table id="example1" class="table table-bordered table-striped">
+                            <table id="allUsersDataTable" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th>First Name</th>
                                         <th>Last Name</th>
                                         <th>Role</th>
                                         <th>Number of Projects</th>
+                                        <th style="visibility: hidden">Id</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach (var user in Model.AllUsers)
                                     {
-                                        <tr onclick="location.href = '@Url.Action("AddUserToProject", "Projects", new { userId = user.Id, projectId = Model.Project.Id })'" style="cursor: pointer">
-                                            <td>@user.FirstName</td>
-                                            <td>@user.LastName</td>
-                                            <td>@RoleHelper.ListUserRoles(user.Id).ToList()[0]</td>
-                                            <td>@ProjectHelper.ListUserProjects(user.Id).Count()</td>
-                                        </tr>
+
+                                        if (ProjectHelper.IsUserOnProject(user.Id, Model.Project.Id))
+                                        {
+                                            <tr style="cursor: pointer" class="clickable-tr selected">
+                                                <td>@user.FirstName</td>
+                                                <td>@user.LastName</td>
+                                                <td>@RoleHelper.ListUserRoles(user.Id).ToList()[0]</td>
+                                                <td>@ProjectHelper.ListUserProjects(user.Id).Count()</td>
+                                                <td class="tableDataId" style="visibility: hidden">@user.Id</td>
+                                            </tr>
+                                        }
+                                        else
+                                        {
+                                            <tr style="cursor: pointer" class="clickable-tr">
+                                                <td>@user.FirstName</td>
+                                                <td>@user.LastName</td>
+                                                <td>@RoleHelper.ListUserRoles(user.Id).ToList()[0]</td>
+                                                <td>@ProjectHelper.ListUserProjects(user.Id).Count()</td>
+                                                <td class="tableDataId" style="visibility: hidden">@user.Id</td>
+                                            </tr>
+                                        }
                                     }
                                 </tbody>
                                 <tfoot>
@@ -235,6 +278,7 @@
                                         <th>Last Name</th>
                                         <th>Role</th>
                                         <th>Number of Projects</th>
+                                        <th style="visibility: hidden">Id</th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -244,8 +288,12 @@
 
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="addUserToProject(idArray)">Save</button>
                 </div>
+
+
+
+
 
             </div>
         </div>
@@ -253,10 +301,68 @@
 </section>
 
 @section scripts {
+    
     <script>
-        $(document).ready(function () {
+
+        var tableRow = $(".clickable-tr")
+
+        var idArray = new Array();
+
+        /*for (var i = 0; i < tableRow.length; i++) {
+            
+            if (tableRow[i].classList.contains("selected")) {
+                idArray.push(userId);
+            }
+        }*/
+        
+
+
+        console.log(idArray);
+
+
+    function addUserToProject(idArray) {
+
+            $.ajax({
+                type: "POST",
+                url: "https://localhost:44301/Projects/AddUserToProject/",
+                data: {
+                        "userIds": idArray,
+                        "projectId": @Model.Project.Id
+                      },
+                success: function () {
+                        alert("This is working maybe.")
+                }
+
+                });
+
+            console.log("Button has been clicked")
+        }
+
+        $(function () {
+
             $("#ticketsTable").DataTable();
             $('#usersTable').DataTable();
+            $('#allUsersDataTable').DataTable( {
+            select: {
+                    style: 'multi',
+                }
+            });
+            $("#tableDataId").hide();
+
+
+
+            tableRow.click(function () {
+                console.log($(this).find(".isAssigned").html())
+
+                var userId = $(this).find(".tableDataId").html();
+                const toggle = (array, item) => _.xor(array, [item]);
+
+                idArray = toggle(idArray, userId);
+
+                console.log(idArray);
+            })
+
         });
+
     </script>
 }
