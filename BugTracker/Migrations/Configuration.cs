@@ -151,7 +151,7 @@ namespace BugTracker.Migrations
 
             context.Projects.AddOrUpdate(
                 p => p.Name,
-                new Project { Name = "Project 1", Description = "This is a short description of project 1" }
+                new Project { Name = "Project 1", Description = "This is a short description of project 1"}
             );
 
             context.SaveChanges();

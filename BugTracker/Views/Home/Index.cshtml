@@ -66,7 +66,7 @@
                     <span class="info-box-icon bg-success elevation-1"><i class="fas fa-male"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text" style="font-size: large; font-weight: bold">Managers</span>
-                        <span class="info-box-number">7</span>
+                        <span class="info-box-number">@Model.Managers.Count()</span>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
@@ -79,7 +79,7 @@
 
                     <div class="info-box-content">
                         <span class="info-box-text" style="font-size: large; font-weight: bold">Developers</span>
-                        <span class="info-box-number">513</span>
+                        <span class="info-box-number">@Model.Developers.Count()</span>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
@@ -92,7 +92,7 @@
 
                     <div class="info-box-content">
                         <span class="info-box-text" style="font-size: large; font-weight: bold">Submitters</span>
-                        <span class="info-box-number">15,285</span>
+                        <span class="info-box-number">@Model.Submitters.Count()</span>
                     </div>
                     <!-- /.info-box-content -->
                 </div>
@@ -102,9 +102,7 @@
         </div>
         <!-- Projects -->
         <div class="row">
-            @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Admin")
-            {
-                foreach (var project in Model.Projects.Take(3))
+                @foreach (var project in Model.Projects.Take(3))
                 {
                     <div class="col-lg-3 col-6">
                         <!-- small box -->
@@ -120,30 +118,12 @@
                         </div>
                     </div>
                 }
-            }
-            else
-            {
-                foreach (var project in ProjectHelper.ListUserProjects(User.Identity.GetUserId()).Take(3))
-                {
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-info">
-                            <div class="inner">
-                                <h3>@project.Name</h3>
-                                <p>
-                                    <b>@project.Tickets.Where(t => t.TicketStatus.Name.Contains("Assigned")).Count()</b> Active Tickets<br />
-                                    @project.Description
-                                </p>
-                            </div>
-                            <a href=@Url.Action("Details", "Projects", new { id = project.Id }) class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-                }
-            }
             <!-- ./col -->
-            <div class="col-lg-3 col-6">
-                <!-- small box -->
-                @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Admin")
+        <div class="col-lg-3 col-6">
+            <!-- small box -->
+            @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Admin" || RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Manager")
+            {
+                if (ProjectHelper.ListUserProjects(Model.User.Id).Count() >= 3)
                 {
                     <div class="small-box bg-red">
                         <div class="inner">
@@ -170,97 +150,90 @@
                     </div>
                 }
 
-            </div>
+            }
+            else
+            {
+                if (ProjectHelper.ListUserProjects(Model.User.Id).Count() >= 3)
+                {
+                    <div class="small-box bg-red">
+                        <div class="inner">
+                            <h3>View All</h3>
+                            <p>
+                                <b>@Model.Projects.Count</b> Projects<br />
+                                Click below to view all projects.
+                            </p>
+                        </div>
+                        <a href=@Url.Action("Index", "Projects") class="small-box-footer">View All <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                }
+            }
+
+        </div>
             <!-- ./col -->
         </div>
         <!-- Tables -->
-            <div class="row">
+        <div class="row">
 
-                <!-- TABLE: ALL TICKETS -->
-                <div class="col-8">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">All Tickets</h3>
-                            <!--Drop downs for filtering-->
-                        </div>
-                        <div class="card-body">
-                            <table id="allTicketsTable" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Title</th>
-                                        <th>Owner</th>
-                                        <th>Priority</th>
-                                        <th>Type</th>
-                                        <th>Status</th>
-                                        <th>Updated</th>
-                                        <th>Created</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Admin")
-                                    {
-                                        foreach (var ticket in Model.Tickets)
+            <!-- TABLE: ALL TICKETS -->
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">All Tickets</h3>
+                        <!--Drop downs for filtering-->
+                    </div>
+                    <div class="card-body">
+                        <table id="allTicketsTable" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Owner</th>
+                                    <th>Priority</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Updated</th>
+                                    <th>Created</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var ticket in Model.Tickets)
+                                {
+                                    <tr onclick="location.href = '@Url.Action("Details", "Tickets", new { id=ticket.Id })'" style="cursor: pointer">
+                                        <td>@ticket.Title</td>
+                                        <td>@ticket.OwnerUser.DisplayName</td>
+                                        <td>@ticket.TicketPriority.Name</td>
+                                        <td>@ticket.TicketType.Name</td>
+                                        <td>@ticket.TicketStatus.Name</td>
+                                        @if (ticket.Updated != null)
                                         {
-                                            <tr onclick="location.href = '@Url.Action("Details", "Tickets", new { id=ticket.Id })'" style="cursor: pointer">
-                                                <td>@ticket.Title</td>
-                                                <td>@ticket.OwnerUser.DisplayName</td>
-                                                <td>@ticket.TicketPriority.Name</td>
-                                                <td>@ticket.TicketType.Name</td>
-                                                <td>@ticket.TicketStatus.Name</td>
-                                                @if (ticket.Updated != null)
-                                                {
-                                                    <td>@ticket.Updated</td>
-                                                }
-                                                else
-                                                {
-                                                    <td>N/A</td>
-                                                }
-
-                                                <td>@ticket.Created</td>
-                                            </tr>
+                                            <td>@ticket.Updated</td>
                                         }
-                                    }
-                                    @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Manager")
-                                    {
-                                        foreach (var ticket in Model.Tickets)
+                                        else
                                         {
-                                            <tr onclick="location.href = '@Url.Action("Details", "Tickets", new { id=ticket.Id })'" style="cursor: pointer">
-                                                <td>@ticket.Title</td>
-                                                <td>@ticket.OwnerUser.DisplayName</td>
-                                                <td>@ticket.TicketPriority.Name</td>
-                                                <td>@ticket.TicketType.Name</td>
-                                                <td>@ticket.TicketStatus.Name</td>
-                                                @if (ticket.Updated != null)
-                                                {
-                                                    <td>@ticket.Updated</td>
-                                                }
-                                                else
-                                                {
-                                                    <td>N/A</td>
-                                                }
-
-                                                <td>@ticket.Created</td>
-                                            </tr>
+                                            <td>N/A</td>
                                         }
-                                    }
 
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th>Title</th>
-                                        <th>Owner</th>
-                                        <th>Priority</th>
-                                        <th>Type</th>
-                                        <th>Status</th>
-                                        <th>Updated</th>
-                                        <th>Created</th>
+                                        <td>@ticket.Created</td>
                                     </tr>
-                                </tfoot>
-                            </table>
-                        </div>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Owner</th>
+                                    <th>Priority</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Updated</th>
+                                    <th>Created</th>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
-                <!-- TABLE: ALL USERS -->
+            </div>
+            <!-- TABLE: ALL USERS -->
+            @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Admin")
+            {
                 <div class="col-4">
                     <div class="card">
                         <div class="card-header">
@@ -276,30 +249,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Admin")
-                                    {
-                                        foreach (var user in Model.ApplicationUsers)
-                                        {
-                                            <tr onclick="location.href = '@Url.Action("Index", "Account", new { id=user.Id })'" style="cursor: pointer">
-                                                <td>@user.FirstName</td>
-                                                <td>@user.LastName</td>
-                                                <td>@RoleHelper.ListUserRoles(user.Id).ToList()[0]</td>
-                                            </tr>
-                                        }
-                                    }
 
-                                    @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Manager")
+                                    @foreach (var user in Model.ApplicationUsers)
                                     {
-                                        foreach (var user in Model.ApplicationUsers)
-                                        {
-                                            <tr onclick="location.href = '@Url.Action("Index", "Account", new { id=user.Id })'" style="cursor: pointer">
-                                                <td>@user.FirstName</td>
-                                                <td>@user.LastName</td>
-                                                <td>@RoleHelper.ListUserRoles(user.Id).ToList()[0]</td>
-                                            </tr>
-                                        }
+                                    <tr onclick="location.href = '@Url.Action("Index", "Account", new { id = user.Id })'" style="cursor: pointer">
+                                        <td>@user.FirstName</td>
+                                        <td>@user.LastName</td>
+                                        <td>@RoleHelper.ListUserRoles(user.Id).ToList()[0]</td>
+                                    </tr>
                                     }
-
+                                    
                                 </tbody>
                                 <tfoot>
                                     <tr>
@@ -312,6 +271,7 @@
                         </div>
                     </div>
                 </div>
+            }
             </div>
     </div>
 </section>

@@ -1,4 +1,5 @@
 ﻿using BugTracker.Models;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +11,42 @@ namespace BugTracker.Controllers
     public class HomeController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private UserRoleHelper RoleHelper = new UserRoleHelper();
+        private ProjectsHelper ProjectHelper = new ProjectsHelper();
 
         // GET: Projects
         public ActionResult Index(DashboardViewModel viewModel)
         {
-            viewModel.Projects = db.Projects.ToList();
+            var user = db.Users.Find(User.Identity.GetUserId());
+            viewModel.User = user;
             viewModel.ApplicationUsers = db.Users.ToList();
-            viewModel.Tickets = db.Tickets.ToList();
+            viewModel.Managers = RoleHelper.UsersInRole("Manager").ToList();
+            viewModel.Developers = RoleHelper.UsersInRole("Developer").ToList();
+            viewModel.Submitters = RoleHelper.UsersInRole("Submitter").ToList();
+
+            if (RoleHelper.ListUserRoles(user.Id).ToList()[0] == "Admin")
+            {
+                viewModel.Projects = db.Projects.ToList();
+                viewModel.Tickets = db.Tickets.ToList();
+            }
+            else if (RoleHelper.ListUserRoles(user.Id).ToList()[0] == "Manager")
+            {
+                viewModel.Projects = ProjectHelper.ListUserProjects(user.Id);
+                viewModel.Tickets = ProjectHelper.ListUserProjects(user.Id).SelectMany(p => p.Tickets).ToList();
+            }
+            else if (RoleHelper.ListUserRoles(user.Id).ToList()[0] == "Developer")
+            {
+                viewModel.Projects = ProjectHelper.ListUserProjects(user.Id);
+                viewModel.Tickets = ProjectHelper.ListUserProjects(user.Id).SelectMany(p => p.Tickets.Where(t => t.AssignedToUser.Id == user.Id)).ToList();
+            }
+            else if (RoleHelper.ListUserRoles(user.Id).ToList()[0] == "Submitter")
+            {
+                viewModel.Projects = ProjectHelper.ListUserProjects(user.Id);
+                viewModel.Tickets = ProjectHelper.ListUserProjects(user.Id).SelectMany(p => p.Tickets).ToList();
+            }
+
+            
+            
             // load the dashboard viewmodel
             return View(viewModel);
         }
