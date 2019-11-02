@@ -232,7 +232,7 @@
                 </div>
             </div>
             <!-- TABLE: ALL USERS -->
-            @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Admin")
+            @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Admin" || RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Manager")
             {
                 <div class="col-4">
                     <div class="card">

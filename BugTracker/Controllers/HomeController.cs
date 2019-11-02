@@ -15,6 +15,7 @@ namespace BugTracker.Controllers
         private ProjectsHelper ProjectHelper = new ProjectsHelper();
 
         // GET: Projects
+        [Authorize]
         public ActionResult Index(DashboardViewModel viewModel)
         {
             var user = db.Users.Find(User.Identity.GetUserId());

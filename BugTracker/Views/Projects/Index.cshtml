@@ -66,7 +66,7 @@
                 }
             }
 
-            @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Admin")
+            @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Admin" || RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Manager")
             {
                 <div class="col-lg-3 col-6">
                     <!-- small box -->
@@ -78,7 +78,7 @@
                                 Click below to create a new Project.
                             </p>
                         </div>
-                        <a href="#" class="small-box-footer">Create New <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href=@Url.Action("Create", "Projects") class="small-box-footer">Create New <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
             }

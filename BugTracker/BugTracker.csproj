@@ -798,6 +798,7 @@
     <Content Include="Scripts\summernote\summernote-lite.js.map" />
     <Content Include="Scripts\summernote\summernote.js.map" />
     <Content Include="Views\Account\Index.cshtml" />
+    <Content Include="Views\Projects\Create - Copy.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

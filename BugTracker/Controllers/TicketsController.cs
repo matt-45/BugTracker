@@ -15,6 +15,7 @@ namespace BugTracker.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Tickets
+        [Authorize]
         public ActionResult Index()
         {
             var tickets = db.Tickets.Include(t => t.AssignedToUser).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
@@ -22,6 +23,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Tickets/Details/5
+        [Authorize]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -44,6 +46,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Tickets/Create
+        [Authorize(Roles = "Submitter")]
         public ActionResult Create(int? projectId)
         {
             ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "FirstName");
@@ -78,6 +81,7 @@ namespace BugTracker.Controllers
             return View(ticket);
         }
 
+        [Authorize(Roles = "Admin, Manager")]
         public ActionResult EditStatus(int id, int statusId)
         {
             var ticket = db.Tickets.FirstOrDefault(t => t.Id == id);

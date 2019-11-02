@@ -47,7 +47,7 @@ namespace BugTracker.Controllers
             }
             return View(viewModel);
         }
-
+        [Authorize(Roles = "Admin, Manager")]
         public ActionResult AddUserToProject(string[] userIds, int projectId)
         {
             var project = db.Projects.FirstOrDefault(p => p.Id == projectId);
@@ -76,6 +76,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Projects/Create
+        [Authorize(Roles = "Admin, Manager")]
         public ActionResult Create()
         {
             return View();
@@ -99,6 +100,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Projects/Edit/5
+        [Authorize(Roles = "Admin, Manager")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -130,6 +132,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Projects/Delete/5
+        [Authorize(Roles = "Admin, Manager")]
         public ActionResult Delete(int? id)
         {
             if (id == null)

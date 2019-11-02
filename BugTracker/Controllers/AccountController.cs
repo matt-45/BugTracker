@@ -58,6 +58,8 @@ namespace BugTracker.Controllers
 
         private UserRoleHelper RoleHelper = new UserRoleHelper();
         private ProjectsHelper ProjectHelper = new ProjectsHelper();
+
+        [Authorize]
         public ActionResult Index(string id)
         {
             UserViewModel viewModel = new UserViewModel();
@@ -68,13 +70,6 @@ namespace BugTracker.Controllers
             viewModel.User = user;
             viewModel.Tickets = db.Tickets.Where(t => t.OwnerUserId == id).ToList();
             viewModel.UserRoles = RoleHelper.ListUserRoles(id).ToList();
-
-            
-
-
-
-
-            // load the dashboard viewmodel
             return View(viewModel);
         }
 
