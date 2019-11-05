@@ -11,6 +11,13 @@ namespace BugTracker.Models
     {
         public ApplicationUser User { get; set; }
         public Project? Project { get; set; }
+        public ICollection<Project> Projects { get; set; }
+
+
+        public TicketCreateViewModel()
+        {
+            Projects = new HashSet<Project>();
+        }
 
     }
 

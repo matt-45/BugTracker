@@ -56,6 +56,7 @@ namespace BugTracker.Controllers
                 viewModel.Project = db.Projects.Find(projectId);
             }
             viewModel.User = db.Users.Find(User.Identity.GetUserId());
+            viewModel.Projects = db.Projects.ToList();
 
             return View(viewModel);
         }
@@ -67,23 +68,27 @@ namespace BugTracker.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(string ticketTypeName, string ticketPriorityName, string ticketTitle, string ticketDescription, int projectId, string userId)
         {
-            Ticket ticket = new Ticket();
+            
             var type = db.Types.FirstOrDefault(t => t.Name == ticketTypeName);
             var priority = db.Priorities.FirstOrDefault(p => p.Name == ticketPriorityName);
             var status = db.Statuses.FirstOrDefault(s => s.Name == "Unassigned");
+            var owner = db.Users.Find(userId);
+            var project = db.Projects.Find(projectId);
             if (ModelState.IsValid)
             {
-                // created, author, project, default status
+                Ticket ticket = new Ticket();
                 ticket.TicketType = type;
                 ticket.TicketPriority = priority;
                 ticket.TicketStatus = status;
                 ticket.Title = ticketTitle;
                 ticket.Description = ticketDescription;
                 ticket.Created = DateTime.Now;
-                
+                ticket.OwnerUser = owner;
+                ticket.Project = project;
+
                 db.Tickets.Add(ticket);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", "Tickets", new { id = ticket.Id});
             }
 
             return View();

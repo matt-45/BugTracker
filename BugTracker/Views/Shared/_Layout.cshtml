@@ -374,43 +374,7 @@
     </div>
 
     <!-- Modal -->
-    <div id="selectProjectModal" class="modal fade" role="dialog">
-        <div class="modal-dialog modal-lg">
-            <!-- Modal content-->
-
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title" style="font-weight: bold">Select a Project</h2>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        @foreach (var project in db.Projects)
-                        {
-                            <div class="col-lg-4 col-6">
-                                <!-- small box -->
-                                <div class="small-box bg-info">
-                                    <div class="inner">
-                                        <h3>@project.Name</h3>
-                                        <p>
-                                            @project.Description
-                                        </p>
-
-                                    </div>
-                                    <a href=@Url.Action("Details", "Projects", new { id = project.Id }) class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger mr-auto" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-success">Save</button>
-                </div>
-            </div>
-
-        </div>
-    </div>
+    
 
 
 
