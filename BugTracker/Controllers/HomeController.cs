@@ -46,8 +46,6 @@ namespace BugTracker.Controllers
                 viewModel.Tickets = ProjectHelper.ListUserProjects(user.Id).SelectMany(p => p.Tickets).ToList();
             }
 
-            
-            
             // load the dashboard viewmodel
             return View(viewModel);
         }

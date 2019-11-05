@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using BugTracker.Models;
+using Microsoft.AspNet.Identity;
 
 namespace BugTracker.Controllers
 {
@@ -49,13 +50,14 @@ namespace BugTracker.Controllers
         [Authorize(Roles = "Submitter")]
         public ActionResult Create(int? projectId)
         {
-            ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "FirstName");
-            ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName");
-            ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name");
-            ViewBag.TicketPriorityId = new SelectList(db.Priorities, "Id", "Name");
-            ViewBag.TicketStatusId = new SelectList(db.Statuses, "Id", "Name");
-            ViewBag.TicketTypeId = new SelectList(db.Types, "Id", "Name");
-            return View();
+            TicketCreateViewModel viewModel = new TicketCreateViewModel();
+            if (projectId != null)
+            {
+                viewModel.Project = db.Projects.Find(projectId);
+            }
+            viewModel.User = db.Users.Find(User.Identity.GetUserId());
+
+            return View(viewModel);
         }
 
         // POST: Tickets/Create
@@ -63,22 +65,28 @@ namespace BugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,ProjectId,TicketTypeId,TicketPriorityId,TicketStatusId,OwnerUserId,AssignedToUserId,Title,Description,Created,Updated")] Ticket ticket)
+        public ActionResult Create(string ticketTypeName, string ticketPriorityName, string ticketTitle, string ticketDescription, int projectId, string userId)
         {
+            Ticket ticket = new Ticket();
+            var type = db.Types.FirstOrDefault(t => t.Name == ticketTypeName);
+            var priority = db.Priorities.FirstOrDefault(p => p.Name == ticketPriorityName);
+            var status = db.Statuses.FirstOrDefault(s => s.Name == "Unassigned");
             if (ModelState.IsValid)
             {
+                // created, author, project, default status
+                ticket.TicketType = type;
+                ticket.TicketPriority = priority;
+                ticket.TicketStatus = status;
+                ticket.Title = ticketTitle;
+                ticket.Description = ticketDescription;
+                ticket.Created = DateTime.Now;
+                
                 db.Tickets.Add(ticket);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "FirstName", ticket.AssignedToUserId);
-            ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName", ticket.OwnerUserId);
-            ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);
-            ViewBag.TicketPriorityId = new SelectList(db.Priorities, "Id", "Name", ticket.TicketPriorityId);
-            ViewBag.TicketStatusId = new SelectList(db.Statuses, "Id", "Name", ticket.TicketStatusId);
-            ViewBag.TicketTypeId = new SelectList(db.Types, "Id", "Name", ticket.TicketTypeId);
-            return View(ticket);
+            return View();
         }
 
         [Authorize(Roles = "Admin, Manager")]

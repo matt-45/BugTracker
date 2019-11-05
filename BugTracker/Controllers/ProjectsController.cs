@@ -35,11 +35,12 @@ namespace BugTracker.Controllers
             Project project = db.Projects.Find(id);
             viewModel.Project = project;
             viewModel.Tickets = project.Tickets.ToList();
-            viewModel.Managers = project.Users.Where(x => RoleHelper.ListUserRoles(x.Id).FirstOrDefault() == "Manager").ToList();
-            viewModel.Developers = project.Users.Where(x => RoleHelper.ListUserRoles(x.Id).FirstOrDefault() == "Developer").ToList();
-            viewModel.Submitters = project.Users.Where(x => RoleHelper.ListUserRoles(x.Id).FirstOrDefault() == "Submitter").ToList();
+            viewModel.Managers = project.GetManagersInProject();
+            viewModel.Developers = project.GetDevelopersInProject();
+            viewModel.Submitters = project.GetSubmittersInProject();
             viewModel.Users = ProjectHelper.UsersOnProject((int)id);
-            viewModel.AllUsers = db.Users.ToList();
+            var users = RoleHelper.UsersInRole("Manager").Concat(RoleHelper.UsersInRole("Developer")).Concat(RoleHelper.UsersInRole("Submitter"));
+            viewModel.AllUsers = users.ToList();
 
             if (project == null)
             {
@@ -75,6 +76,7 @@ namespace BugTracker.Controllers
             return RedirectToAction("Details", "Projects", new { id = projectId });
         }
 
+
         // GET: Projects/Create
         [Authorize(Roles = "Admin, Manager")]
         public ActionResult Create()
@@ -87,16 +89,19 @@ namespace BugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Description")] Project project)
+        public ActionResult Create(string ProjectTitle, string ProjectDescription)
         {
             if (ModelState.IsValid)
             {
+                Project project = new Project();
+                project.Name = ProjectTitle;
+                project.Description = ProjectDescription;
                 db.Projects.Add(project);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", "Projects", new { id = project.Id});
             }
 
-            return View(project);
+            return RedirectToAction("Index", "Home");
         }
 
         // GET: Projects/Edit/5

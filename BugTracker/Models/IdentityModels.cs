@@ -26,6 +26,8 @@ namespace BugTracker.Models
         public virtual ICollection<TicketHistory> TicketHistorys { get; set; }
         public virtual ICollection<TicketNotification> TicketNotifications { get; set; }
 
+        
+
         public ApplicationUser()
         {
             TicketComments = new HashSet<TicketComment>();

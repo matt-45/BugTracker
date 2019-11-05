@@ -7,6 +7,7 @@ namespace BugTracker.Models
 {
     public class Project
     {
+        private UserRoleHelper roleHelper = new UserRoleHelper();
         public Project() 
         {
             Tickets = new HashSet<Ticket>();
@@ -19,6 +20,21 @@ namespace BugTracker.Models
         public virtual ICollection<Ticket> Tickets { get; set; }
         public virtual ICollection<ApplicationUser> Users { get; set; }
 
+        public ICollection<ApplicationUser> GetManagersInProject()
+        {
+            var list = Users.Where(u => roleHelper.ListUserRoles(u.Id).FirstOrDefault() == "Manager").ToList();
+            return list;
+        }
+        public ICollection<ApplicationUser> GetDevelopersInProject()
+        {
+            var list = Users.Where(u => roleHelper.ListUserRoles(u.Id).FirstOrDefault() == "Developer").ToList();
+            return list;
+        }
+        public ICollection<ApplicationUser> GetSubmittersInProject()
+        {
+            var list = Users.Where(u => roleHelper.ListUserRoles(u.Id).FirstOrDefault() == "Submitter").ToList();
+            return list;
+        }
 
     }
 }

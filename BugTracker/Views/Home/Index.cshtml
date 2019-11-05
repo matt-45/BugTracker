@@ -3,7 +3,6 @@
 @model DashboardViewModel
 
 @{
-    ProjectsHelper ProjectHelper = new ProjectsHelper();
     UserRoleHelper RoleHelper = new UserRoleHelper();
 }
 
@@ -13,13 +12,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0 text-dark">Your Dashboard</h1>
-            </div><!-- /.col -->
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">Your Dashboard</li>
-                </ol>
+                <h1 class="m-0 text-dark" style="font-weight: bold; font-size: 350%">Your Dashboard</h1>
             </div><!-- /.col -->
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
@@ -121,11 +114,11 @@
             <!-- ./col -->
         <div class="col-lg-3 col-6">
             <!-- small box -->
-            @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Admin" || RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Manager")
+            @if (RoleHelper.ListUserRoles(Model.User.Id).ToList()[0] == "Admin" || RoleHelper.ListUserRoles(Model.User.Id).ToList()[0] == "Manager")
             {
-                if (ProjectHelper.ListUserProjects(Model.User.Id).Count() >= 3)
+                if (Model.Projects.Count() >= 3)
                 {
-                    <div class="small-box bg-red">
+                    <div class="small-box bg-green">
                         <div class="inner">
                             <h3>View All</h3>
                             <p>
@@ -146,16 +139,16 @@
                                 Click below to create a new project.
                             </p>
                         </div>
-                        <a href=@Url.Action("Create", "Projects") class="small-box-footer">Create New <i class="fas fa-plus-circle"></i></a>
+                        <a href="#" class="small-box-footer project-Modal" data-toggle="modal" data-target="#createProjectModal">Create New <i class="fas fa-plus-circle"></i></a>
                     </div>
                 }
 
             }
             else
             {
-                if (ProjectHelper.ListUserProjects(Model.User.Id).Count() >= 3)
+                if (Model.Projects.Count() >= 3)
                 {
-                    <div class="small-box bg-red">
+                    <div class="small-box bg-green">
                         <div class="inner">
                             <h3>View All</h3>
                             <p>
@@ -178,7 +171,7 @@
             <div class="col">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">All Tickets</h3>
+                        <h3 class="card-title" style="font-weight: bold">All Tickets</h3>
                         <!--Drop downs for filtering-->
                     </div>
                     <div class="card-body">
@@ -237,7 +230,7 @@
                 <div class="col-4">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">All Users</h3>
+                            <h3 class="card-title" style="font-weight: bold">All Users</h3>
                         </div>
                         <div class="card-body">
                             <table id="allUsersTable" class="table table-bordered table-striped">
@@ -281,7 +274,8 @@
         $(document).ready(function () {
             $("#allTicketsTable").DataTable();
             $('#allUsersTable').DataTable({
-                "searching": false
+                "searching": false,
+                "bLengthChange": false
             });
         });
     </script>
