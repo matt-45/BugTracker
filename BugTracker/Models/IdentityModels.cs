@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -25,6 +26,14 @@ namespace BugTracker.Models
         public virtual ICollection<TicketAttachment> TicketAttachments { get; set; }
         public virtual ICollection<TicketHistory> TicketHistorys { get; set; }
         public virtual ICollection<TicketNotification> TicketNotifications { get; set; }
+
+        [NotMapped]
+        public string FullName { 
+            get
+            {
+                return $"{FirstName} {LastName}";
+            }
+        }
 
         
 

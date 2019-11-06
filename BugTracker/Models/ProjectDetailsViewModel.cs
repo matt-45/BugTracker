@@ -7,6 +7,7 @@ namespace BugTracker.Models
 {
     public class ProjectDetailsViewModel
     {
+        public string UserRole { get; set; }
         public ICollection<ApplicationUser> Managers { get; set; }
         public ICollection<ApplicationUser> Developers { get; set; }
         public ICollection<ApplicationUser> Submitters { get; set; }

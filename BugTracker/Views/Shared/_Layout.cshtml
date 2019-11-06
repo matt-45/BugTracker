@@ -179,7 +179,7 @@
                                     </a>
                                 </li>
 
-                                @if (RoleHelper.ListUserRoles(user.Id).ToList()[0] == "Admin")
+                                @if (RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Admin")
                                 {
                                     foreach (var project in ProjectHelper.ListAllProjects())
                                     {
@@ -222,7 +222,13 @@
                                         <p>View All</p>
                                     </a>
                                 </li>
-                                @if (RoleHelper.ListUserRoles(user.Id).ToList()[0] == "Admin")
+                                <li class="nav-item">
+                                    <a href=@Url.Action("Create", "Tickets") class="nav-link">
+                                        <i class="fa fa-plus-circle nav-icon"></i>
+                                        <p>Create New</p>
+                                    </a>
+                                </li>
+                                @if (RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Admin")
                                 {
                                     foreach (var project in ProjectHelper.ListAllProjects())
                                     {
@@ -234,12 +240,7 @@
                                         </li>
                                     }
                                 }
-                                <li class="nav-item">
-                                    <a href="./index3.html" class="nav-link">
-                                        <i class="fa fa-plus-circle nav-icon"></i>
-                                        <p>Create New</p>
-                                    </a>
-                                </li>
+
                             </ul>
                         </li>
                         <li class="nav-item has-treeview">
@@ -286,7 +287,7 @@
                     </ul>
 
 
-                    @if (RoleHelper.ListUserRoles(user.Id).ToList()[0] == "Submitter")
+                    @if (RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Submitter")
                     {
                         <a style="bottom: 20%; position: absolute; cursor: pointer; width: 100%" href=@Url.Action("Create", "Tickets")>
                             <div class="row bg-green">
@@ -295,7 +296,7 @@
                         </a>
                     }
 
-                    @if (RoleHelper.ListUserRoles(user.Id).ToList()[0] == "Admin" || RoleHelper.ListUserRoles(user.Id).ToList()[0] == "Manager")
+                    @if (RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Admin" || RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Manager")
                     {
                         <a style="bottom: 20%; position: absolute; cursor: pointer; width: 100%" href="#" data-toggle="modal" data-target="#createProjectModal" class="project-Modal">
                             <div class="row bg-green">

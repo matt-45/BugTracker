@@ -1,11 +1,15 @@
 ﻿@using BugTracker.Models
 @model TicketDetailsViewModel
 
+@{ 
+    UserRoleHelper roleHelper = new UserRoleHelper();
+}
+
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0 text-dark">(Tickets Name) Details</h1>
+                <h1 class="m-0 text-dark" style="font-weight: bold; font-size: 300%">@Model.Ticket.Title Details</h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -24,87 +28,93 @@
             <div class="col-3">
                 <div>
                     <div class="accordion" id="ticketAccordion">
-                        @if (Model.ticket.AssignedToUser != null)
+
+
+                        @if (Model.UserRole == "Admin" || Model.UserRole == "Manager")
                         {
-                        <div class="info-box mb-3 bg-green">
-                            <span class="info-box-icon bg-white elevation-1"><i class="fas fa-laptop" style="color: #208637"></i></span>
-                            <div class="info-box-content">
-                                <span class="info-box-text" style="font-size: large; font-weight: bold">Assigned Developer:</span>
-                                <span class="info-box-text">@Model.ticket.AssignedToUser.DisplayName</span>
-                            </div>
-                            <i class="fas fa-plus-circle float-right"></i>
-                            <!-- /.info-box-content -->
-                        </div>
-                        }
-                        else
-                        {
-                            <div class="info-box mb-3">
-                                <span class="info-box-icon bg-red elevation-1"><i class="fas fa-exclamation"></i></span>
-                                <div class="info-box-content">
-                                    <span class="info-box-text" style="font-size: large; font-weight: bold">Assign Developer:</span>
-                                    <span class="info-box-text">Click to assign a developer</span>
+                            if (Model.Ticket.AssignedToUser != null)
+                            {
+                                <div class="info-box mb-3 bg-green">
+                                    <span class="info-box-icon bg-white elevation-1"><i class="fas fa-laptop" style="color: #208637"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text" style="font-size: large; font-weight: bold">Assigned Developer:</span>
+                                        <span class="info-box-text">@Model.Ticket.AssignedToUser.DisplayName</span>
+                                    </div>
+                                    <i class="fas fa-plus-circle float-right"></i>
+                                    <!-- /.info-box-content -->
                                 </div>
-                                <i class="fas fa-plus-circle float-right"></i>
+                            }
+                            else
+                            {
+                                <div class="info-box mb-3">
+                                    <span class="info-box-icon bg-red elevation-1"><i class="fas fa-exclamation"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text" style="font-size: large; font-weight: bold">Assign Developer:</span>
+                                        <span class="info-box-text">Click to assign a developer</span>
+                                    </div>
+                                    <i class="fas fa-plus-circle float-right"></i>
+                                    <!-- /.info-box-content -->
+                                </div>
+                            }
+                            <div id="statusHeader" class="info-box mb-3" style="cursor: pointer" data-target="#statusCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="statusCollapse">
+                                <span id="statusBgSpan" class="info-box-icon elevation-1 bg-gray"><i id="statusIcon" class="iStatusClass"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text" style="font-size: large; font-weight: bold">Status:</span>
+                                    <span id="statusSpan" class="info-box-text"></span>
+                                </div>
+                                <i class="fas fa-chevron-down float-right"></i>
                                 <!-- /.info-box-content -->
+                            </div>
+                            <div id="statusCollapse" class="collapse" aria-labelledby="headingOne"
+                                 data-parent="#ticketAccordion">
+                                <div style="padding-left: 20%">
+                                    <a class="aStatusClass" onclick="editTicketStatus(@Model.TicketStatuses.FirstOrDefault(t => t.Name == "Resolved").Id)" style="color:black; cursor:pointer">
+                                        <div id="headingOne" class="info-box mb-3" style="cursor: pointer" data-target="#statusCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
+                                            <span class="info-box-icon bg-green elevation-1"><i class="fas fa-check-double iStatusClass"></i></span>
+                                            <div class="info-box-content">
+                                                <span class="info-box-text" style="font-size: large; font-weight: bold">Resolved</span>
+                                            </div>
+                                            <!-- /.info-box-content -->
+                                        </div>
+                                    </a>
+                                </div>
+                                <div style="padding-left: 20%">
+                                    <a class="aStatusClass" onclick="editTicketStatus(@Model.TicketStatuses.FirstOrDefault(t => t.Name == "Assigned").Id)" style="color:black; cursor:pointer">
+                                        <div id="headingOne" class="info-box mb-3" style="cursor: pointer" data-target="#statusCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
+                                            <span class="info-box-icon bg-yellow elevation-1"><i class="fas fa-check iStatusClass"></i></span>
+                                            <div class="info-box-content">
+                                                <span class="info-box-text" style="font-size: large; font-weight: bold">Assigned</span>
+                                            </div>
+                                            <!-- /.info-box-content -->
+                                        </div>
+                                    </a>
+                                </div>
+                                <div style="padding-left: 20%">
+                                    <a class="aStatusClass" onclick="editTicketStatus(@Model.TicketStatuses.FirstOrDefault(t => t.Name == "Unassigned").Id)" style="color:black; cursor:pointer">
+                                        <div id="headingOne" class="info-box mb-3" style="cursor: pointer" data-target="#statusCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
+                                            <span class="info-box-icon bg-red elevation-1"><i class="fas fa-exclamation-triangle iStatusClass"></i></span>
+                                            <div class="info-box-content">
+                                                <span class="info-box-text" style="font-size: large; font-weight: bold">Unassigned</span>
+                                            </div>
+                                            <!-- /.info-box-content -->
+                                        </div>
+                                    </a>
+                                </div>
+                                <div style="padding-left: 20%">
+                                    <a class="aStatusClass" onclick="editTicketStatus(@Model.TicketStatuses.FirstOrDefault(t => t.Name == "Archived").Id)" style="color:black; cursor:pointer">
+                                        <div id="headingOne" class="info-box mb-3" style="cursor: pointer" data-target="#statusCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
+                                            <span class="info-box-icon bg-gray elevation-1"><i class="fas fa-archive iStatusClass"></i></span>
+                                            <div class="info-box-content">
+                                                <span class="info-box-text" style="font-size: large; font-weight: bold">Archived</span>
+                                            </div>
+                                            <!-- /.info-box-content -->
+                                        </div>
+                                    </a>
+                                </div>
                             </div>
                         }
 
-                        <div id="statusHeader" class="info-box mb-3" style="cursor: pointer" data-target="#statusCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="statusCollapse">
-                            <span id="statusBgSpan" class="info-box-icon elevation-1 bg-gray"><i id="statusIcon" class="iStatusClass"></i></span>
-                            <div class="info-box-content">
-                                <span class="info-box-text" style="font-size: large; font-weight: bold">Status:</span>
-                                <span id="statusSpan" class="info-box-text"></span>
-                            </div>
-                            <i class="fas fa-chevron-down float-right"></i>
-                            <!-- /.info-box-content -->
-                        </div>
-                        <div id="statusCollapse" class="collapse" aria-labelledby="headingOne"
-                             data-parent="#ticketAccordion">
-                            <div style="padding-left: 20%">
-                                <a class="aStatusClass" onclick="editTicketStatus(@Model.TicketStatuses.FirstOrDefault(t => t.Name == "Resolved").Id)" style="color:black; cursor:pointer">
-                                    <div id="headingOne" class="info-box mb-3" style="cursor: pointer" data-target="#statusCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
-                                        <span class="info-box-icon bg-green elevation-1"><i class="fas fa-check-double iStatusClass"></i></span>
-                                        <div class="info-box-content">
-                                            <span class="info-box-text" style="font-size: large; font-weight: bold">Resolved</span>
-                                        </div>
-                                        <!-- /.info-box-content -->
-                                    </div>
-                                </a>
-                            </div>
-                            <div style="padding-left: 20%">
-                                <a class="aStatusClass" onclick="editTicketStatus(@Model.TicketStatuses.FirstOrDefault(t => t.Name == "Assigned").Id)" style="color:black; cursor:pointer">
-                                    <div id="headingOne" class="info-box mb-3" style="cursor: pointer" data-target="#statusCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
-                                        <span class="info-box-icon bg-yellow elevation-1"><i class="fas fa-check iStatusClass"></i></span>
-                                        <div class="info-box-content">
-                                            <span class="info-box-text" style="font-size: large; font-weight: bold">Assigned</span>
-                                        </div>
-                                        <!-- /.info-box-content -->
-                                    </div>
-                                </a>
-                            </div>
-                            <div style="padding-left: 20%">
-                                <a class="aStatusClass" onclick="editTicketStatus(@Model.TicketStatuses.FirstOrDefault(t => t.Name == "Unassigned").Id)" style="color:black; cursor:pointer">
-                                    <div id="headingOne" class="info-box mb-3" style="cursor: pointer" data-target="#statusCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
-                                        <span class="info-box-icon bg-red elevation-1"><i class="fas fa-exclamation-triangle iStatusClass"></i></span>
-                                        <div class="info-box-content">
-                                            <span class="info-box-text" style="font-size: large; font-weight: bold">Unassigned</span>
-                                        </div>
-                                        <!-- /.info-box-content -->
-                                    </div>
-                                </a>
-                            </div>
-                            <div style="padding-left: 20%">
-                                <a class="aStatusClass" onclick="editTicketStatus(@Model.TicketStatuses.FirstOrDefault(t => t.Name == "Archived").Id)" style="color:black; cursor:pointer">
-                                    <div id="headingOne" class="info-box mb-3" style="cursor: pointer" data-target="#statusCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="roleCollapse">
-                                        <span class="info-box-icon bg-gray elevation-1"><i class="fas fa-archive iStatusClass"></i></span>
-                                        <div class="info-box-content">
-                                            <span class="info-box-text" style="font-size: large; font-weight: bold">Archived</span>
-                                        </div>
-                                        <!-- /.info-box-content -->
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
+
                         <div id="priorityHeader" class="info-box mb-3" style="cursor: pointer" data-target="#priorityCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="priorityCollapse">
                             <span id="priorityBgSpan" class="info-box-icon elevation-1 bg-gray"><i class="iTypeClass" id="priorityIcon"></i></span>
                             <div class="info-box-content">
@@ -214,7 +224,7 @@
                         <div class="info-box mb-3 bg-yellow">
                             <i class="fas fa-arrow-circle-up fa-2x" style="display: flex;justify-content: center;align-items: center;padding-left: 5%"></i>
                             <div class="info-box-content">
-                                <span class="info-box-number" style="text-align: center">Upload<br />Attachments</span>
+                                <span class="info-box-number" style="text-align: center; padding-right: 10%">Upload<br />Attachments</span>
                             </div>
                             <!-- /.info-box-content -->
                         </div>
@@ -227,6 +237,7 @@
                             <div class="info-box-content">
                                 <span class="info-box-number" style="text-align: center">Download<br />Attachments</span>
                             </div>
+                            <h1 style="font-weight:bold; display: flex;justify-content: center;align-items: center;padding-right: 5%">5</h1>
                             <!-- /.info-box-content -->
                         </div>
                     </div>
@@ -261,7 +272,7 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        <p>This is the body of the ticket. This is the body of the ticket. This is the body of the ticket. This is the body of the ticket. This is the body of the ticket. </p>
+                        <p>@Model.Ticket.Description</p>
                         <span class="float-right text-muted">1 comment</span>
                     </div>
                     <!-- /.card-body -->
@@ -312,7 +323,7 @@
                 type: "POST",
                 url: "https://localhost:44301/Tickets/EditStatus/",
                 data: {
-                        "id": @Model.ticket.Id,
+                        "id": @Model.Ticket.Id,
                         "statusId": statusId
                 },
                 success: function () {
@@ -325,7 +336,7 @@
                 type: "POST",
                 url: "https://localhost:44301/Tickets/EditPriority/",
                 data: {
-                        "id": @Model.ticket.Id,
+                        "id": @Model.Ticket.Id,
                         "priorityId": priorityId
                 },
                 success: function () {
@@ -338,7 +349,7 @@
                 type: "POST",
                 url: "https://localhost:44301/Tickets/EditType/",
                 data: {
-                        "id": @Model.ticket.Id,
+                        "id": @Model.Ticket.Id,
                         "typeId": typeId
                 },
                 success: function () {
@@ -349,7 +360,7 @@
         
 
         function loadTicketData() {
-            var status = "@Model.ticket.TicketStatus.Name";
+            var status = "@Model.Ticket.TicketStatus.Name";
             var statusIcon = ""
             var statusBg = ""
 
@@ -377,7 +388,7 @@
 
 
 
-            var priority = "@Model.ticket.TicketPriority.Name";
+            var priority = "@Model.Ticket.TicketPriority.Name";
             var priotityIcon = ""
             var priorityBg = ""
 
@@ -401,7 +412,7 @@
             $("#prioritySpan").text(priority);
 
 
-            var type = "@Model.ticket.TicketType.Name";
+            var type = "@Model.Ticket.TicketType.Name";
             var typeIcon = ""
             var typeBg = ""
 

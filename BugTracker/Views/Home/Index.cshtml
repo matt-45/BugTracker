@@ -114,7 +114,7 @@
             <!-- ./col -->
         <div class="col-lg-3 col-6">
             <!-- small box -->
-            @if (RoleHelper.ListUserRoles(Model.User.Id).ToList()[0] == "Admin" || RoleHelper.ListUserRoles(Model.User.Id).ToList()[0] == "Manager")
+            @if (RoleHelper.ListUserRoles(Model.User.Id).FirstOrDefault() == "Admin" || RoleHelper.ListUserRoles(Model.User.Id).FirstOrDefault() == "Manager")
             {
                 if (Model.Projects.Count() >= 3)
                 {
@@ -225,7 +225,7 @@
                 </div>
             </div>
             <!-- TABLE: ALL USERS -->
-            @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Admin" || RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Manager")
+            @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).FirstOrDefault() == "Admin" || RoleHelper.ListUserRoles(User.Identity.GetUserId()).FirstOrDefault() == "Manager")
             {
                 <div class="col-4">
                     <div class="card">
@@ -248,7 +248,7 @@
                                     <tr onclick="location.href = '@Url.Action("Index", "Account", new { id = user.Id })'" style="cursor: pointer">
                                         <td>@user.FirstName</td>
                                         <td>@user.LastName</td>
-                                        <td>@RoleHelper.ListUserRoles(user.Id).ToList()[0]</td>
+                                        <td>@RoleHelper.ListUserRoles(user.Id).FirstOrDefault()</td>
                                     </tr>
                                     }
                                     

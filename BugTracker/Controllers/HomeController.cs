@@ -25,22 +25,27 @@ namespace BugTracker.Controllers
             viewModel.Developers = RoleHelper.UsersInRole("Developer").ToList();
             viewModel.Submitters = RoleHelper.UsersInRole("Submitter").ToList();
 
-            if (RoleHelper.ListUserRoles(user.Id).ToList()[0] == "Admin")
+            if (RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Admin")
             {
                 viewModel.Projects = db.Projects.ToList();
                 viewModel.Tickets = db.Tickets.ToList();
             }
-            else if (RoleHelper.ListUserRoles(user.Id).ToList()[0] == "Manager")
+            else if (RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Manager")
             {
                 viewModel.Projects = ProjectHelper.ListUserProjects(user.Id);
                 viewModel.Tickets = ProjectHelper.ListUserProjects(user.Id).SelectMany(p => p.Tickets).ToList();
             }
-            else if (RoleHelper.ListUserRoles(user.Id).ToList()[0] == "Developer")
+            else if (RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Developer")
             {
                 viewModel.Projects = ProjectHelper.ListUserProjects(user.Id);
                 viewModel.Tickets = ProjectHelper.ListUserProjects(user.Id).SelectMany(p => p.Tickets.Where(t => t.AssignedToUser.Id == user.Id)).ToList();
             }
-            else if (RoleHelper.ListUserRoles(user.Id).ToList()[0] == "Submitter")
+            else if (RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Submitter")
+            {
+                viewModel.Projects = ProjectHelper.ListUserProjects(user.Id);
+                viewModel.Tickets = ProjectHelper.ListUserProjects(user.Id).SelectMany(p => p.Tickets).ToList();
+            }
+            else
             {
                 viewModel.Projects = ProjectHelper.ListUserProjects(user.Id);
                 viewModel.Tickets = ProjectHelper.ListUserProjects(user.Id).SelectMany(p => p.Tickets).ToList();

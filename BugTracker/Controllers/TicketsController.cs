@@ -14,6 +14,7 @@ namespace BugTracker.Controllers
     public class TicketsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private UserRoleHelper roleHelper = new UserRoleHelper();
 
         // GET: Tickets
         [Authorize]
@@ -38,7 +39,9 @@ namespace BugTracker.Controllers
                 return HttpNotFound();
             }
             TicketDetailsViewModel viewModel = new TicketDetailsViewModel();
-            viewModel.ticket = ticket;
+            viewModel.Ticket = ticket;
+            viewModel.User = db.Users.Find(User.Identity.GetUserId());
+            viewModel.UserRole = roleHelper.ListUserRoles(User.Identity.GetUserId()).FirstOrDefault();
             viewModel.TicketPriorities = db.Priorities.ToList();
             viewModel.TicketStatuses = db.Statuses.ToList();
             viewModel.TicketTypes = db.Types.ToList();
@@ -97,8 +100,8 @@ namespace BugTracker.Controllers
         [Authorize(Roles = "Admin, Manager")]
         public ActionResult EditStatus(int id, int statusId)
         {
-            var ticket = db.Tickets.FirstOrDefault(t => t.Id == id);
-            var status = db.Statuses.FirstOrDefault(p => p.Id == statusId);
+            var ticket = db.Tickets.Find(id);
+            var status = db.Statuses.Find(statusId);
 
             ticket.TicketStatus = status;
             db.SaveChanges();
@@ -107,8 +110,8 @@ namespace BugTracker.Controllers
         }
         public ActionResult EditPriority(int id, int priorityId)
         {
-            var ticket = db.Tickets.FirstOrDefault(t => t.Id == id);
-            var priority = db.Priorities.FirstOrDefault(p => p.Id == priorityId);
+            var ticket = db.Tickets.Find(id);
+            var priority = db.Priorities.Find(priorityId);
 
             ticket.TicketPriority = priority;
             db.SaveChanges();
@@ -117,8 +120,8 @@ namespace BugTracker.Controllers
         }
         public ActionResult EditType(int id, int typeId)
         {
-            var ticket = db.Tickets.FirstOrDefault(t => t.Id == id);
-            var type = db.Types.FirstOrDefault(p => p.Id == typeId);
+            var ticket = db.Tickets.Find(id);
+            var type = db.Types.Find(typeId);
 
             ticket.TicketType = type;
             db.SaveChanges();

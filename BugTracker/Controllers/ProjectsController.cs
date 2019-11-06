@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using BugTracker.Models;
+using Microsoft.AspNet.Identity;
 using Microsoft.Exchange.WebServices.Data;
 
 namespace BugTracker.Controllers
@@ -32,6 +33,7 @@ namespace BugTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            var userRole = RoleHelper.ListUserRoles(User.Identity.GetUserId()).FirstOrDefault();
             Project project = db.Projects.Find(id);
             viewModel.Project = project;
             viewModel.Tickets = project.Tickets.ToList();
@@ -39,8 +41,19 @@ namespace BugTracker.Controllers
             viewModel.Developers = project.GetDevelopersInProject();
             viewModel.Submitters = project.GetSubmittersInProject();
             viewModel.Users = ProjectHelper.UsersOnProject((int)id);
-            var users = RoleHelper.UsersInRole("Manager").Concat(RoleHelper.UsersInRole("Developer")).Concat(RoleHelper.UsersInRole("Submitter"));
-            viewModel.AllUsers = users.ToList();
+            
+
+            if (userRole == "Manager")
+            {
+                var users = RoleHelper.UsersInRole("Manager").Concat(RoleHelper.UsersInRole("Developer")).Concat(RoleHelper.UsersInRole("Submitter"));
+                viewModel.AllUsers = users.ToList();
+            }
+            else
+            {
+                var users = RoleHelper.UsersInRole("Developer").Concat(RoleHelper.UsersInRole("Submitter"));
+                viewModel.AllUsers = users.ToList();
+            }
+
 
             if (project == null)
             {

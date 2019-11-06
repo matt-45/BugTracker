@@ -5,11 +5,9 @@
 @{
     UserRoleHelper RoleHelper = new UserRoleHelper();
     ProjectsHelper ProjectHelper = new ProjectsHelper();
-
-    string[] array = new string[2];
 }
 
-
+    <link href="~/Content/datatables-select/css/CustomSelect.css" rel="stylesheet" />
 <!-- Content Header (Page header) -->
 <div class="content-header">
     <div class="container-fluid">
@@ -76,21 +74,37 @@
             <div class="clearfix hidden-md-up"></div>
 
             <div class="col">
+                @if (Model.Managers.FirstOrDefault() != null)
+                {
                 <div class="info-box mb-3">
+
                     <span class="info-box-icon bg-success elevation-1"><i class="fas fa-male"></i></span>
+
                     <div class="info-box-content">
-                        <span class="info-box-text" style="font-size: large; font-weight: bold">Managers</span>
-                        <span class="info-box-number">@Model.Managers.Count()</span>
+                        <span class="info-box-text" style="font-size: large; font-weight: bold">Manager</span>
+                        <a href=@Url.Action("Index", "Account", new { id = Model.Managers.FirstOrDefault().Id}) style="color:black">
+                            <span class="info-box-number">@Model.Managers.FirstOrDefault().FullName</span>
+                        </a>
                     </div>
-                    <!-- /.info-box-content -->
                 </div>
+                }
+                else
+                {
+            <div class="info-box mb-3 bg-red">
+                <span class="info-box-icon elevation-1 bg-white"><i class="fas fa-exclamation-triangle" style="color: #dc3545"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text" style="font-size: large; font-weight: bold">Manager</span>
+                    <span class="info-box-number">Assign a manager!</span>
+                </div>
+            </div>
+                }
+
                 <!-- /.info-box -->
             </div>
             <!-- /.col -->
             <div class="col">
                 <div class="info-box mb-3">
                     <span class="info-box-icon bg-info elevation-1"><i class="fas fa-laptop"></i></span>
-
                     <div class="info-box-content">
                         <span class="info-box-text" style="font-size: large; font-weight: bold">Developers</span>
                         <span class="info-box-number">@Model.Developers.Count()</span>
@@ -223,7 +237,7 @@
 
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">All Users</h4>
+                    <h4 class="modal-title" style="font-weight: bold">All Users</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
 
@@ -234,7 +248,7 @@
                             <h3 class="card-title">Select a user to add them to the project.</h3>
                         </div>
                         <div class="card-body">
-                            <table id="allUsersDataTable" class="table table-bordered table-striped">
+                            <table id="allUsersDataTable" class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>First Name</th>
@@ -246,31 +260,56 @@
                                 <tbody>
                                     @foreach (var user in Model.AllUsers)
                                     {
-
+                                        var userRole = RoleHelper.ListUserRoles(user.Id).FirstOrDefault();
                                         if (ProjectHelper.IsUserOnProject(user.Id, Model.Project.Id))
                                         {
-                                    <tr style="cursor: pointer" class="clickable-tr selected">
-
-                                        <td>@user.FirstName</td>
-                                        <td>@user.LastName</td>
-                                        <td>@RoleHelper.ListUserRoles(user.Id).ToList()[0]</td>
-                                        <td>@ProjectHelper.ListUserProjects(user.Id).Count()</td>
-                                        @Html.Hidden("userId", user.Id, new { @class = "tableDataId" })
-                                    </tr>
+                                            if (userRole == "Manager")
+                                            {
+                                                <tr style="cursor: pointer" class="clickable-tr selectManager">
+                                                    <td>@user.FirstName</td>
+                                                    <td>@user.LastName</td>
+                                                    <td>@RoleHelper.ListUserRoles(user.Id).ToList()[0]</td>
+                                                    <td>@ProjectHelper.ListUserProjects(user.Id).Count()</td>
+                                                    @Html.Hidden("userId", user.Id, new { @class = "tableUserIdClass" })
+                                                    @Html.Hidden("userRole", userRole, new { @class = "tableUserRoleClass" })
+                                                </tr>
+                                            }
+                                            else if (userRole == "Developer")
+                                            {
+                                                <tr style="cursor: pointer" class="clickable-tr selectDeveloper">
+                                                    <td>@user.FirstName</td>
+                                                    <td>@user.LastName</td>
+                                                    <td>@RoleHelper.ListUserRoles(user.Id).ToList()[0]</td>
+                                                    <td>@ProjectHelper.ListUserProjects(user.Id).Count()</td>
+                                                    @Html.Hidden("userId", user.Id, new { @class = "tableUserIdClass" })
+                                                    @Html.Hidden("userRole", userRole, new { @class = "tableUserRoleClass" })
+                                                </tr>
+                                            }
+                                            else if (userRole == "Submitter")
+                                            {
+                                                <tr style="cursor: pointer" class="clickable-tr selectSubmitter">
+                                                    <td>@user.FirstName</td>
+                                                    <td>@user.LastName</td>
+                                                    <td>@RoleHelper.ListUserRoles(user.Id).ToList()[0]</td>
+                                                    <td>@ProjectHelper.ListUserProjects(user.Id).Count()</td>
+                                                    @Html.Hidden("userId", user.Id, new { @class = "tableUserIdClass" })
+                                                    @Html.Hidden("userRole", userRole, new { @class = "tableUserRoleClass" })
+                                                </tr>
+                                            }
                                         }
                                         else
                                         {
-                                <tr style="cursor: pointer" class="clickable-tr">
-
-                                    <td>@user.FirstName</td>
-                                    <td>@user.LastName</td>
-                                    <td>@RoleHelper.ListUserRoles(user.Id).ToList()[0]</td>
-                                    <td>@ProjectHelper.ListUserProjects(user.Id).Count()</td>
-                                    @Html.Hidden("userId", user.Id, new { @class = "tableDataId" })
-                                    @*<td class="tableDataId" style="visibility: hidden">@user.Id</td>*@
-
-                                </tr>
+                                            <tr style="cursor: pointer" class="clickable-tr">
+                                                <td>@user.FirstName</td>
+                                                <td>@user.LastName</td>
+                                                <td>@RoleHelper.ListUserRoles(user.Id).ToList()[0]</td>
+                                                <td>@ProjectHelper.ListUserProjects(user.Id).Count()</td>
+                                                @Html.Hidden("userId", user.Id, new { @class = "tableUserIdClass" })
+                                                @Html.Hidden("userRole", userRole, new { @class = "tableUserRoleClass" })
+                                            </tr>
                                         }
+
+
                                     }
                                 </tbody>
                                 <tfoot>
@@ -310,13 +349,22 @@
 
         $(document).ready(function () {
             for (var i = 0; i < tableRow.length; i++) {
-                console.log(idArray);
-                if (tableRow[i].classList.contains("selected")) {
-                    //var userId = tableRow[i].find(".tableDataId").val();
-                    console.log(tableRow[i].find(".tableDataId").val())
-                    if (tableRow[i].find(".tableDataId").val() != null) {
-                        var userId = tableRow[i].closest(".tableDataId").val();
-                        idArray.push(userId);
+                console.log(idArray)
+                var role = tableRow[i].children[5].value;
+                var userId = tableRow[i].children[4].value
+                if (role == "Manager") {
+                    if (tableRow[i].classList.contains("selectManager")) {
+                        idArray.push(userId)
+                    }
+                }
+                if (role == "Developer") {
+                    if (tableRow[i].classList.contains("selectDeveloper")) {
+                        idArray.push(userId)
+                    }
+                }
+                if (role == "Submitter") {
+                    if (tableRow[i].classList.contains("selectSubmitter")) {
+                        idArray.push(userId)
                     }
                 }
             }
@@ -326,7 +374,7 @@
         
 
 
-    function addUserToProject(idArray) {
+        function addUserToProject(idArray) {
 
             $.ajax({
                 type: "POST",
@@ -334,12 +382,12 @@
                 data: {
                         "userIds": idArray,
                         "projectId": @Model.Project.Id
-                      },
+                        },
                 success: function () {
                     location.reload();
                 }
 
-                });
+            });
 
             console.log("Button has been clicked")
         }
@@ -348,21 +396,50 @@
 
             $("#ticketsTable").DataTable();
             $('#usersTable').DataTable();
-            $('#allUsersDataTable').DataTable( {
-            select: {
-                    style: 'multi',
-                }
-            });
-            $("#tableDataId").hide();
+            $('#allUsersDataTable').DataTable();
+            $("#tableUserIdClass").hide();
 
 
 
             tableRow.click(function () {
-                console.log($(this).find(".isAssigned").html())
-                var userId = $(this).find(".tableDataId").val();
+                //#abf5bc light green #ccf8ff light cyan #fff0c4 light yellow
                 const toggle = (array, item) => _.xor(array, [item]);
+                var userId = $(this).find(".tableUserIdClass").val();
+                var userRole = $(this).find(".tableUserRoleClass").val();
+                var rowIsSelected = false
+                if (userRole == "Manager") {
+                    rowIsSelected = $(this).hasClass("selectManager")
+                } else if (userRole == "Developer") {
+                    rowIsSelected = $(this).hasClass("selectDeveloper")
+                } else if (userRole == "Submitter") {
+                    rowIsSelected = $(this).hasClass("selectSubmitter")
+                }
+
+                if (!rowIsSelected) {
+                    if (userRole == "Manager") {
+                        $(this).removeClass();
+                        $(this).addClass("clickable-tr selectManager")
+                    }
+                    if (userRole == "Developer") {
+                        $(this).removeClass();
+                        $(this).addClass("clickable-tr selectDeveloper")
+                    }
+                    if (userRole == "Submitter") {
+                        $(this).removeClass();
+                        $(this).addClass("clickable-tr selectSubmitter")
+                    }
+                } else {
+                    $(this).removeClass();
+                    $(this).addClass("clickable-tr")
+                }
+
+                console.log(userRole);
+
+                
 
                 idArray = toggle(idArray, userId);
+
+
 
                 console.log(idArray);
             })
