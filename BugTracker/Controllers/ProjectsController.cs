@@ -41,16 +41,15 @@ namespace BugTracker.Controllers
             viewModel.Developers = project.GetDevelopersInProject();
             viewModel.Submitters = project.GetSubmittersInProject();
             viewModel.Users = ProjectHelper.UsersOnProject((int)id);
-            
 
             if (userRole == "Manager")
             {
-                var users = RoleHelper.UsersInRole("Manager").Concat(RoleHelper.UsersInRole("Developer")).Concat(RoleHelper.UsersInRole("Submitter"));
+                var users = RoleHelper.UsersInRole("Developer").Concat(RoleHelper.UsersInRole("Submitter"));
                 viewModel.AllUsers = users.ToList();
             }
             else
             {
-                var users = RoleHelper.UsersInRole("Developer").Concat(RoleHelper.UsersInRole("Submitter"));
+                var users = RoleHelper.UsersInRole("Manager").Concat(RoleHelper.UsersInRole("Developer")).Concat(RoleHelper.UsersInRole("Submitter"));
                 viewModel.AllUsers = users.ToList();
             }
 

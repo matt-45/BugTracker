@@ -346,15 +346,17 @@
         
         var tableRow = $(".clickable-tr");
         var idArray = new Array();
+        var idManagerArray = new Array();
 
         $(document).ready(function () {
             for (var i = 0; i < tableRow.length; i++) {
                 console.log(idArray)
+                console.log(idManagerArray)
                 var role = tableRow[i].children[5].value;
                 var userId = tableRow[i].children[4].value
                 if (role == "Manager") {
                     if (tableRow[i].classList.contains("selectManager")) {
-                        idArray.push(userId)
+                        idManagerArray.push(userId)
                     }
                 }
                 if (role == "Developer") {
@@ -371,7 +373,17 @@
             
         });
 
-        
+        function deselectManagerRows() {
+            for (var i = 0; i < tableRow.length; i++) {
+                var rowRole = tableRow[i].children[5].value
+                if (rowRole == "Manager") {
+                    console.log(tableRow[i])
+                    tableRow[i].removeAttribute("class")
+                    tableRow[i].className = "clickable-tr"
+                }
+            }
+            console.log("Deselect manager rows called")
+        }
 
 
         function addUserToProject(idArray) {
@@ -380,7 +392,7 @@
                 type: "POST",
                 url: "https://localhost:44301/Projects/AddUserToProject/",
                 data: {
-                        "userIds": idArray,
+                        "userIds": idArray.concat(idManagerArray),
                         "projectId": @Model.Project.Id
                         },
                 success: function () {
@@ -401,6 +413,7 @@
 
 
 
+
             tableRow.click(function () {
                 //#abf5bc light green #ccf8ff light cyan #fff0c4 light yellow
                 const toggle = (array, item) => _.xor(array, [item]);
@@ -415,33 +428,40 @@
                     rowIsSelected = $(this).hasClass("selectSubmitter")
                 }
 
-                if (!rowIsSelected) {
-                    if (userRole == "Manager") {
+                if (userRole == "Manager") {
+                    if (!rowIsSelected) {
+                        deselectManagerRows()
                         $(this).removeClass();
                         $(this).addClass("clickable-tr selectManager")
-                    }
-                    if (userRole == "Developer") {
+                        idManagerArray = []
+                        idManagerArray.push(userId)
+                    } else {
                         $(this).removeClass();
-                        $(this).addClass("clickable-tr selectDeveloper")
-                    }
-                    if (userRole == "Submitter") {
-                        $(this).removeClass();
-                        $(this).addClass("clickable-tr selectSubmitter")
+                        $(this).addClass("clickable-tr")
+                        idManagerArray = []
                     }
                 } else {
-                    $(this).removeClass();
-                    $(this).addClass("clickable-tr")
+                    if (!rowIsSelected) {
+                        if (userRole == "Developer") {
+                            $(this).removeClass();
+                            $(this).addClass("clickable-tr selectDeveloper")
+                        }
+                        if (userRole == "Submitter") {
+                            $(this).removeClass();
+                            $(this).addClass("clickable-tr selectSubmitter")
+                        }
+                    } else {
+                        $(this).removeClass();
+                        $(this).addClass("clickable-tr")
+                    }
+                    idArray = toggle(idArray, userId);
                 }
-
-                console.log(userRole);
 
                 
 
-                idArray = toggle(idArray, userId);
-
-
-
+                console.log(userRole);
                 console.log(idArray);
+                console.log(idManagerArray)
             })
 
         });
