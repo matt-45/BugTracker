@@ -58,6 +58,7 @@ namespace BugTracker.Controllers
 
         private UserRoleHelper RoleHelper = new UserRoleHelper();
         private ProjectsHelper ProjectHelper = new ProjectsHelper();
+        private TicketHelper TicketHelper = new TicketHelper();
 
         [Authorize]
         public ActionResult Index(string id)
@@ -65,11 +66,29 @@ namespace BugTracker.Controllers
             UserViewModel viewModel = new UserViewModel();
             var userTemp = db.Users.Find(id);
             var user = db.Users.FirstOrDefault(u => u.Id == id);
-            viewModel.Projects = ProjectHelper.ListUserProjects(id);
             viewModel.AllProjects = db.Projects.ToList();
             viewModel.User = user;
-            viewModel.Tickets = db.Tickets.Where(t => t.OwnerUserId == id).ToList();
-            viewModel.UserRoles = RoleHelper.ListUserRoles(id).ToList();
+            viewModel.UserRole = RoleHelper.ListUserRoles(id).FirstOrDefault();
+            if (viewModel.UserRole == "Admin")
+            {
+                viewModel.Projects = db.Projects.ToList();
+                viewModel.Tickets = db.Tickets.ToList();
+            }
+            else if (viewModel.UserRole == "Manager")
+            {
+                viewModel.Projects = ProjectHelper.ListUserProjects(id);
+                viewModel.Tickets = ProjectHelper.ListUserProjects(id).SelectMany(p => p.Tickets).ToList();
+            }
+            else if (viewModel.UserRole == "Developer")
+            {
+                viewModel.Projects = ProjectHelper.ListUserProjects(id);
+                viewModel.Tickets = db.Tickets.Where(t => t.AssignedToUserId == id).ToList();
+            }
+            else if (viewModel.UserRole == "Submitter")
+            {
+                viewModel.Projects = ProjectHelper.ListUserProjects(id);
+                viewModel.Tickets = db.Tickets.Where(t => t.OwnerUserId == id).ToList();
+            }
             return View(viewModel);
         }
 

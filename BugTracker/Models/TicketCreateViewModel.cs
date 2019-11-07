@@ -11,6 +11,7 @@ namespace BugTracker.Models
     {
         public ApplicationUser User { get; set; }
         public Project? Project { get; set; }
+        public Ticket Ticket { get; set; }
         public ICollection<Project> Projects { get; set; }
 
 

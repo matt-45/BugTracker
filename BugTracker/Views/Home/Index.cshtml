@@ -95,73 +95,73 @@
         </div>
         <!-- Projects -->
         <div class="row">
-                @foreach (var project in Model.Projects.Take(3))
-                {
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-info">
-                            <div class="inner">
-                                <h3>@project.Name</h3>
-                                <p>
-                                    <b>@project.Tickets.Where(t => t.TicketStatus.Name.Contains("Assigned")).Count()</b> Active Tickets<br />
-                                    @project.Description
-                                </p>
-                            </div>
-                            <a href=@Url.Action("Details", "Projects", new { id = project.Id }) class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-                }
-            <!-- ./col -->
-        <div class="col-lg-3 col-6">
-            <!-- small box -->
-            @if (RoleHelper.ListUserRoles(Model.User.Id).FirstOrDefault() == "Admin" || RoleHelper.ListUserRoles(Model.User.Id).FirstOrDefault() == "Manager")
+            @foreach (var project in Model.Projects.Take(3))
             {
-                if (Model.Projects.Count() >= 3)
-                {
-                    <div class="small-box bg-green">
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-info">
                         <div class="inner">
-                            <h3>View All</h3>
+                            <h3>@project.Name</h3>
                             <p>
-                                <b>@Model.Projects.Count</b> Projects<br />
-                                Click below to view all projects.
+                                <b>@project.Tickets.Where(t => t.TicketStatus.Name.Contains("Assigned")).Count()</b> Active Tickets<br />
+                                @project.Description
                             </p>
                         </div>
-                        <a href=@Url.Action("Index", "Projects") class="small-box-footer">View All <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href=@Url.Action("Details", "Projects", new { id = project.Id }) class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
+                </div>
+            }
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                @if (RoleHelper.ListUserRoles(Model.User.Id).FirstOrDefault() == "Admin" || RoleHelper.ListUserRoles(Model.User.Id).FirstOrDefault() == "Manager")
+                {
+                    if (Model.Projects.Count() >= 3)
+                    {
+                        <div class="small-box bg-green">
+                            <div class="inner">
+                                <h3>View All</h3>
+                                <p>
+                                    <b>@Model.Projects.Count</b> Projects<br />
+                                    Click below to view all projects.
+                                </p>
+                            </div>
+                            <a href=@Url.Action("Index", "Projects") class="small-box-footer">View All <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="small-box bg-green">
+                            <div class="inner">
+                                <h3>Create New</h3>
+                                <p>
+                                    <b>@Model.Projects.Count</b> Projects<br />
+                                    Click below to create a new project.
+                                </p>
+                            </div>
+                            <a href="#" class="small-box-footer project-Modal" data-toggle="modal" data-target="#createProjectModal">Create New <i class="fas fa-plus-circle"></i></a>
+                        </div>
+                    }
+
                 }
                 else
                 {
-                    <div class="small-box bg-green">
-                        <div class="inner">
-                            <h3>Create New</h3>
-                            <p>
-                                <b>@Model.Projects.Count</b> Projects<br />
-                                Click below to create a new project.
-                            </p>
+                    if (Model.Projects.Count() >= 3)
+                    {
+                        <div class="small-box bg-green">
+                            <div class="inner">
+                                <h3>View All</h3>
+                                <p>
+                                    <b>@Model.Projects.Count</b> Projects<br />
+                                    Click below to view all projects.
+                                </p>
+                            </div>
+                            <a href=@Url.Action("Index", "Projects") class="small-box-footer">View All <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
-                        <a href="#" class="small-box-footer project-Modal" data-toggle="modal" data-target="#createProjectModal">Create New <i class="fas fa-plus-circle"></i></a>
-                    </div>
+                    }
                 }
 
-            }
-            else
-            {
-                if (Model.Projects.Count() >= 3)
-                {
-                    <div class="small-box bg-green">
-                        <div class="inner">
-                            <h3>View All</h3>
-                            <p>
-                                <b>@Model.Projects.Count</b> Projects<br />
-                                Click below to view all projects.
-                            </p>
-                        </div>
-                        <a href=@Url.Action("Index", "Projects") class="small-box-footer">View All <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
-                }
-            }
-
-        </div>
+            </div>
             <!-- ./col -->
         </div>
         <!-- Tables -->
@@ -245,13 +245,13 @@
 
                                     @foreach (var user in Model.ApplicationUsers)
                                     {
-                                    <tr onclick="location.href = '@Url.Action("Index", "Account", new { id = user.Id })'" style="cursor: pointer">
-                                        <td>@user.FirstName</td>
-                                        <td>@user.LastName</td>
-                                        <td>@RoleHelper.ListUserRoles(user.Id).FirstOrDefault()</td>
-                                    </tr>
+                                        <tr onclick="location.href = '@Url.Action("Index", "Account", new { id = user.Id })'" style="cursor: pointer">
+                                            <td>@user.FirstName</td>
+                                            <td>@user.LastName</td>
+                                            <td>@RoleHelper.ListUserRoles(user.Id).FirstOrDefault()</td>
+                                        </tr>
                                     }
-                                    
+
                                 </tbody>
                                 <tfoot>
                                     <tr>
@@ -265,7 +265,7 @@
                     </div>
                 </div>
             }
-            </div>
+        </div>
     </div>
 </section>
 

@@ -15,6 +15,7 @@ namespace BugTracker.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private UserRoleHelper roleHelper = new UserRoleHelper();
+        private HistoryHelper historyHelper = new HistoryHelper();
 
         // GET: Tickets
         [Authorize]
@@ -54,13 +55,15 @@ namespace BugTracker.Controllers
         public ActionResult Create(int? projectId)
         {
             TicketCreateViewModel viewModel = new TicketCreateViewModel();
+            Ticket ticket = new Ticket();
             if (projectId != null)
             {
                 viewModel.Project = db.Projects.Find(projectId);
             }
             viewModel.User = db.Users.Find(User.Identity.GetUserId());
             viewModel.Projects = db.Projects.ToList();
-
+            viewModel.Ticket = ticket;
+            viewModel.Ticket.OwnerUser = viewModel.User;
             return View(viewModel);
         }
 
@@ -69,17 +72,23 @@ namespace BugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(string ticketTypeName, string ticketPriorityName, string ticketTitle, string ticketDescription, int projectId, string userId)
+        public ActionResult Create([Bind(Include = "Ticket, User, Project")] TicketCreateViewModel ticketVM)
         {
-            
-            var type = db.Types.FirstOrDefault(t => t.Name == ticketTypeName);
+            //string ticketTypeName, string ticketPriorityName, string ticketTitle, string ticketDescription, int projectId, string userId
+            /*var type = db.Types.FirstOrDefault(t => t.Name == ticketTypeName);
             var priority = db.Priorities.FirstOrDefault(p => p.Name == ticketPriorityName);
-            var status = db.Statuses.FirstOrDefault(s => s.Name == "Unassigned");
+            
             var owner = db.Users.Find(userId);
-            var project = db.Projects.Find(projectId);
+            var project = db.Projects.Find(projectId);*/
+            var defaultStatus = db.Statuses.FirstOrDefault(s => s.Name == "Unassigned");
+            var tempTicket = ticketVM.Ticket;
             if (ModelState.IsValid)
             {
-                Ticket ticket = new Ticket();
+                var ticket = ticketVM.Ticket;
+                ticket.TicketStatus = defaultStatus;
+                ticket.Created = DateTime.Now;
+
+                /*var ticket = new Ticket();
                 ticket.TicketType = type;
                 ticket.TicketPriority = priority;
                 ticket.TicketStatus = status;
@@ -87,7 +96,7 @@ namespace BugTracker.Controllers
                 ticket.Description = ticketDescription;
                 ticket.Created = DateTime.Now;
                 ticket.OwnerUser = owner;
-                ticket.Project = project;
+                ticket.Project = project;*/
 
                 db.Tickets.Add(ticket);
                 db.SaveChanges();
@@ -100,31 +109,43 @@ namespace BugTracker.Controllers
         [Authorize(Roles = "Admin, Manager")]
         public ActionResult EditStatus(int id, int statusId)
         {
+            var oldTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == id);
             var ticket = db.Tickets.Find(id);
             var status = db.Statuses.Find(statusId);
-
+            ticket.Updated = DateTime.Now;
             ticket.TicketStatus = status;
             db.SaveChanges();
+            var newTicket = db.Tickets.Find(id);
+
+            historyHelper.RecordHistoricalChanges(oldTicket, newTicket);
 
             return RedirectToAction("Details", "Tickets", new { id });
         }
         public ActionResult EditPriority(int id, int priorityId)
         {
+            var oldTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == id);
             var ticket = db.Tickets.Find(id);
             var priority = db.Priorities.Find(priorityId);
-
+            ticket.Updated = DateTime.Now;
             ticket.TicketPriority = priority;
             db.SaveChanges();
+            var newTicket = db.Tickets.Find(ticket.Id);
+
+            historyHelper.RecordHistoricalChanges(oldTicket, newTicket);
 
             return RedirectToAction("Details", "Tickets", new { id });
         }
         public ActionResult EditType(int id, int typeId)
         {
+            var oldTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == id);
             var ticket = db.Tickets.Find(id);
             var type = db.Types.Find(typeId);
-
+            ticket.Updated = DateTime.Now;
             ticket.TicketType = type;
             db.SaveChanges();
+            var newTicket = db.Tickets.Find(ticket.Id);
+
+            historyHelper.RecordHistoricalChanges(oldTicket, newTicket);
 
             return RedirectToAction("Details", "Tickets", new { id });
         }

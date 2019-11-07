@@ -23,6 +23,7 @@ namespace BugTracker.Models
                     Changed = (DateTime)newTicket.Updated,
                     UserId = HttpContext.Current.User.Identity.GetUserId(),
                 };
+                db.Histories.Add(newHistory);
             }
             if (oldTicket.Description != newTicket.Description)
             {
@@ -35,6 +36,7 @@ namespace BugTracker.Models
                     Changed = (DateTime)newTicket.Updated,
                     UserId = HttpContext.Current.User.Identity.GetUserId(),
                 };
+                db.Histories.Add(newHistory);
             }
             if (oldTicket.AssignedToUserId != newTicket.AssignedToUserId)
             {
@@ -60,7 +62,39 @@ namespace BugTracker.Models
                     Changed = (DateTime)newTicket.Updated,
                     UserId = HttpContext.Current.User.Identity.GetUserId(),
                 };
+                db.Histories.Add(newHistory);
             }
+            if (oldTicket.TicketStatusId != newTicket.TicketStatusId)
+            {
+                var newHistory = new TicketHistory
+                {
+                    Property = "Ticket Status",
+                    TicketId = newTicket.Id,
+                    NewValue = newTicket.TicketStatus.Name,
+                    OldValue = oldTicket.TicketStatus.Name,
+                    Changed = (DateTime)newTicket.Updated,
+                    UserId = HttpContext.Current.User.Identity.GetUserId(),
+                };
+                db.Histories.Add(newHistory);
+            }
+            if (oldTicket.TicketPriorityId != newTicket.TicketPriorityId)
+            {
+                var newHistory = new TicketHistory
+                {
+                    Property = "Ticket Priority",
+                    TicketId = newTicket.Id,
+                    NewValue = newTicket.TicketPriority.Name,
+                    OldValue = oldTicket.TicketPriority.Name,
+                    Changed = (DateTime)newTicket.Updated,
+                    UserId = HttpContext.Current.User.Identity.GetUserId(),
+                };
+                db.Histories.Add(newHistory);
+            }
+            db.SaveChanges();
+        }
+        public void RecordTypeHistory(TicketType oldType, TicketType newType)
+        {
+
         }
             
 

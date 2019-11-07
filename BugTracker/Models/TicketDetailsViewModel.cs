@@ -11,6 +11,7 @@ namespace BugTracker.Models
         public ApplicationUser User { get; set; }
         public string UserRole { get; set; }
         public Ticket Ticket { get; set; }
+        public ICollection<ApplicationUser> Developers { get; set; }
         public ICollection<TicketStatus> TicketStatuses { get; set; }
         public ICollection<TicketPriority> TicketPriorities { get; set; }
         public ICollection<TicketType> TicketTypes { get; set; }
