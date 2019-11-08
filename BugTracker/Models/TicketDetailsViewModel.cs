@@ -18,6 +18,7 @@ namespace BugTracker.Models
 
         public TicketDetailsViewModel()
         {
+            Developers = new HashSet<ApplicationUser>();
             TicketStatuses = new HashSet<TicketStatus>();
             TicketPriorities = new HashSet<TicketPriority>();
             TicketTypes = new HashSet<TicketType>();

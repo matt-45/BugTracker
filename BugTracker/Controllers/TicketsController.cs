@@ -16,6 +16,7 @@ namespace BugTracker.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
         private UserRoleHelper roleHelper = new UserRoleHelper();
         private HistoryHelper historyHelper = new HistoryHelper();
+        private ProjectsHelper projectHelper = new ProjectsHelper();
 
         // GET: Tickets
         [Authorize]
@@ -61,7 +62,7 @@ namespace BugTracker.Controllers
                 viewModel.Project = db.Projects.Find(projectId);
             }
             viewModel.User = db.Users.Find(User.Identity.GetUserId());
-            viewModel.Projects = db.Projects.ToList();
+            viewModel.Projects = projectHelper.ListUserProjects(viewModel.User.Id);
             viewModel.Ticket = ticket;
             viewModel.Ticket.OwnerUser = viewModel.User;
             return View(viewModel);
@@ -72,38 +73,23 @@ namespace BugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Ticket, User, Project")] TicketCreateViewModel ticketVM)
+        public ActionResult Create(Ticket ticket, Project project, string typeName, string priorityName, string userId)
         {
-            //string ticketTypeName, string ticketPriorityName, string ticketTitle, string ticketDescription, int projectId, string userId
-            /*var type = db.Types.FirstOrDefault(t => t.Name == ticketTypeName);
-            var priority = db.Priorities.FirstOrDefault(p => p.Name == ticketPriorityName);
-            
             var owner = db.Users.Find(userId);
-            var project = db.Projects.Find(projectId);*/
             var defaultStatus = db.Statuses.FirstOrDefault(s => s.Name == "Unassigned");
-            var tempTicket = ticketVM.Ticket;
-            if (ModelState.IsValid)
-            {
-                var ticket = ticketVM.Ticket;
-                ticket.TicketStatus = defaultStatus;
-                ticket.Created = DateTime.Now;
+            var type = db.Types.FirstOrDefault(t => t.Name == typeName);
+            var priority = db.Priorities.FirstOrDefault(p => p.Name == priorityName);
+            ticket.OwnerUser = owner;
+            ticket.TicketStatus = defaultStatus;
+            ticket.Created = DateTime.Now;
+            ticket.ProjectId = project.Id;
+            ticket.TicketPriority = priority;
+            ticket.TicketType = type;
+            db.Tickets.Add(ticket);
+            db.SaveChanges();
+            return RedirectToAction("Details", "Tickets", new { id = ticket.Id});
 
-                /*var ticket = new Ticket();
-                ticket.TicketType = type;
-                ticket.TicketPriority = priority;
-                ticket.TicketStatus = status;
-                ticket.Title = ticketTitle;
-                ticket.Description = ticketDescription;
-                ticket.Created = DateTime.Now;
-                ticket.OwnerUser = owner;
-                ticket.Project = project;*/
-
-                db.Tickets.Add(ticket);
-                db.SaveChanges();
-                return RedirectToAction("Details", "Tickets", new { id = ticket.Id});
-            }
-
-            return View();
+           // return View();
         }
 
         [Authorize(Roles = "Admin, Manager")]

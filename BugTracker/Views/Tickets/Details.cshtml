@@ -2,7 +2,9 @@
 @model TicketDetailsViewModel
 
 @{ 
-    UserRoleHelper roleHelper = new UserRoleHelper();
+    UserRoleHelper RoleHelper = new UserRoleHelper();
+    ProjectsHelper ProjectHelper = new ProjectsHelper();
+
 }
 
 <div class="content-header">
@@ -311,114 +313,7 @@
         </div>
     </div>
     <!-- The Modal -->
-    <div class="modal fade" id="addUsersModal">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-
-
-
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title" style="font-weight: bold">All Users</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-
-                <!-- Modal body -->
-                <div class="modal-body">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Select a user to add them to the project.</h3>
-                        </div>
-                        <div class="card-body">
-                            <table id="allUsersDataTable" class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>Role</th>
-                                        <th>Number of Projects</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var user in Model.AllUsers)
-                                    {
-                                        var userRole = RoleHelper.ListUserRoles(user.Id).FirstOrDefault();
-                                        if (ProjectHelper.IsUserOnProject(user.Id, Model.Project.Id))
-                                        {
-                                            if (userRole == "Manager")
-                                            {
-                                                <tr style="cursor: pointer" class="clickable-tr selectManager">
-                                                    <td>@user.FirstName</td>
-                                                    <td>@user.LastName</td>
-                                                    <td>@RoleHelper.ListUserRoles(user.Id).ToList()[0]</td>
-                                                    <td>@ProjectHelper.ListUserProjects(user.Id).Count()</td>
-                                                    @Html.Hidden("userId", user.Id, new { @class = "tableUserIdClass" })
-                                                    @Html.Hidden("userRole", userRole, new { @class = "tableUserRoleClass" })
-                                                </tr>
-                                            }
-                                            else if (userRole == "Developer")
-                                            {
-                                                <tr style="cursor: pointer" class="clickable-tr selectDeveloper">
-                                                    <td>@user.FirstName</td>
-                                                    <td>@user.LastName</td>
-                                                    <td>@RoleHelper.ListUserRoles(user.Id).ToList()[0]</td>
-                                                    <td>@ProjectHelper.ListUserProjects(user.Id).Count()</td>
-                                                    @Html.Hidden("userId", user.Id, new { @class = "tableUserIdClass" })
-                                                    @Html.Hidden("userRole", userRole, new { @class = "tableUserRoleClass" })
-                                                </tr>
-                                            }
-                                            else if (userRole == "Submitter")
-                                            {
-                                                <tr style="cursor: pointer" class="clickable-tr selectSubmitter">
-                                                    <td>@user.FirstName</td>
-                                                    <td>@user.LastName</td>
-                                                    <td>@RoleHelper.ListUserRoles(user.Id).ToList()[0]</td>
-                                                    <td>@ProjectHelper.ListUserProjects(user.Id).Count()</td>
-                                                    @Html.Hidden("userId", user.Id, new { @class = "tableUserIdClass" })
-                                                    @Html.Hidden("userRole", userRole, new { @class = "tableUserRoleClass" })
-                                                </tr>
-                                            }
-                                        }
-                                        else
-                                        {
-                                            <tr style="cursor: pointer" class="clickable-tr">
-                                                <td>@user.FirstName</td>
-                                                <td>@user.LastName</td>
-                                                <td>@RoleHelper.ListUserRoles(user.Id).ToList()[0]</td>
-                                                <td>@ProjectHelper.ListUserProjects(user.Id).Count()</td>
-                                                @Html.Hidden("userId", user.Id, new { @class = "tableUserIdClass" })
-                                                @Html.Hidden("userRole", userRole, new { @class = "tableUserRoleClass" })
-                                            </tr>
-                                        }
-
-
-                                    }
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>Role</th>
-                                        <th>Number of Projects</th>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Modal footer -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="addUserToProject(idArray)">Save</button>
-                </div>
-
-
-
-
-
-            </div>
-        </div>
-    </div>
+    
 </section>
 
 @section scripts {
