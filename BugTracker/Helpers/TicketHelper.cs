@@ -38,5 +38,13 @@ namespace BugTracker.Models
             return myTickets;
         }
 
+        public void AssignDeveloperToTicket(string userId, int ticketId)
+        {
+            var user = db.Users.Find(userId);
+            var ticket = db.Tickets.Find(ticketId);
+            ticket.AssignedToUser = user;
+            db.SaveChanges();
+        }
+
     }
 }

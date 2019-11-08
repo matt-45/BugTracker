@@ -11,7 +11,7 @@ namespace BugTracker.Helpers
 {
     public class FileUploadValidator
     {
-        public static bool IsWebFriendlyImage(HttpPostedFile file)
+        public static bool IsWebFriendlyImage(HttpPostedFileBase file)
         {
             if (file == null)
             {

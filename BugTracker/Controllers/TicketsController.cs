@@ -17,6 +17,7 @@ namespace BugTracker.Controllers
         private UserRoleHelper roleHelper = new UserRoleHelper();
         private HistoryHelper historyHelper = new HistoryHelper();
         private ProjectsHelper projectHelper = new ProjectsHelper();
+        private TicketHelper ticketHelper = new TicketHelper();
 
         // GET: Tickets
         [Authorize]
@@ -47,6 +48,7 @@ namespace BugTracker.Controllers
             viewModel.TicketPriorities = db.Priorities.ToList();
             viewModel.TicketStatuses = db.Statuses.ToList();
             viewModel.TicketTypes = db.Types.ToList();
+            viewModel.Developers = roleHelper.UsersInRole("Developer").ToList();
 
             return View(viewModel);
         }
@@ -64,7 +66,6 @@ namespace BugTracker.Controllers
             viewModel.User = db.Users.Find(User.Identity.GetUserId());
             viewModel.Projects = projectHelper.ListUserProjects(viewModel.User.Id);
             viewModel.Ticket = ticket;
-            viewModel.Ticket.OwnerUser = viewModel.User;
             return View(viewModel);
         }
 
@@ -134,6 +135,12 @@ namespace BugTracker.Controllers
             historyHelper.RecordHistoricalChanges(oldTicket, newTicket);
 
             return RedirectToAction("Details", "Tickets", new { id });
+        }
+
+        public ActionResult AssignDeveloperToTicket(int ticketId, string userId)
+        {
+            ticketHelper.AssignDeveloperToTicket(userId, ticketId);
+            return RedirectToAction("Details", "Tickets", new { id = ticketId });
         }
 
 

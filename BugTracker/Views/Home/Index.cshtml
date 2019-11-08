@@ -274,7 +274,13 @@
         $(document).ready(function () {
             $("#allTicketsTable").DataTable();
             $('#allUsersTable').DataTable({
-                "searching": false
+                "dom": ' <"search"f><"top"l>rt<"bottom"ip><"clear">',
+                "bFilter": false,
+                "bInfo": false,
+                "bLengthChange": true,
+                 oLanguage: {
+                    sLengthMenu: "_MENU_",
+                 }
             });
         });
     </script>
