@@ -38,12 +38,12 @@ namespace BugTracker.Controllers
             else if (RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Developer")
             {
                 viewModel.Projects = ProjectHelper.ListUserProjects(user.Id);
-                viewModel.Tickets = ProjectHelper.ListUserProjects(user.Id).SelectMany(p => p.Tickets.Where(t => t.AssignedToUser.Id == user.Id)).ToList();
+                viewModel.Tickets = db.Tickets.Where(t => t.AssignedToUserId == user.Id).ToList();
             }
             else if (RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Submitter")
             {
                 viewModel.Projects = ProjectHelper.ListUserProjects(user.Id);
-                viewModel.Tickets = ProjectHelper.ListUserProjects(user.Id).SelectMany(p => p.Tickets).ToList();
+                viewModel.Tickets = db.Tickets.Where(t => t.OwnerUserId == user.Id).ToList();
             }
             else
             {

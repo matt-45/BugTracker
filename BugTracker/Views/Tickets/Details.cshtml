@@ -396,11 +396,12 @@
                         </div>
                         <div class="row" style="padding-top: 5%; text-align: center">
                             <div class="col" style="display:inline-block">
-                                <input type="file" name="file" id="fileInput" accept=@WebConfigurationManager.AppSettings["AllowedAttachmentExtensions"]/>
+                                <input hidden class="fileInput" type="file" name="file" id="fileInput" accept=@WebConfigurationManager.AppSettings["AllowedAttachmentExtensions"]/>
                                 <a href="#" id="showFileInput">
                                     <div class="small-box bg-blue" style="width: 75%;text-align: center; display:inline-block">
-                                        <i class="fas fa-arrow-circle-up fa-4x" style="text-align: center; padding-top: 5%"></i>
-                                        <h2 style="text-align: center; padding-bottom: 5%; font-weight: bold">Select File</h2>
+                                        <i class="fas fa-arrow-circle-up fa-4x" style="text-align: center; padding-top: 10%"></i>
+                                        <h2 style="text-align: center; font-weight: bold">Select File</h2>
+                                        <h6 id="fileName" style="padding-bottom: 5%"></h6>
                                     </div>
                                 </a>
                             </div>
@@ -427,6 +428,11 @@
             $("#showFileInput").on('click', function(e){
                 e.preventDefault();
                 $("#fileInput").trigger('click');
+            });
+
+            $(".fileInput").change(function () {
+                var value = this.value.toString().split("\\")[2]
+                $("#fileName").text(value)
             });
         });
 

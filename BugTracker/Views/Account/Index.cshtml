@@ -353,42 +353,25 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @foreach (var ticket in Model.Tickets)
+                                {
                                 <tr>
-                                    <td>Problem with UI</td>
-                                    <td>Jason</td>
-                                    <td>High</td>
-                                    <td>UI</td>
-                                    <td>Active</td>
-                                    <td>08/21/18</td>
-                                    <td>07/30/17</td>
+                                    <td>@ticket.Title</td>
+                                    <td>@ticket.OwnerUser.FullName</td>
+                                    <td>@ticket.TicketPriority.Name</td>
+                                    <td>@ticket.TicketType.Name</td>
+                                    <td>@ticket.TicketStatus.Name</td>
+                                    @if (ticket.Updated != null)
+                                    {
+                                        <td>@ticket.Updated</td>
+                                    }
+                                    else
+                                    {
+                                        <td>N/A</td>
+                                    }
+                                    <td>@ticket.Created</td>
                                 </tr>
-                                <tr>
-                                    <td>Problem with UI</td>
-                                    <td>Jason</td>
-                                    <td>High</td>
-                                    <td>UI</td>
-                                    <td>Active</td>
-                                    <td>08/21/18</td>
-                                    <td>07/30/17</td>
-                                </tr>
-                                <tr>
-                                    <td>Problem with UI</td>
-                                    <td>Jason</td>
-                                    <td>High</td>
-                                    <td>UI</td>
-                                    <td>Active</td>
-                                    <td>08/21/18</td>
-                                    <td>07/30/17</td>
-                                </tr>
-                                <tr>
-                                    <td>Problem with UI</td>
-                                    <td>Jason</td>
-                                    <td>High</td>
-                                    <td>UI</td>
-                                    <td>Active</td>
-                                    <td>08/21/18</td>
-                                    <td>07/30/17</td>
-                                </tr>
+                                }
                             </tbody>
                             <tfoot>
                                 <tr>
