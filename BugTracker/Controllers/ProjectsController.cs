@@ -41,6 +41,7 @@ namespace BugTracker.Controllers
             viewModel.Developers = project.GetDevelopersInProject();
             viewModel.Submitters = project.GetSubmittersInProject();
             viewModel.Users = ProjectHelper.UsersOnProject((int)id);
+            viewModel.UserRole = userRole;
 
             if (userRole == "Manager")
             {

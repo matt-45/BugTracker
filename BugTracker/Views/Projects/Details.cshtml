@@ -26,7 +26,7 @@
         <!-- Info boxes -->
         <div class="row">
             <div class="col">
-                @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Admin" || RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Manager")
+                @if (Model.UserRole == "Admin" || Model.UserRole == "Manager")
                 {
                     <a style="color: black; cursor:pointer" data-target="#addUsersModal" data-toggle="modal">
                         <div class="info-box mb-3 bg-blue">
@@ -36,7 +36,7 @@
                         </div>
                     </a>
                 }
-                @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Developer")
+                @if (Model.UserRole == "Developer")
                 {
                     <a style="color: black; cursor:pointer" data-target="#addUsersModal" data-toggle="modal">
                         <div class="info-box mb-3 bg-blue">
@@ -46,7 +46,7 @@
                         </div>
                     </a>
                 }
-                @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).ToList()[0] == "Submitter")
+                @if (Model.UserRole == "Submitter")
                 {
                     <a style="color: black; cursor:pointer" href=@Url.Action("Create", "Tickets", new { projectId = Model.Project.Id})>
                         <div class="info-box mb-3 bg-blue">
@@ -76,63 +76,85 @@
             <div class="col">
                 @if (Model.Managers.FirstOrDefault() != null)
                 {
-                <div class="info-box mb-3">
-
-                    <span class="info-box-icon bg-success elevation-1"><i class="fas fa-male"></i></span>
-
-                    <div class="info-box-content">
-                        <span class="info-box-text" style="font-size: large; font-weight: bold">Manager</span>
-                        <a href=@Url.Action("Index", "Account", new { id = Model.Managers.FirstOrDefault().Id}) style="color:black">
-                            <span class="info-box-text">@Model.Managers.FirstOrDefault().FullName</span>
-                        </a>
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-success elevation-1"><i class="fas fa-male"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text" style="font-size: large; font-weight: bold">Manager</span>
+                            @if (Model.UserRole == "Admin" || Model.UserRole == "Manager")
+                            {
+                                <a href=@Url.Action("Index", "Account", new { id = Model.Managers.FirstOrDefault().Id}) style="color:black">
+                                    <span class="info-box-text">@Model.Managers.FirstOrDefault().FullName</span>
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="info-box-text">@Model.Managers.FirstOrDefault().FullName</span>
+                            }
+                        </div>
                     </div>
-                </div>
                 }
                 else
                 {
-            <div class="info-box mb-3 bg-red">
-                <span class="info-box-icon elevation-1 bg-white"><i class="fas fa-exclamation-triangle" style="color: #dc3545"></i></span>
-                <div class="info-box-content">
-                    <span class="info-box-text" style="font-size: large; font-weight: bold">Manager</span>
-                    <span class="info-box-number">Assign a manager!</span>
-                </div>
-            </div>
+                    if (Model.UserRole == "Admin")
+                    {
+                        <div class="info-box mb-3 bg-red">
+                            <span class="info-box-icon elevation-1 bg-white"><i class="fas fa-exclamation-triangle" style="color: #dc3545"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text" style="font-size: large; font-weight: bold">Manager</span>
+                                <span class="info-box-number">Assign a manager!</span>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="info-box mb-3">
+                            <span class="info-box-icon bg-success elevation-1"><i class="fas fa-male"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text" style="font-size: large; font-weight: bold">Manager</span>
+                                <span class="info-box-text">Not assigned</span>
+                            </div>
+                        </div>
+                    }
                 }
 
                 <!-- /.info-box -->
             </div>
             <!-- /.col -->
-            <div class="col">
-                <div class="info-box mb-3">
-                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-laptop"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text" style="font-size: large; font-weight: bold">Developers</span>
-                        <span class="info-box-number">@Model.Developers.Count()</span>
+            @if (Model.UserRole == "Admin" || Model.UserRole == "Manager")
+            {
+                <div class="col">
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-info elevation-1"><i class="fas fa-laptop"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text" style="font-size: large; font-weight: bold">Developers</span>
+                            <span class="info-box-number">@Model.Developers.Count()</span>
+                        </div>
+                        <!-- /.info-box-content -->
                     </div>
-                    <!-- /.info-box-content -->
+                    <!-- /.info-box -->
                 </div>
-                <!-- /.info-box -->
-            </div>
-            <!-- /.col -->
-            <div class="col">
-                <div class="info-box mb-3">
-                    <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-check"></i></span>
+                <!-- /.col -->
+                <div class="col">
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-check"></i></span>
 
-                    <div class="info-box-content">
-                        <span class="info-box-text" style="font-size: large; font-weight: bold">Submitters</span>
-                        <span class="info-box-number">@Model.Submitters.Count()</span>
+                        <div class="info-box-content">
+                            <span class="info-box-text" style="font-size: large; font-weight: bold">Submitters</span>
+                            <span class="info-box-number">@Model.Submitters.Count()</span>
+                        </div>
+                        <!-- /.info-box-content -->
                     </div>
-                    <!-- /.info-box-content -->
+                    <!-- /.info-box -->
                 </div>
-                <!-- /.info-box -->
-            </div>
+            }
+
 
             <!-- /.col -->
         </div>
         <!-- Tables -->
         <div class="row">
             <!-- TABLE: ALL TICKETS -->
-            <div class="col-8">
+            <div class="col">
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title" style="font-weight: bold">Tickets</h3>
@@ -143,7 +165,7 @@
                             <thead>
                                 <tr>
                                     <th>Title</th>
-                                    <th>Owner</th>
+                                    <th>Creator</th>
                                     <th>Priority</th>
                                     <th>Type</th>
                                     <th>Status</th>
@@ -175,7 +197,7 @@
                             <tfoot>
                                 <tr>
                                     <th>Title</th>
-                                    <th>Owner</th>
+                                    <th>Creator</th>
                                     <th>Priority</th>
                                     <th>Type</th>
                                     <th>Status</th>
@@ -188,44 +210,45 @@
                 </div>
             </div>
 
-            <div class="col-4">
-                
-
-                <!-- TABLE: ALL USERS -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title" style="font-weight: bold">Users</h3>
-                    </div>
-                    <div class="card-body">
-                        <table id="usersTable" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-                                    <th>Role</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var user in Model.Users)
-                                {
-                                    <tr onclick="location.href = '@Url.Action("Index", "Account", new { id=user.Id })'" style="cursor: pointer">
-                                        <td>@user.FirstName</td>
-                                        <td>@user.LastName</td>
-                                        <td>@RoleHelper.ListUserRoles(user.Id).ToList()[0]</td>
+            @if (Model.UserRole == "Admin" || Model.UserRole == "Manager")
+            {
+                <div class="col-4">
+                    <!-- TABLE: ALL USERS -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title" style="font-weight: bold">Users</h3>
+                        </div>
+                        <div class="card-body">
+                            <table id="usersTable" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Role</th>
                                     </tr>
-                                }
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-                                    <th>Role</th>
-                                </tr>
-                            </tfoot>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach (var user in Model.Users)
+                                    {
+                                        <tr onclick="location.href = '@Url.Action("Index", "Account", new { id=user.Id })'" style="cursor: pointer">
+                                            <td>@user.FirstName</td>
+                                            <td>@user.LastName</td>
+                                            <td>@RoleHelper.ListUserRoles(user.Id).ToList()[0]</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Role</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
         </div>
     </div>
     <!-- The Modal -->

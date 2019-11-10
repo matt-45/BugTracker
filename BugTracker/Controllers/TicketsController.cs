@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using BugTracker.Helpers;
 using BugTracker.Models;
 using Microsoft.AspNet.Identity;
 
@@ -18,6 +19,7 @@ namespace BugTracker.Controllers
         private HistoryHelper historyHelper = new HistoryHelper();
         private ProjectsHelper projectHelper = new ProjectsHelper();
         private TicketHelper ticketHelper = new TicketHelper();
+        private NotificationHelper notificationHelper = new NotificationHelper();
 
         // GET: Tickets
         [Authorize]
@@ -139,7 +141,10 @@ namespace BugTracker.Controllers
 
         public ActionResult AssignDeveloperToTicket(int ticketId, string userId)
         {
+            var oldTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == ticketId);
             ticketHelper.AssignDeveloperToTicket(userId, ticketId);
+            var newTicket = db.Tickets.Find(ticketId);
+            notificationHelper.SendTicketNotification(oldTicket, newTicket);
             return RedirectToAction("Details", "Tickets", new { id = ticketId });
         }
 

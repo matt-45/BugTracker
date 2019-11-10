@@ -192,6 +192,7 @@
     </Compile>
     <Compile Include="Helpers\HistoryHelper.cs" />
     <Compile Include="Helpers\NotificationHelper.cs" />
+    <Compile Include="Helpers\SendEmail.cs" />
     <Compile Include="Helpers\StringUtilities.cs" />
     <Compile Include="Helpers\UploadValidator.cs" />
     <Compile Include="Migrations\Configuration.cs" />

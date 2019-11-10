@@ -64,11 +64,11 @@ namespace BugTracker.Controllers
         public ActionResult Index(string id)
         {
             UserViewModel viewModel = new UserViewModel();
-            var userTemp = db.Users.Find(id);
-            var user = db.Users.FirstOrDefault(u => u.Id == id);
+            var user = db.Users.Find(id);
             viewModel.AllProjects = db.Projects.ToList();
             viewModel.User = user;
             viewModel.UserRole = RoleHelper.ListUserRoles(id).FirstOrDefault();
+            viewModel.LoggedInUserRole = RoleHelper.ListUserRoles(User.Identity.GetUserId()).FirstOrDefault();
             if (viewModel.UserRole == "Admin")
             {
                 viewModel.Projects = db.Projects.ToList();
