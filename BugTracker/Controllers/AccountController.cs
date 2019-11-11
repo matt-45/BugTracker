@@ -65,8 +65,10 @@ namespace BugTracker.Controllers
         {
             UserViewModel viewModel = new UserViewModel();
             var user = db.Users.Find(id);
+            var loggedInUser = db.Users.Find(User.Identity.GetUserId());
             viewModel.AllProjects = db.Projects.ToList();
             viewModel.User = user;
+            viewModel.LoggedInUser = loggedInUser;
             viewModel.UserRole = RoleHelper.ListUserRoles(id).FirstOrDefault();
             viewModel.LoggedInUserRole = RoleHelper.ListUserRoles(User.Identity.GetUserId()).FirstOrDefault();
             if (viewModel.UserRole == "Admin")

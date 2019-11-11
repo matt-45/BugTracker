@@ -60,7 +60,7 @@
                     @if (Model.LoggedInUserRole == "Admin" || Model.LoggedInUserRole == "Manager")
                     {
                         if (Model.LoggedInUserRole == "Manager" && Model.UserRole == "Manager")
-                        {}
+                        { }
                         else
                         {
                             <div id="headingOne" class="info-box mb-3" style="cursor: pointer" data-target="#projectCollapse" data-toggle="collapse" aria-expanded="true" aria-controls="projectCollapse">
@@ -212,7 +212,6 @@
                                     </a>
                                 </div>
                             }
-
                             @if (Model.UserRole == "Submitter")
                             {
                                 <div style="padding-left: 20%">
@@ -222,7 +221,6 @@
                                             <div class="info-box-content">
                                                 <span class="info-box-text" style="font-size: large; font-weight: bold">Submitter</span>
                                             </div>
-                                            <!-- /.info-box-content -->
                                         </div>
                                     </a>
                                 </div>
@@ -236,50 +234,36 @@
                                             <div class="info-box-content">
                                                 <span class="info-box-text" style="font-size: large; font-weight: bold">Submitter</span>
                                             </div>
-                                            <!-- /.info-box-content -->
                                         </div>
                                     </a>
                                 </div>
                             }
-
-
-
+                        </div>
+                    }
+                </div>
+                @if (Model.LoggedInUserRole == "Admin" || Model.LoggedInUserRole == "Manager")
+                {
+                    if (Model.UserRole == "Developer")
+                    {
+                        <div class="info-box mb-3">
+                            <span class="info-box-icon bg-orange elevation-1"><i class="fas fa-ticket-alt"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text" style="font-size: large; font-weight: bold">Assign a Ticket</span>
+                            </div>
+                            <i class="fas fa-plus-circle float-right"></i>
                         </div>
                     }
 
-
-
-                </div>
-
-                @if (RoleHelper.ListUserRoles(Model.User.Id).FirstOrDefault() == "Admin" || RoleHelper.ListUserRoles(Model.User.Id).FirstOrDefault() == "Manager")
+                }
+                @if (Model.User == Model.LoggedInUser)
                 {
                     <div class="info-box mb-3">
-                        <span class="info-box-icon bg-orange elevation-1"><i class="fas fa-ticket-alt"></i></span>
+                        <span class="info-box-icon bg-red elevation-1"><i class="fas fa-user-edit"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text" style="font-size: large; font-weight: bold">Assign a Ticket</span>
+                            <span class="info-box-text" style="font-size: large; font-weight: bold">Edit Account</span>
                         </div>
-                        <i class="fas fa-plus-circle float-right"></i>
-                        <!-- /.info-box-content -->
                     </div>
                 }
-
-
-
-
-
-                <!-- /.info-box-content -->
-
-
-
-
-                <div class="info-box mb-3 bg-red">
-                    <span class="info-box-icon bg-white elevation-1"><i class="fas fa-exclamation-triangle" style="color: #c62232"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text" style="font-size: large; font-weight: bold">Delete User</span>
-                    </div>
-                    <i class="fas fa-minus-circle float-right" style="color: white"></i>
-                    <!-- /.info-box-content -->
-                </div>
             </div>
             <div class="col-8">
                 <!-- TABLE: ALL TICKETS -->

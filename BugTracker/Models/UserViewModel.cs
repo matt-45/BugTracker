@@ -8,6 +8,7 @@ namespace BugTracker.Models
     public class UserViewModel
     {
         public ApplicationUser User { get; set; }
+        public ApplicationUser LoggedInUser { get; set; }
         public ICollection<Project> Projects { get; set; }
         public ICollection<Project> AllProjects { get; set; }
         public ICollection<Ticket> Tickets { get; set; }
