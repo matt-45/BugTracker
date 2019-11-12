@@ -2,7 +2,7 @@
 @using System.Web.Configuration
 @model TicketDetailsViewModel
 
-@{ 
+@{
     UserRoleHelper RoleHelper = new UserRoleHelper();
     ProjectsHelper ProjectHelper = new ProjectsHelper();
     TicketHelper TicketHelper = new TicketHelper();
@@ -287,79 +287,30 @@
                         <span class="float-right text-muted">1 comment</span>
                     </div>
                     <!-- /.card-body -->
-                    <div class="card-footer card-comments">
-                        <div class="card-comment">
-                            <!-- User image -->
-                            <img class="img-circle img-sm" src="../dist/img/user3-128x128.jpg">
-                            <div class="comment-text">
-                                <span class="username">
-                                    COMMENT AUTHOR NAME
-                                    <span class="text-muted float-right">COMMENTCREATEDDATE</span>
-                                </span><!-- /.username -->
-                                <div>
-                                    <button class="float-right btn btn-danger">Delete</button>
-                                    <button class="float-right btn btn-warning">Edit</button>
-                                </div>
-                                This is a comment on this ticket
-                            </div>
+                    <!--LOAD COMMENTS PARTIAL VIEw-->
+                    <div id="ticketCommentsDiv">
+                        @Html.Partial("_TicketComments")
+                    </div>
+                    <!-- /.card-footer -->
+                <div class="card-footer">
 
-                            <!-- /.comment-text -->
+                    <!-- .img-push is used to add margin to elements next to floating images -->
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("ticketId", Model.Ticket.Id, new { @id = "ticketIdForComment"})
+                        @Html.Hidden("userId", Model.User.Id, new { @id = "userIdForComment"})
+                        <img class="img-fluid img-circle img-sm" src="../dist/img/user4-128x128.jpg">
+                        <div class="img-push">
+                            @*<input type="text" class="form-control form-control-sm" placeholder="Press enter to post comment">*@
+                            @Html.TextBox("commentBody", null, new { @type = "text", @class = "form-control form-control-sm", @placeholder = "Press enter to post a comment", @id = "commentId" })
                         </div>
-                    </div>
-                    <!-- /.card-footer -->
-                    <div class="card-footer">
-                        <form action="#" method="post">
-                            <img class="img-fluid img-circle img-sm" src="../dist/img/user4-128x128.jpg">
-                            <!-- .img-push is used to add margin to elements next to floating images -->
-                            <div class="img-push">
-                                <input type="text" class="form-control form-control-sm" placeholder="Press enter to post comment">
-                            </div>
-                        </form>
-                    </div>
+                </div>
                     <!-- /.card-footer -->
                 </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title" style="font-weight: bold">Ticket Histories</h3>
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                        </div>
-                        <!--Drop downs for filtering-->
-                    </div>
-                    <div class="card-body">
-                        <table id="ticketHistoriesTable" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Property</th>
-                                    <th>New Value</th>
-                                    <th>Old Value</th>
-                                    <th>Changed</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var history in Model.Ticket.TicketHistorys)
-                                {
-                                    <tr>
-                                        <td>@history.Property</td>
-                                        <td>@history.NewValue</td>
-                                        <td>@history.OldValue</td>
-                                        <td>@history.Changed</td>
-                                    </tr>
-                                }
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>Property</th>
-                                    <th>New Value</th>
-                                    <th>Old Value</th>
-                                    <th>Changed</th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
+                <!--RENDER PARTIAL-->
+                <div id="ticketHistories">
+                    @Html.Partial("_TicketHistories")
                 </div>
+
             </div>
 
         </div>
@@ -413,10 +364,51 @@
             </div>
         </div>
     </div>
+    <div id="uploadAttachmentModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" style="font-weight: bold">Upload a File</h3>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                @using (Html.BeginForm("Create", "TicketAttachments", FormMethod.Post, new { enctype = "Multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("ticketId", Model.Ticket.Id)
+                    <div class="modal-body">
+                        <div class="row" style="text-align: center">
+                            <div class="col">
+                                <h1 id="descriptionHeader" style="text-align: center; font-weight: bold">Description</h1>
+                            </div>
+                        </div>
+                        <div class="row" style="text-align: center">
+                            <div class="col">
+                                <input type="text" style="width: 75%; text-align: center" name="description" />
+                            </div>
+                        </div>
+                        <div class="row" style="padding-top: 5%; text-align: center">
+                            <div class="col" style="display:inline-block">
+                                <input hidden class="fileInput" type="file" name="file" id="fileInput" accept=@WebConfigurationManager.AppSettings["AllowedAttachmentExtensions"] />
+                                <a href="#" id="showFileInput">
+                                    <div class="small-box bg-blue" style="width: 75%;text-align: center; display:inline-block">
+                                        <i class="fas fa-arrow-circle-up fa-4x" style="text-align: center; padding-top: 10%"></i>
+                                        <h2 style="text-align: center; font-weight: bold">Select File</h2>
+                                        <h6 id="fileName" style="padding-bottom: 5%"></h6>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger mr-auto" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Submit</button>
+                    </div>
+                }
+            </div>
 
-
-    <!--RENDER PARTIAL-->
-    @Html.Partial("_TicketHistories")
+        </div>
+    </div>
 
 </section>
 
@@ -435,50 +427,85 @@
                 var value = this.value.toString().split("\\")[2]
                 $("#fileName").text(value)
             });
-            $("#ticketHistoriesTable").DataTable();
+            $("#ticketHistoriesTable").DataTable({
+                        "order": [[ 4, "desc" ]]
+                    });
+        });
+
+        document.getElementById('commentId').addEventListener('keypress', function (event) {
+            if (event.keyCode == 13) {
+                var commentBody = this.value;
+                var ticketId = $("#ticketIdForComment").val()
+                var userId = $("#userIdForComment").val()
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("CreateComment", "Tickets")",
+                    data: {
+                        "ticketId": ticketId,
+                        "userId": userId,
+                        "commentBody": commentBody
+                    },
+                    success: function (partialViewResult) {
+                        $("#ticketCommentsDiv").html(partialViewResult);
+                        $("#commentId").val("")
+                    }
+                });
+            }
         });
 
         function editTicketStatus(statusId) {
             $.ajax({
-                type: "POST",
+                type: "GET",
                 url: "@Url.Action("EditStatus", "Tickets")",
                 data: {
                         "id": @Model.Ticket.Id,
                         "statusId": statusId
                 },
-                success: function () {
-                    $('#ticketHistoriesTable').DataTable().ajax.reload();
+                success: function (partialViewResult) {
+                    $("#ticketHistories").html(partialViewResult);
+                    $("#ticketHistoriesTable").DataTable({
+                        "order": [[ 4, "desc" ]]
+                    });
                 }
-                });
+
+            });
         }
 
         function editTicketPriority(priorityId) {
             $.ajax({
-                type: "POST",
+                type: "GET",
                 url: "@Url.Action("EditPriority", "Tickets")",
                 data: {
                         "id": @Model.Ticket.Id,
                         "priorityId": priorityId
                 },
-                success: function () {
+                success: function (partialViewResult) {
+                    $("#ticketHistories").html(partialViewResult);
+                    $("#ticketHistoriesTable").DataTable({
+                        "order": [[ 4, "desc" ]]
+                    });
                 }
                 });
         }
 
         function editTicketType(typeId) {
             $.ajax({
-                type: "POST",
+                type: "GET",
                 url: "@Url.Action("EditType", "Tickets")",
                 data: {
                         "id": @Model.Ticket.Id,
                         "typeId": typeId
                 },
-                success: function () {
+                success: function (partialViewResult) {
+                    $("#ticketHistories").html(partialViewResult);
+                    $("#ticketHistoriesTable").DataTable({
+                        "order": [[ 4, "desc" ]]
+                    });
                 }
                 });
         }
 
-        
+
 
         function loadTicketData() {
             var status = "@Model.Ticket.TicketStatus.Name";

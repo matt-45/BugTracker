@@ -527,9 +527,15 @@
 @section scripts {
     <script>
         $(document).ready(function () {
-            $("#assignedProjectsTable").DataTable();
-            $('#assignedTicketsTable').DataTable();
-            $('#ticketHistoriesTable').DataTable();
+            $("#assignedProjectsTable").DataTable({
+                        "order": [[ 1, "desc" ]]
+                    });
+            $('#assignedTicketsTable').DataTable({
+                        "order": [[ 6, "desc" ]]
+                    });
+            $('#ticketHistoriesTable').DataTable({
+                        "order": [[ 3, "desc" ]]
+                    });
         });
     </script>
 }

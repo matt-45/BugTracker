@@ -106,9 +106,19 @@ namespace BugTracker.Controllers
             db.SaveChanges();
             var newTicket = db.Tickets.Find(id);
 
+            TicketDetailsViewModel viewModel = new TicketDetailsViewModel();
+            viewModel.Ticket = ticket;
+            viewModel.User = db.Users.Find(User.Identity.GetUserId());
+            viewModel.UserRole = roleHelper.ListUserRoles(User.Identity.GetUserId()).FirstOrDefault();
+            viewModel.TicketPriorities = db.Priorities.ToList();
+            viewModel.TicketStatuses = db.Statuses.ToList();
+            viewModel.TicketTypes = db.Types.ToList();
+            viewModel.Developers = roleHelper.UsersInRole("Developer").ToList();
+
             historyHelper.RecordHistoricalChanges(oldTicket, newTicket);
 
-            return RedirectToAction("Details", "Tickets", new { id });
+            //return RedirectToAction("Details", "Tickets", new { id });
+            return PartialView("~/Views/Shared/_TicketHistories.cshtml", viewModel);
         }
         public ActionResult EditPriority(int id, int priorityId)
         {
@@ -120,9 +130,19 @@ namespace BugTracker.Controllers
             db.SaveChanges();
             var newTicket = db.Tickets.Find(ticket.Id);
 
+            TicketDetailsViewModel viewModel = new TicketDetailsViewModel();
+            viewModel.Ticket = ticket;
+            viewModel.User = db.Users.Find(User.Identity.GetUserId());
+            viewModel.UserRole = roleHelper.ListUserRoles(User.Identity.GetUserId()).FirstOrDefault();
+            viewModel.TicketPriorities = db.Priorities.ToList();
+            viewModel.TicketStatuses = db.Statuses.ToList();
+            viewModel.TicketTypes = db.Types.ToList();
+            viewModel.Developers = roleHelper.UsersInRole("Developer").ToList();
+
             historyHelper.RecordHistoricalChanges(oldTicket, newTicket);
 
-            return RedirectToAction("Details", "Tickets", new { id });
+            //return RedirectToAction("Details", "Tickets", new { id });
+            return PartialView("~/Views/Shared/_TicketHistories.cshtml", viewModel);
         }
         public ActionResult EditType(int id, int typeId)
         {
@@ -134,9 +154,19 @@ namespace BugTracker.Controllers
             db.SaveChanges();
             var newTicket = db.Tickets.Find(ticket.Id);
 
+            TicketDetailsViewModel viewModel = new TicketDetailsViewModel();
+            viewModel.Ticket = ticket;
+            viewModel.User = db.Users.Find(User.Identity.GetUserId());
+            viewModel.UserRole = roleHelper.ListUserRoles(User.Identity.GetUserId()).FirstOrDefault();
+            viewModel.TicketPriorities = db.Priorities.ToList();
+            viewModel.TicketStatuses = db.Statuses.ToList();
+            viewModel.TicketTypes = db.Types.ToList();
+            viewModel.Developers = roleHelper.UsersInRole("Developer").ToList();
+
             historyHelper.RecordHistoricalChanges(oldTicket, newTicket);
 
-            return RedirectToAction("Details", "Tickets", new { id });
+            //return RedirectToAction("Details", "Tickets", new { id });
+            return PartialView("~/Views/Shared/_TicketHistories.cshtml", viewModel);
         }
 
         public ActionResult AssignDeveloperToTicket(int ticketId, string userId)
@@ -154,6 +184,30 @@ namespace BugTracker.Controllers
             notification.IsRead = true;
             db.SaveChanges();
             return RedirectToAction("Details", "Tickets", new { id = ticketId });
+        }
+        public ActionResult CreateComment(int ticketId, string userId, string commentBody)
+        {
+            var ticket = db.Tickets.Find(ticketId);
+            TicketComment comment = new TicketComment();
+            comment.TicketId = ticketId;
+            comment.UserId = userId;
+            comment.CommentBody = commentBody;
+
+            ticket.TicketComments.Add(comment);
+            db.SaveChanges();
+
+            TicketDetailsViewModel viewModel = new TicketDetailsViewModel();
+            viewModel.Ticket = ticket;
+            viewModel.User = db.Users.Find(User.Identity.GetUserId());
+            viewModel.UserRole = roleHelper.ListUserRoles(User.Identity.GetUserId()).FirstOrDefault();
+            viewModel.TicketPriorities = db.Priorities.ToList();
+            viewModel.TicketStatuses = db.Statuses.ToList();
+            viewModel.TicketTypes = db.Types.ToList();
+            viewModel.Developers = roleHelper.UsersInRole("Developer").ToList();
+
+            return PartialView("~/Views/Shared/_TicketComments.cshtml", viewModel);
+
+            // return partial view
         }
 
 

@@ -1,0 +1,46 @@
+﻿
+    <div class="card-footer card-comments">
+        @foreach (var comment in Model.Ticket.TicketComments)
+        {
+            <div class="card-comment">
+                <!-- User image -->
+                <img class="img-circle img-sm" src="../dist/img/user3-128x128.jpg">
+                <div class="comment-text">
+                    <span class="username">
+                        @comment.User.FullName
+                    </span><!-- /.username -->
+                    @if (Model.User.Id == comment.User.Id)
+                    {
+                        <div>
+                            <button class="float-right btn btn-danger" data-target="#deleteCommentModal" data-toggle="modal">Delete</button>
+                            <button class="float-right btn btn-warning">Edit</button>
+                        </div>
+                    }
+                    @comment.CommentBody
+                </div>
+
+                <!-- /.comment-text -->
+            </div>
+        }
+
+    </div>
+
+    <div class="modal fade" id="deleteCommentModal">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <div style="text-align: center" class="col">
+                        <h3 class="modal-title" style="font-weight: bold">Are you sure?</h3>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger mr-auto" data-dismiss="modal" style="width: 100%">No</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal" style="width: 100%">Yes</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
