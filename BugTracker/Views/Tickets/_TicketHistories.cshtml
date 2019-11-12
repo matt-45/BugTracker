@@ -1,0 +1,45 @@
+﻿<div id="uploadAttachmentModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" style="font-weight: bold">Upload a File</h3>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            @using (Html.BeginForm("Create", "TicketAttachments", FormMethod.Post, new { enctype = "Multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.Hidden("ticketId", Model.Ticket.Id)
+                <div class="modal-body">
+                    <div class="row" style="text-align: center">
+                        <div class="col">
+                            <h1 id="descriptionHeader" style="text-align: center; font-weight: bold">Description</h1>
+                        </div>
+                    </div>
+                    <div class="row" style="text-align: center">
+                        <div class="col">
+                            <input type="text" style="width: 75%; text-align: center" name="description" />
+                        </div>
+                    </div>
+                    <div class="row" style="padding-top: 5%; text-align: center">
+                        <div class="col" style="display:inline-block">
+                            <input hidden class="fileInput" type="file" name="file" id="fileInput" accept=@WebConfigurationManager.AppSettings["AllowedAttachmentExtensions"] />
+                            <a href="#" id="showFileInput">
+                                <div class="small-box bg-blue" style="width: 75%;text-align: center; display:inline-block">
+                                    <i class="fas fa-arrow-circle-up fa-4x" style="text-align: center; padding-top: 10%"></i>
+                                    <h2 style="text-align: center; font-weight: bold">Select File</h2>
+                                    <h6 id="fileName" style="padding-bottom: 5%"></h6>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger mr-auto" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </div>
+            }
+        </div>
+
+    </div>
+</div>

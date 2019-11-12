@@ -273,11 +273,11 @@
                     <div class="card-header">
                         @if (Model.UserRole == "Admin")
                         {
-                            <h3 class="card-title">All Projects</h3>
+                            <h3 class="card-title" style="font-weight: bold">All Projects</h3>
                         }
                         else
                         {
-                            <h3 class="card-title">Assigned Projects</h3>
+                            <h3 class="card-title" style="font-weight: bold">Assigned Projects</h3>
                         }
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -324,15 +324,15 @@
                     <div class="card-header">
                         @if (Model.UserRole == "Admin" || Model.UserRole == "Manager")
                         {
-                            <h3 class="card-title">All tickets</h3>
+                            <h3 class="card-title" style="font-weight: bold">All tickets</h3>
                         }
                         else if (Model.UserRole == "Developer")
                         {
-                            <h3 class="card-title">Assigned Tickets</h3>
+                            <h3 class="card-title" style="font-weight: bold">Assigned Tickets</h3>
                         }
                         else if (Model.UserRole == "Submitter")
                         {
-                            <h3 class="card-title">Created Tickets</h3>
+                            <h3 class="card-title" style="font-weight: bold">Created Tickets</h3>
                         }
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -391,7 +391,7 @@
                 </div>
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Ticket Histories</h3>
+                        <h3 class="card-title" style="font-weight: bold">Ticket Histories</h3>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                 <i class="fas fa-minus"></i>

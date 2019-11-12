@@ -810,6 +810,7 @@
     <Content Include="Views\Account\Index.cshtml" />
     <Content Include="Views\Projects\CreateTest.cshtml" />
     <Content Include="Views\Account\_AssignUsersToRole.cshtml" />
+    <Content Include="Views\Tickets\_TicketHistories.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
