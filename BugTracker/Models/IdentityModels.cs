@@ -21,6 +21,7 @@ namespace BugTracker.Models
         [Display(Name="Display Name")]
         [StringLength(50, MinimumLength = 1, ErrorMessage = "Display Name must be between 1 and 50 characters")]
         public string DisplayName { get; set; }
+        public string? AvatarPath { get; set; }
         public virtual ICollection<TicketComment> TicketComments { get; set; }
         public virtual ICollection<Project> Projects { get; set; }
         public virtual ICollection<TicketAttachment> TicketAttachments { get; set; }

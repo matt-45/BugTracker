@@ -67,55 +67,31 @@
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
-                <!-- Messages Dropdown Menu -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#">
-                        <i class="far fa-comments"></i>
-                        <span class="badge badge-danger navbar-badge">3</span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <a href="#" class="dropdown-item">
-                            <!-- Message Start -->
-                            <div class="media">
-                                <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
-                                <div class="media-body">
-                                    <h3 class="dropdown-item-title">
-                                        Brad Diesel
-                                        <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
-                                    </h3>
-                                    <p class="text-sm">Call me whenever you can...</p>
-                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-                                </div>
-                            </div>
-                            <!-- Message End -->
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
-                    </div>
-                </li>
                 <!-- Notifications Dropdown Menu -->
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
                         <i class="far fa-bell fa-2x"></i>
-                        <span class="badge badge-warning navbar-badge">15</span>
+                        @if (user.TicketNotifications.Where(n => n.IsRead == false).Count() > 0)
+                        {
+                        <span class="badge badge-warning navbar-badge">@user.TicketNotifications.Where(n => n.IsRead == false).Count()</span>
+                        }
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <span class="dropdown-item dropdown-header">15 Notifications</span>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <i class="fas fa-envelope mr-2"></i> 4 new messages
-                            <span class="float-right text-muted text-sm">3 mins</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <i class="fas fa-users mr-2"></i> 8 friend requests
-                            <span class="float-right text-muted text-sm">12 hours</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <i class="fas fa-file mr-2"></i> 3 new reports
-                            <span class="float-right text-muted text-sm">2 days</span>
-                        </a>
+                        <span class="dropdown-item dropdown-header">@user.TicketNotifications.Where(n => n.IsRead == false).Count() Notifications</span>
+                        @foreach (var notification in user.TicketNotifications)
+                        {
+                            if (!notification.IsRead)
+                            {
+                                <div class="dropdown-divider"></div>
+                                <a href=@Url.Action("SelectTicketNotification", "Tickets", new { notificationId = notification.Id, ticketId = notification.TicketId}) class="dropdown-item">
+                                    <i class="fas fa-ticket-alt mr-2"></i> 
+                                    <p>
+                                        @notification.NotificationBody
+                                    </p>
+                                    <span class="float-right text-muted text-sm">3 mins</span>
+                                </a>
+                            }
+                        }
                         <div class="dropdown-divider"></div>
                         <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
                     </div>
@@ -149,7 +125,7 @@
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
-                        with font-awesome or any other icon font library -->
+    with font-awesome or any other icon font library -->
                         <li class="nav-item">
                             <a href=@Url.Action("Index", "Home") class="nav-link active">
                                 <i class="nav-icon fas fa-th"></i>
@@ -222,68 +198,71 @@
                                         <p>View All</p>
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a href=@Url.Action("Create", "Tickets") class="nav-link">
-                                        <i class="fa fa-plus-circle nav-icon"></i>
-                                        <p>Create New</p>
-                                    </a>
-                                </li>
-                                @if (RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Admin")
+                                @if (RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Submitter")
                                 {
-                                    foreach (var project in ProjectHelper.ListAllProjects())
-                                    {
-                                        <li class="nav-item">
-                                            <a href="./index2.html" class="nav-link">
-                                                <i class="far fa-circle nav-icon"></i>
-                                                <p>@project.Name Tickets</p>
-                                            </a>
-                                        </li>
-                                    }
+                                    <li class="nav-item">
+                                        <a href=@Url.Action("Create", "Tickets") class="nav-link">
+                                            <i class="fa fa-plus-circle nav-icon"></i>
+                                            <p>Create New</p>
+                                        </a>
+                                    </li>
+                                }
+                                @foreach (var project in ProjectHelper.ListUserProjects(user.Id))
+                                {
+                                    <li class="nav-item">
+                                        <a href="./index2.html" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>@project.Name Tickets</p>
+                                        </a>
+                                    </li>
                                 }
 
                             </ul>
                         </li>
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fa fa-user"></i>
-                                <p>
-                                    Users
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="./index.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>View All</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="./index2.html" class="nav-link">
-                                        <i class="fa fa-user-tie nav-icon"></i>
-                                        <p>Admins</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="./index2.html" class="nav-link">
-                                        <i class="fa fa-male nav-icon"></i>
-                                        <p>Managers</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="./index3.html" class="nav-link">
-                                        <i class="fa fa-laptop nav-icon"></i>
-                                        <p>Developers</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="./index3.html" class="nav-link">
-                                        <i class="fa fa-check nav-icon"></i>
-                                        <p>Submitters</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                        @if (RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Admin" || RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Manager")
+                        {
+                            <li class="nav-item has-treeview">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fa fa-user"></i>
+                                    <p>
+                                        Users
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="./index.html" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>View All</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="./index2.html" class="nav-link">
+                                            <i class="fa fa-user-tie nav-icon"></i>
+                                            <p>Admins</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="./index2.html" class="nav-link">
+                                            <i class="fa fa-male nav-icon"></i>
+                                            <p>Managers</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="./index3.html" class="nav-link">
+                                            <i class="fa fa-laptop nav-icon"></i>
+                                            <p>Developers</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="./index3.html" class="nav-link">
+                                            <i class="fa fa-check nav-icon"></i>
+                                            <p>Submitters</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
                     </ul>
 
 
@@ -328,13 +307,13 @@
             @RenderBody()
         </div>
         <!-- /.content-wrapper -->
-        <footer class="main-footer">
+        @*<footer class="main-footer">
             <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong>
             All rights reserved.
             <div class="float-right d-none d-sm-inline-block">
                 <b>Version</b> 3.0.0-rc.5
             </div>
-        </footer>
+        </footer>*@
 
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">

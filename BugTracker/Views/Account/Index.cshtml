@@ -257,12 +257,14 @@
                 }
                 @if (Model.User == Model.LoggedInUser)
                 {
-                    <div class="info-box mb-3">
-                        <span class="info-box-icon bg-red elevation-1"><i class="fas fa-user-edit"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text" style="font-size: large; font-weight: bold">Edit Account</span>
-                        </div>
+            <a data-target="#editAccountModal" data-toggle="modal" style="cursor: pointer; color: black">
+                <div class="info-box mb-3">
+                    <span class="info-box-icon bg-red elevation-1"><i class="fas fa-user-edit"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text" style="font-size: large; font-weight: bold">Edit Account</span>
                     </div>
+                </div>
+            </a>
                 }
             </div>
             <div class="col-8">
@@ -277,6 +279,11 @@
                         {
                             <h3 class="card-title">Assigned Projects</h3>
                         }
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
                         <!--Drop downs for filtering-->
                     </div>
                     <div class="card-body">
@@ -327,6 +334,11 @@
                         {
                             <h3 class="card-title">Created Tickets</h3>
                         }
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
                         <!--Drop downs for filtering-->
                     </div>
                     <div class="card-body">
@@ -345,22 +357,22 @@
                             <tbody>
                                 @foreach (var ticket in Model.Tickets)
                                 {
-                                <tr>
-                                    <td>@ticket.Title</td>
-                                    <td>@ticket.OwnerUser.FullName</td>
-                                    <td>@ticket.TicketPriority.Name</td>
-                                    <td>@ticket.TicketType.Name</td>
-                                    <td>@ticket.TicketStatus.Name</td>
-                                    @if (ticket.Updated != null)
-                                    {
-                                        <td>@ticket.Updated</td>
-                                    }
-                                    else
-                                    {
-                                        <td>N/A</td>
-                                    }
-                                    <td>@ticket.Created</td>
-                                </tr>
+                                    <tr>
+                                        <td>@ticket.Title</td>
+                                        <td>@ticket.OwnerUser.FullName</td>
+                                        <td>@ticket.TicketPriority.Name</td>
+                                        <td>@ticket.TicketType.Name</td>
+                                        <td>@ticket.TicketStatus.Name</td>
+                                        @if (ticket.Updated != null)
+                                        {
+                                            <td>@ticket.Updated</td>
+                                        }
+                                        else
+                                        {
+                                            <td>N/A</td>
+                                        }
+                                        <td>@ticket.Created</td>
+                                    </tr>
                                 }
                             </tbody>
                             <tfoot>
@@ -377,10 +389,137 @@
                         </table>
                     </div>
                 </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Ticket Histories</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                        <!--Drop downs for filtering-->
+                    </div>
+                    <div class="card-body">
+                        <table id="ticketHistoriesTable" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Property</th>
+                                    <th>New Value</th>
+                                    <th>Old Value</th>
+                                    <th>Changed</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var history in Model.User.TicketHistorys)
+                                {
+                                    <tr>
+                                        <td>@history.Property</td>
+                                        <td>@history.NewValue</td>
+                                        <td>@history.OldValue</td>
+                                        <td>@history.Changed</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Property</th>
+                                    <th>New Value</th>
+                                    <th>Old Value</th>
+                                    <th>Changed</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
             </div>
             <!-- TABLE: ALL USERS -->
         </div>
     </div>
+
+    <!-- The Modal -->
+    <div class="modal fade" id="editAccountModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                @using (Html.BeginForm("Edit", "Account", FormMethod.Post))
+                {
+                    @Html.Hidden("id", Model.User.Id)
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <div class="col">
+                            <h3 class="modal-title" style="text-align: center; justify-content: center; font-weight: bold">Edit Account</h3>
+                        </div>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col" style="text-align: center">
+                                <img src="" class="rounded-circle center" style="width: 15%; ">
+                            </div>
+                        </div>
+                        <div class="row" style="padding-top:2%">
+                            <div class="col" style="text-align: center">
+                                <input name="image" type="file" id="fileUpload">
+                            </div>
+                        </div>
+                        <div class="row" style="padding-top:2%">
+                            <div class="col" style="text-align: center">
+                                <h4>Display Name</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                @Html.TextBox("displayName", Model.User.DisplayName, new { @class = "form-control", @style = "text-align: center"})
+                            </div>
+                        </div>
+                        <div class="row" style="padding-top:2%">
+                            <div class="col" style="text-align: center">
+                                <h4>First Name</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                @Html.TextBox("firstName", Model.User.FirstName, new { @class = "form-control", @style = "text-align: center" })
+                            </div>
+                        </div>
+                        <div class="row" style="padding-top:2%">
+                            <div class="col" style="text-align: center">
+                                <h4>Last Name</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                @Html.TextBox("lastName", Model.User.LastName, new { @class = "form-control", @style = "text-align: center" })
+                            </div>
+                        </div>
+                        <div class="row" style="padding-top:2%">
+                            <div class="col" style="text-align: center">
+                                <h4>Email</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                @Html.TextBox("email", Model.User.Email, new { @class = "form-control", @style = "text-align: center"})
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger mr-auto" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Save</button>
+                    </div>
+
+                }
+
+            </div>
+        </div>
+    </div>
+
+
 </section>
 
 
@@ -390,6 +529,7 @@
         $(document).ready(function () {
             $("#assignedProjectsTable").DataTable();
             $('#assignedTicketsTable').DataTable();
+            $('#ticketHistoriesTable').DataTable();
         });
     </script>
 }

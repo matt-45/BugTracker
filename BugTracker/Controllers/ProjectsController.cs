@@ -33,25 +33,36 @@ namespace BugTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var userRole = RoleHelper.ListUserRoles(User.Identity.GetUserId()).FirstOrDefault();
+            var user = db.Users.Find(User.Identity.GetUserId());
+            var userRole = RoleHelper.ListUserRoles(user.Id).FirstOrDefault();
             Project project = db.Projects.Find(id);
             viewModel.Project = project;
-            viewModel.Tickets = project.Tickets.ToList();
+            //viewModel.Tickets = project.Tickets.ToList();
             viewModel.Managers = project.GetManagersInProject();
             viewModel.Developers = project.GetDevelopersInProject();
             viewModel.Submitters = project.GetSubmittersInProject();
             viewModel.Users = ProjectHelper.UsersOnProject((int)id);
             viewModel.UserRole = userRole;
 
-            if (userRole == "Manager")
-            {
-                var users = RoleHelper.UsersInRole("Developer").Concat(RoleHelper.UsersInRole("Submitter"));
-                viewModel.AllUsers = users.ToList();
-            }
-            else
+            if (userRole == "Admin")
             {
                 var users = RoleHelper.UsersInRole("Manager").Concat(RoleHelper.UsersInRole("Developer")).Concat(RoleHelper.UsersInRole("Submitter"));
                 viewModel.AllUsers = users.ToList();
+                viewModel.Tickets = project.Tickets.ToList();
+            }
+            else if(userRole == "Manager")
+            {
+                var users = RoleHelper.UsersInRole("Developer").Concat(RoleHelper.UsersInRole("Submitter"));
+                viewModel.AllUsers = users.ToList();
+                viewModel.Tickets = project.Tickets.ToList();
+            }
+            else if (userRole == "Developer")
+            {
+                viewModel.Tickets = project.Tickets.Where(t => t.AssignedToUserId == user.Id).ToList();
+            }
+            else if (userRole == "Submitter")
+            {
+                viewModel.Tickets = project.Tickets.Where(t => t.OwnerUserId == user.Id).ToList();
             }
 
 

@@ -22,6 +22,7 @@ namespace BugTracker.Models
 
         public ICollection<ApplicationUser> GetManagersInProject()
         {
+
             var list = Users.Where(u => roleHelper.ListUserRoles(u.Id).FirstOrDefault() == "Manager").ToList();
             return list;
         }

@@ -9,6 +9,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using BugTracker.Models;
+using BugTracker.Helpers;
+using System.IO;
 
 namespace BugTracker.Controllers
 {
@@ -107,6 +109,25 @@ namespace BugTracker.Controllers
         {
             ProjectHelper.ToggleUserOnProject(id, projectId);
             return RedirectToAction("Index", "Account", new { id = id });
+        }
+
+        [HttpPost]
+        public ActionResult Edit(string id, string displayName, string firstName, string lastName, string email, HttpPostedFileBase avatar)
+        {
+            var user = UserManager.FindById(id);
+            user.DisplayName = displayName;
+            user.FirstName = firstName;
+            user.LastName = lastName;
+            user.Email = email;
+            if (FileUploadValidator.IsWebFriendlyImage(avatar))
+            {
+                var fileName = $"{DateTime.Now.Ticks}_{Path.GetFileName(avatar.FileName)}";
+                avatar.SaveAs(Path.Combine(Server.MapPath("~/Uploads/"), fileName));
+                user.AvatarPath = "/Uploads/" + fileName;
+            }
+            UserManager.Update(user);
+            db.SaveChanges();
+            return RedirectToAction("Index", "Account", new { id = id});
         }
 
 

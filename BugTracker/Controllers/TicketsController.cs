@@ -148,6 +148,14 @@ namespace BugTracker.Controllers
             return RedirectToAction("Details", "Tickets", new { id = ticketId });
         }
 
+        public ActionResult SelectTicketNotification(int notificationId, int ticketId)
+        {
+            var notification = db.TicketNotifications.Find(notificationId);
+            notification.IsRead = true;
+            db.SaveChanges();
+            return RedirectToAction("Details", "Tickets", new { id = ticketId });
+        }
+
 
         // GET: Tickets/Edit/5
         public ActionResult Edit(int? id)
