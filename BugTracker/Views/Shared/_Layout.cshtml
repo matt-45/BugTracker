@@ -106,7 +106,7 @@
             <a href="index3.html" class="brand-link">
                 @*<img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
                     style="opacity: .8">*@
-                <span class="brand-text font-weight-light">Bug Tracker</span>
+                <span class="brand-text font-weight-light" style="padding-left: 5%">Buggr</span>
             </a>
 
             <!-- Sidebar -->
@@ -277,7 +277,7 @@
 
                     @if (RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Admin" || RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Manager")
                     {
-                        <a style="bottom: 20%; position: absolute; cursor: pointer; width: 100%" href="#" data-toggle="modal" data-target="#createProjectModal" class="project-Modal">
+                        <a style="bottom: 120px; position: absolute; cursor: pointer; width: 100%" href="#" data-toggle="modal" data-target="#createProjectModal" class="project-Modal">
                             <div class="row bg-green">
                                 <p style="font-weight: bold; font-size: medium; text-align:center; width: 100%; padding-right: 10%; padding-top: 5%"><i class="fas fa-edit fa-1x" style="padding-right: 10%"></i>Create Project</p>
                             </div>
@@ -287,7 +287,7 @@
 
 
 
-                    <a style="bottom: 10%; position: absolute; cursor: pointer; width: 100%" href=@Url.Action("CustomLogOff", "Account")>
+                    <a style="bottom: 50px; position: absolute; cursor: pointer; width: 100%" href=@Url.Action("CustomLogOff", "Account")>
                         <div class="row bg-red">
                             <p style="font-weight: bold; font-size: medium; text-align:center;width: 100%; padding-right: 10%; padding-top: 5%"><i class="fas fa-door-open fa-1x" style="padding-right: 10%"></i>Log Out</p>
                         </div>

@@ -1,5 +1,4 @@
-﻿
-    <div class="card-footer card-comments">
+﻿    <div class="card-footer card-comments">
         @foreach (var comment in Model.Ticket.TicketComments)
         {
             <div class="card-comment">
@@ -38,9 +37,11 @@
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger mr-auto" data-dismiss="modal" style="width: 100%">No</button>
-                    <button type="button" class="btn btn-success" data-dismiss="modal" style="width: 100%">Yes</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal" style="width: 100%" id="selectYes">Yes</button>
                 </div>
 
             </div>
         </div>
     </div>
+
+
