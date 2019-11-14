@@ -281,16 +281,12 @@
 @section scripts {
     <script>
         $(document).ready(function () {
-            $("#allTicketsTable").DataTable();
+            $("#allTicketsTable").DataTable({
+                        "order": [[ 6, "desc" ]]
+                    });
             $('#allUsersTable').DataTable({
-                "dom": ' <"search"f><"top"l>rt<"bottom"ip><"clear">',
-                "bFilter": false,
-                "bInfo": false,
-                "bLengthChange": true,
-                 oLanguage: {
-                    sLengthMenu: "_MENU_",
-                 }
-            });
+                        "order": [[ 2, "asc" ]]
+                    });
         });
     </script>
 }

@@ -439,9 +439,16 @@
 
         $(function () {
 
-            $("#ticketsTable").DataTable();
-            $('#usersTable').DataTable();
-            $('#allUsersDataTable').DataTable();
+            $("#ticketsTable").DataTable({
+                        "order": [[ 6, "desc" ]]
+                    });
+            $('#usersTable').DataTable({
+                        "order": [[ 2, "asc" ]]
+                    });
+            $('#allUsersDataTable').DataTable({
+                        "order": [[ 2, "asc" ]]
+                    });
+
             $("#tableUserIdClass").hide();
 
 

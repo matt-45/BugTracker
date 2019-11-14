@@ -220,12 +220,12 @@ namespace BugTracker.Controllers
             if (FileUploadValidator.IsWebFriendlyFile(file) || FileUploadValidator.IsWebFriendlyImage(file))
             {
                 var fileName = Path.GetFileName(file.FileName);
+                attachment.FileName = fileName;
                 var justFileName = Path.GetFileNameWithoutExtension(fileName);
                 justFileName = StringUtilities.URLFriendly(justFileName);
                 fileName = $"{justFileName}_{DateTime.Now.Ticks}{Path.GetExtension(fileName)}";
                 file.SaveAs(Path.Combine(Server.MapPath("~/Uploads/"), fileName));
                 attachment.FilePath = "/Uploads/" + fileName;
-                attachment.FileName = fileName;
             }
             attachment.Description = description;
             attachment.Created = DateTime.Now;
