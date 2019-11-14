@@ -193,6 +193,7 @@ namespace BugTracker.Controllers
             comment.TicketId = ticketId;
             comment.UserId = userId;
             comment.CommentBody = commentBody;
+            comment.Created = DateTime.Now;
 
             ticket.TicketComments.Add(comment);
             db.SaveChanges();
@@ -224,6 +225,7 @@ namespace BugTracker.Controllers
                 fileName = $"{justFileName}_{DateTime.Now.Ticks}{Path.GetExtension(fileName)}";
                 file.SaveAs(Path.Combine(Server.MapPath("~/Uploads/"), fileName));
                 attachment.FilePath = "/Uploads/" + fileName;
+                attachment.FileName = fileName;
             }
             attachment.Description = description;
             attachment.Created = DateTime.Now;
@@ -281,6 +283,23 @@ namespace BugTracker.Controllers
             return View(ticket);
         }
 
+        public ActionResult EditTicketAndAttachments(int ticketId, string ticketTitle, string ticketDescription, string[] attachmentDescriptions)
+        {
+            var ticket = db.Tickets.Find(ticketId);
+            var attachmentIds = ticket.TicketAttachments.Select(t => t.Id).ToList();
+            for (int i = 0; i < attachmentIds.Count(); i++)
+            {
+                var attachment = ticket.TicketAttachments.FirstOrDefault(a => a.Id == attachmentIds[i]);
+                attachment.Description = attachmentDescriptions[i];
+            }
+            ticket.Title = ticketTitle;
+            ticket.Description = ticketDescription;
+
+            db.SaveChanges();
+
+            return RedirectToAction("Details", "Tickets", new { id = ticketId });
+        }
+
         // GET: Tickets/Delete/5
         public ActionResult Delete(int? id)
         {
@@ -315,6 +334,62 @@ namespace BugTracker.Controllers
             return RedirectToAction("Details", "Tickets", new { id = attachment.TicketId});
         }
 
+        public ActionResult EditComment(int id, string commentBody)
+        {
+            TicketComment comment = db.Comments.Find(id);
+            comment.CommentBody = commentBody;
+            db.SaveChanges();
+
+            TicketDetailsViewModel viewModel = new TicketDetailsViewModel();
+            var ticket = db.Tickets.Find(comment.TicketId);
+            viewModel.Ticket = ticket;
+            viewModel.User = db.Users.Find(User.Identity.GetUserId());
+            viewModel.UserRole = roleHelper.ListUserRoles(User.Identity.GetUserId()).FirstOrDefault();
+            viewModel.TicketPriorities = db.Priorities.ToList();
+            viewModel.TicketStatuses = db.Statuses.ToList();
+            viewModel.TicketTypes = db.Types.ToList();
+            viewModel.Developers = roleHelper.UsersInRole("Developer").ToList();
+
+            return PartialView("~/Views/Shared/_TicketComments.cshtml", viewModel);
+        }
+        public ActionResult DeleteComment(int id)
+        {
+            TicketComment comment = db.Comments.Find(id);
+            db.Comments.Remove(comment);
+            db.SaveChanges();
+
+            TicketDetailsViewModel viewModel = new TicketDetailsViewModel();
+            var ticket = db.Tickets.Find(comment.TicketId);
+            viewModel.Ticket = ticket;
+            viewModel.User = db.Users.Find(User.Identity.GetUserId());
+            viewModel.UserRole = roleHelper.ListUserRoles(User.Identity.GetUserId()).FirstOrDefault();
+            viewModel.TicketPriorities = db.Priorities.ToList();
+            viewModel.TicketStatuses = db.Statuses.ToList();
+            viewModel.TicketTypes = db.Types.ToList();
+            viewModel.Developers = roleHelper.UsersInRole("Developer").ToList();
+
+            return PartialView("~/Views/Shared/_TicketComments.cshtml", viewModel);
+        }
+
+        public ActionResult DownloadFile(string filePath)
+        {
+            string fullName = Server.MapPath("~" + filePath);
+
+            byte[] fileBytes = GetFile(fullName);
+            return File(
+                fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, filePath);
+        }
+
+        byte[] GetFile(string s)
+        {
+            FileStream fs = System.IO.File.OpenRead(s);
+            byte[] data = new byte[fs.Length];
+            int br = fs.Read(data, 0, data.Length);
+            if (br != fs.Length)
+                throw new IOException(s);
+            return data;
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -323,5 +398,7 @@ namespace BugTracker.Controllers
             }
             base.Dispose(disposing);
         }
+
+        
     }
 }

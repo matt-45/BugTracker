@@ -15,17 +15,10 @@ namespace BugTracker.Models
         public string Description { get; set; }
         public DateTime Created { get; set; }
         public string UserId { get; set; }
+        public string FileName { get; set; }
 
         public virtual Ticket Ticket { get; set; }
         public virtual ApplicationUser User { get; set; }
-
-        [NotMapped]
-        public string FileName {
-            get
-            {
-                return $"{Path.GetFileName(FilePath)}";
-            }
-        }
 
     }
 }

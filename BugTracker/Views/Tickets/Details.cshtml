@@ -9,6 +9,9 @@
     ApplicationDbContext db = new ApplicationDbContext();
 }
 
+<style>
+</style>
+
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -243,14 +246,17 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <div class="info-box mb-3 bg-green">
-                            <i class="fas fa-arrow-circle-down fa-2x" style="display: flex;justify-content: center;align-items: center;padding-left: 5%"></i>
-                            <div class="info-box-content">
-                                <span class="info-box-number" style="text-align: center">Download<br />Attachments</span>
+                        <a data-target="#downloadAttachmentsModal" data-toggle="modal" style="cursor: pointer">
+                            <div class="info-box mb-3 bg-green">
+                                <i class="fas fa-arrow-circle-down fa-2x" style="display: flex;justify-content: center;align-items: center;padding-left: 5%"></i>
+                                <div class="info-box-content">
+                                    <span class="info-box-number" style="text-align: center">Download<br />Attachments</span>
+                                </div>
+                                <h1 style="font-weight:bold; display: flex;justify-content: center;align-items: center;padding-right: 5%">@Model.Ticket.TicketAttachments.Count()</h1>
+                                <!-- /.info-box-content -->
                             </div>
-                            <h1 style="font-weight:bold; display: flex;justify-content: center;align-items: center;padding-right: 5%">5</h1>
-                            <!-- /.info-box-content -->
-                        </div>
+                        </a>
+                        
                     </div>
                 </div>
                 <div>
@@ -285,14 +291,10 @@
                         <!-- /.card-tools -->
                     </div>
                     <!-- /.card-header -->
-                    <div class="card-body">
-                        <p>@Model.Ticket.Description</p>
-                        <span class="float-right text-muted">1 comment</span>
-                    </div>
                     <!-- /.card-body -->
                     <!--LOAD COMMENTS PARTIAL VIEw-->
                     <div id="ticketCommentsDiv">
-                        @Html.Partial("_TicketComments")
+                        @Html.Partial("_TicketComments", Model)
                     </div>
                     <!-- /.card-footer -->
                     <div class="card-footer">
@@ -424,27 +426,28 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
 
+
                 <!-- Modal body -->
                 <div class="modal-body">
                     <div class="card-body">
-
+                        @Html.Hidden("ticketId", Model.Ticket.Id, new { id = "hiddenTicketId" })
                         <h3 style="font-weight: bold">Title</h3>
-                        @Html.TextBoxFor(model => model.Ticket.Title, new { id = "ticketTitleId", type = "text", style = "width: 50%" })
+                        @Html.TextBox("ticketTitle", Model.Ticket.Title, new { id = "editTicketTitleId", type = "text", style = "width: 50%" })
                         <h4 style="font-weight: bold; padding-top: 2%">Summary</h4>
-                        @Html.TextAreaFor(model => model.Ticket.Description, new { id = "ticketDescriptionId", rows = "6", style = "width: 100%" })
+                        @Html.TextArea("ticketDescription", Model.Ticket.Description, new { id = "editTicketDescriptionId", rows = "6", style = "width: 100%" })
                         @if (Model.Ticket.TicketAttachments.Count() > 0)
                         {
                             <h3 style="font-weight: bold; padding-top: 20px">Attachments</h3>
                             <div class="row">
-                                @{ 
+                                @{
                                     var loop = 0;
                                 }
                                 @foreach (var attachment in Model.Ticket.TicketAttachments)
                                 {
                                     var id = "attachmentDescriptionId" + loop;
-                                    <div class="col-3">
-                                        <h5 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">@attachment.FileName</h5>
-                                        <textarea rows="2" style="width: 100%" id=@id>@attachment.Description</textarea>
+                                    <div class="col-4">
+                                        <h6 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">@attachment.FileName</h6>
+                                        <textarea rows="4" style="width: 100%" id=@id>@attachment.Description</textarea>
                                         <a class="btn btn-danger" style="width: 100%; color: white" href=@Url.Action("DeleteAttachment", "Tickets", new { id = attachment.Id})>
                                             Delete
                                         </a>
@@ -453,6 +456,10 @@
                                 }
                             </div>
                         }
+                        else
+                        {
+                            <h3 style="font-weight: bold">No Attachments</h3>
+                        }
 
                     </div>
                 </div>
@@ -460,14 +467,68 @@
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger mr-auto" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="submitEditForm()">Save</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal" onclick="editTicketAndAttachments()">Save</button>
 
                 </div>
+
 
             </div>
         </div>
     </div>
 
+
+    <div class="modal fade" id="downloadAttachmentsModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h2 class="modal-title" style="font-weight: bold">Download Attachments</h2>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="card-body">
+                        @if (Model.Ticket.TicketAttachments.Count() > 0)
+                        {
+                        <div class="row">
+                            @foreach (var attachment in Model.Ticket.TicketAttachments)
+                            {
+                            <div class="col-4">
+                                <div class="row">
+                                    <h6 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: bold">@attachment.FileName</h6>
+                                    <p>@attachment.Description</p>
+                                </div>
+                                <div class="row" style="padding: 15px">
+                                    <a class="btn btn-success" style="width: 97%; color: white; position: absolute;bottom: 0;left: 0;right: 0;margin: auto; cursor: pointer" href=@Url.Action("DownloadFile", "Tickets", new { filepath = attachment.FilePath})>
+                                        Download
+                                    </a>
+                                </div>
+                            </div>
+                            
+                                
+                            }
+                        </div>
+                        }
+                        else
+                        {
+                    <h3 style="font-weight: bold">No Attachments</h3>
+                        }
+
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
 
 </section>
 
@@ -475,6 +536,9 @@
 
 
     <script>
+
+        var attachmentDescriptions = new Array()
+
         $(document).ready(function () {
             loadTicketData()
             $("#showFileInput").on('click', function(e){
@@ -489,10 +553,6 @@
             $("#ticketHistoriesTable").DataTable({
                         "order": [[ 4, "desc" ]]
             });
-
-            
-
-
         });
 
         document.getElementById('commentId').addEventListener('keypress', function (event) {
@@ -581,20 +641,61 @@
                         "order": [[ 4, "desc" ]]
                     });
                 }
-                });
+            });
         }
 
 
-        function submitEditForm() {
-                var array = []
-                for (var i = 0; i < @Model.Ticket.TicketAttachments.Count(); i++) {
-                    var description = $("#attachmentDescriptionId" + i).val()
-                    array.push(description)
+        function editTicketAndAttachments() {
+            
+            var ticketId = $("#ticketId").val()
+            var ticketTitle = $("#editTicketTitleId").val()
+            var ticketDescription = $("#editTicketDescriptionId").val()
+            for (var i = 0; i < @Model.Ticket.TicketAttachments.Count(); i++) {
+                var description = $("#attachmentDescriptionId" + i).val()
+                attachmentDescriptions.push(description)
             }
-            console.log(array)
-            }
-        
+            console.log(attachmentDescriptions)
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("EditTicketAndAttachments", "Tickets")",
+                data: {
+                    "ticketId": ticketId,
+                    "ticketTitle": ticketTitle,
+                    "ticketDescription": ticketDescription,
+                    "attachmentDescriptions": attachmentDescriptions
+                },
+                success: function () {
+                    location.reload()
+                }
+            });
+        }
 
+        function editComment(id, body) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("EditComment", "Tickets")",
+                data: {
+                    "id": id,
+                    "commentBody": body
+                },
+                success: function (partialViewResult) {
+                    $("#ticketCommentsDiv").html(partialViewResult);
+                }
+            });
+        }
+        
+        function deleteComment(id) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("DeleteComment", "Tickets")",
+                data: {
+                    "id": id
+                },
+                success: function (partialViewResult) {
+                    $("#ticketCommentsDiv").html(partialViewResult);
+                }
+            });
+        }
 
         function loadTicketData() {
             var status = "@Model.Ticket.TicketStatus.Name";
