@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -210,6 +211,32 @@ namespace BugTracker.Controllers
             // return partial view
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateAttachment(HttpPostedFileBase file, string description, int ticketId)
+        {
+            TicketAttachment attachment = new TicketAttachment();
+            if (FileUploadValidator.IsWebFriendlyFile(file) || FileUploadValidator.IsWebFriendlyImage(file))
+            {
+                var fileName = Path.GetFileName(file.FileName);
+                var justFileName = Path.GetFileNameWithoutExtension(fileName);
+                justFileName = StringUtilities.URLFriendly(justFileName);
+                fileName = $"{justFileName}_{DateTime.Now.Ticks}{Path.GetExtension(fileName)}";
+                file.SaveAs(Path.Combine(Server.MapPath("~/Uploads/"), fileName));
+                attachment.FilePath = "/Uploads/" + fileName;
+            }
+            attachment.Description = description;
+            attachment.Created = DateTime.Now;
+            attachment.TicketId = ticketId;
+            db.Attachments.Add(attachment);
+            db.SaveChanges();
+            return RedirectToAction("Details", "Tickets", new { id = ticketId});
+        }
+
+
+
+
+
 
         // GET: Tickets/Edit/5
         public ActionResult Edit(int? id)
@@ -278,6 +305,14 @@ namespace BugTracker.Controllers
             db.Tickets.Remove(ticket);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        public ActionResult DeleteAttachment(int id)
+        {
+            TicketAttachment attachment = db.Attachments.Find(id);
+            db.Attachments.Remove(attachment);
+            db.SaveChanges();
+            return RedirectToAction("Details", "Tickets", new { id = attachment.TicketId});
         }
 
         protected override void Dispose(bool disposing)

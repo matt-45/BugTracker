@@ -49,27 +49,7 @@ namespace BugTracker.Controllers
         // POST: TicketAttachments/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(HttpPostedFileBase file, string description, int ticketId)
-        {
-            TicketAttachment attachment = new TicketAttachment();
-            if (FileUploadValidator.IsWebFriendlyFile(file) || FileUploadValidator.IsWebFriendlyImage(file))
-            {
-                var fileName = Path.GetFileName(file.FileName);
-                var justFileName = Path.GetFileNameWithoutExtension(fileName);
-                justFileName = StringUtilities.URLFriendly(justFileName);
-                fileName = $"{justFileName}_{DateTime.Now.Ticks}{Path.GetExtension(fileName)}";
-                file.SaveAs(Path.Combine(Server.MapPath("~/Uploads/"), fileName));
-                attachment.FilePath = "/Uploads/" + fileName;
-            }
-            attachment.Description = description;
-            attachment.Created = DateTime.Now;
-            attachment.TicketId = ticketId;
-            db.Attachments.Add(attachment);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+        
 
         // GET: TicketAttachments/Edit/5
         public ActionResult Edit(int? id)
