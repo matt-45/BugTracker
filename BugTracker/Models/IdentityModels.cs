@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
@@ -12,6 +13,9 @@ namespace BugTracker.Models
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit https://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
     {
+        private TicketHelper ticketHelper = new TicketHelper();
+        private UserRoleHelper roleHelper = new UserRoleHelper();
+
         [Display(Name="First Name")]
         [StringLength(50, MinimumLength = 1, ErrorMessage ="First Name must be between 1 and 50 characters")]
         public string FirstName { get; set; }
@@ -36,7 +40,18 @@ namespace BugTracker.Models
             }
         }
 
-        
+        public int ReturnNumberOfTickets()
+        {
+            return ticketHelper.ListTicketsForUser(Id).Count();
+        }
+
+        public string ReturnUserRole()
+        {
+            return roleHelper.ListUserRoles(Id).FirstOrDefault();
+        }
+
+
+
 
         public ApplicationUser()
         {

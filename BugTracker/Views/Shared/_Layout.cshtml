@@ -198,21 +198,18 @@
                                         <p>View All</p>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a href=@Url.Action("Index", "TicketHistories") class="nav-link">
+                                        <i class="fas fa-history nav-icon"></i>
+                                        <p>Histories</p>
+                                    </a>
+                                </li>
                                 @if (RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Submitter")
                                 {
                                     <li class="nav-item">
                                         <a href=@Url.Action("Create", "Tickets") class="nav-link">
                                             <i class="fa fa-plus-circle nav-icon"></i>
                                             <p>Create New</p>
-                                        </a>
-                                    </li>
-                                }
-                                @foreach (var project in ProjectHelper.ListUserProjects(user.Id))
-                                {
-                                    <li class="nav-item">
-                                        <a href="./index2.html" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>@project.Name Tickets</p>
                                         </a>
                                     </li>
                                 }
@@ -231,31 +228,31 @@
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
-                                        <a href="./index.html" class="nav-link">
+                                        <a href=@Url.Action("AllUsers", "Account", new { role = "All"}) class="nav-link">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>View All</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="./index2.html" class="nav-link">
+                                        <a href=@Url.Action("AllUsers", "Account", new { role = "Admin"}) class="nav-link">
                                             <i class="fa fa-user-tie nav-icon"></i>
                                             <p>Admins</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="./index2.html" class="nav-link">
+                                        <a href=@Url.Action("AllUsers", "Account", new { role = "Manager"}) class="nav-link">
                                             <i class="fa fa-male nav-icon"></i>
                                             <p>Managers</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="./index3.html" class="nav-link">
+                                        <a href=@Url.Action("AllUsers", "Account", new { role = "Developer"}) class="nav-link">
                                             <i class="fa fa-laptop nav-icon"></i>
                                             <p>Developers</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="./index3.html" class="nav-link">
+                                        <a href=@Url.Action("AllUsers", "Account", new { role = "Submitter"}) class="nav-link">
                                             <i class="fa fa-check nav-icon"></i>
                                             <p>Submitters</p>
                                         </a>

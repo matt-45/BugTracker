@@ -11,6 +11,7 @@ using Microsoft.Owin.Security;
 using BugTracker.Models;
 using BugTracker.Helpers;
 using System.IO;
+using System.Collections.Generic;
 
 namespace BugTracker.Controllers
 {
@@ -128,6 +129,46 @@ namespace BugTracker.Controllers
             UserManager.Update(user);
             db.SaveChanges();
             return RedirectToAction("Index", "Account", new { id = id});
+        }
+
+
+        public ActionResult AllUsers(string role)
+        {
+            var users = new List<ApplicationUser>();
+            AllUsersViewModel viewModel = new AllUsersViewModel();
+            viewModel.User = db.Users.Find(User.Identity.GetUserId());
+            viewModel.Role = role;
+            if (role == "All")
+            {
+                users = db.Users.ToList();
+                viewModel.Users = users;
+                viewModel.Header = "All Users";
+                viewModel.SpecialPropertyHeader = "";
+            }
+            else if(role == "Admin") {
+                users = RoleHelper.UsersInRole(role).ToList();
+                viewModel.Users = users;
+                viewModel.Header = "Admins";
+            }
+            else if (role == "Manager")
+            {
+                users = RoleHelper.UsersInRole(role).ToList();
+                viewModel.Users = users;
+                viewModel.Header = "Number of Projects";
+            }
+            else if (role == "Developer")
+            {
+                users = RoleHelper.UsersInRole(role).ToList();
+                viewModel.Users = users;
+                viewModel.Header = "Tickets Assigned To";
+            }
+            else if (role == "Submitter")
+            {
+                users = RoleHelper.UsersInRole(role).ToList();
+                viewModel.Users = users;
+                viewModel.Header = "Tickets Created";
+            }
+            return View(viewModel);
         }
 
 

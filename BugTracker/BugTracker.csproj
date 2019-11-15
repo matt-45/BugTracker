@@ -211,6 +211,7 @@
     <Compile Include="Models\TicketStatus.cs" />
     <Compile Include="Models\TicketType.cs" />
     <Compile Include="Helpers\UserRoleHelper.cs" />
+    <Compile Include="Models\AllUsersViewModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -808,6 +809,7 @@
     <Content Include="Views\Account\_AssignUsersToRole.cshtml" />
     <Content Include="Views\Shared\_TicketHistories.cshtml" />
     <Content Include="Views\Shared\_TicketComments.cshtml" />
+    <Content Include="Views\Account\AllUsers.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
