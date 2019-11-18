@@ -17,6 +17,7 @@
         <div class="row mb-2">
             <div class="col-sm-6">
                 <h1 class="m-0 text-dark" style="font-weight: bold; font-size: 300%">@Model.Ticket.Title Details</h1>
+                
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -256,7 +257,7 @@
                                 <!-- /.info-box-content -->
                             </div>
                         </a>
-                        
+
                     </div>
                 </div>
                 <div>
@@ -278,7 +279,7 @@
                 <div class="card card-widget">
                     <div class="card-header">
                         <div class="user-block">
-                            <img class="img-circle" src="../dist/img/user1-128x128.jpg">
+                            <img class="img-circle" src=@Model.User.AvatarPath>
                             <span class="username"><a href="#">@Model.Ticket.OwnerUser.FullName</a></span>
                             <span class="description">@Model.Ticket.Created.ToString("MM/dd/yyyy h:mm tt")</span>
                         </div>
@@ -493,30 +494,30 @@
                     <div class="card-body">
                         @if (Model.Ticket.TicketAttachments.Count() > 0)
                         {
-                        <div class="row">
-                            @foreach (var attachment in Model.Ticket.TicketAttachments)
-                            {
-                            <div class="col-4">
-                                <div class="row">
-                                    <h6 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: bold; padding-left: 10px">@attachment.FileName</h6>
-                                </div>
-                                <div class="row">
-                                    <span style="padding: 10px">@attachment.Description</span>
-                                </div>
-                                <div class="row" style="padding: 20px">
-                                    <a class="btn btn-success" style="width: 97%; color: white; position: absolute;bottom: 0;left: 0;right: 0;margin: auto; cursor: pointer" href=@Url.Action("DownloadFile", "Tickets", new { filepath = attachment.FilePath})>
-                                        Download
-                                    </a>
-                                </div>
+                            <div class="row">
+                                @foreach (var attachment in Model.Ticket.TicketAttachments)
+                                {
+                                    <div class="col-4">
+                                        <div class="row">
+                                            <h6 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: bold; padding-left: 10px">@attachment.FileName</h6>
+                                        </div>
+                                        <div class="row">
+                                            <span style="padding: 10px">@attachment.Description</span>
+                                        </div>
+                                        <div class="row" style="padding: 20px">
+                                            <a class="btn btn-success" style="width: 97%; color: white; position: absolute;bottom: 0;left: 0;right: 0;margin: auto; cursor: pointer" href=@Url.Action("DownloadFile", "Tickets", new { filepath = attachment.FilePath})>
+                                                Download
+                                            </a>
+                                        </div>
+                                    </div>
+
+
+                                }
                             </div>
-                            
-                                
-                            }
-                        </div>
                         }
                         else
                         {
-                    <h3 style="font-weight: bold">No Attachments</h3>
+                            <h3 style="font-weight: bold">No Attachments</h3>
                         }
 
                     </div>
@@ -531,6 +532,8 @@
             </div>
         </div>
     </div>
+
+    
 
 </section>
 

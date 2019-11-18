@@ -7,7 +7,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>AdminLTE 3 | Registration Page</title>
+    <title>Buggr | Register</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -32,12 +32,27 @@
             <div class="card-body register-card-body">
                 <p class="login-box-msg">Register a new account</p>
 
-                @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "Multipart/form-data" }))
                 {
                     @Html.AntiForgeryToken()
+
+
+                    <input name="avatar" type="file" class="form-control avatarImageInputId" id="avatarImageInputId" accept=".jpg, .png" hidden />
+
+                    <a style="cursor: pointer; background-color: #c9e3ff" id="showAvatarUploadAnchor" >
+                        <div class="input-group mb-3" style="width: 100%">
+                            <input class="form-control" disabled style="background-color: #c9e3ff; cursor: pointer" placeholder="Click to Upload Avatar Image" id="placeholderTextForAvatar"/>
+                            <div class="input-group-append">
+                                <div class="input-group-text" style="background-color: #c9e3ff">
+                                    <span class="fas fa-image"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
                     @Html.ValidationMessage("firstName", new { @class = "text-danger" })
                     <div class="input-group mb-3">
-                        @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", @placeholder = "First name" })
+                        @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", @placeholder = "First name"})
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-user"></span>
@@ -113,7 +128,7 @@
       </a>
     </div>-->
                 <div class="col-12 text-center" style="padding-top:5%">
-                    @Html.ActionLink("I already have an account.", "Login", "Account", new { @class = "text-center"})
+                    @Html.ActionLink("I already have an account", "Login", "Account", new { @class = "text-center" })
                 </div>
 
             </div>
@@ -127,6 +142,54 @@
     <script src="../../Scripts/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
     <script src="../../Scripts/dist/js/adminlte.min.js"></script>
+    <!-- jQuery -->
+    <script src="~/Scripts/jquery/jquery.min.js"></script>
+    <!-- jQuery UI 1.11.4 -->
+    <script src="~/Scripts/jquery-ui/jquery-ui.min.js"></script>
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <script>$.widget.bridge('uibutton', $.ui.button)</script>
+    <!-- Bootstrap 4 -->
+    <script src="~/Scripts/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- ChartJS -->
+    <script src="~/Scripts/chart.js/Chart.min.js"></script>
+    <!-- Sparkline -->
+    <script src="~/Scripts/sparklines/sparkline.js"></script>
+    <!-- JQVMap -->
+    <script src="~/Scripts/jqvmap/jquery.vmap.min.js"></script>
+    <script src="~/Scripts/jqvmap/maps/jquery.vmap.usa.js"></script>
+    <!-- jQuery Knob Chart -->
+    <script src="~/Scripts/jquery-knob/jquery.knob.min.js"></script>
+    <!-- daterangepicker -->
+    <script src="~/Scripts/moment/moment.min.js"></script>
+    <script src="~/Scripts/daterangepicker/daterangepicker.js"></script>
+    <!-- Tempusdominus Bootstrap 4 -->
+    <script src="~/Scripts/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+    <!-- Summernote -->
+    <script src="~/Scripts/summernote/summernote-bs4.min.js"></script>
+    <!-- overlayScrollbars -->
+    <script src="~/Scripts/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+    <!-- AdminLTE App -->
+
+
+    <script src="~/Scripts/dist/js/adminlte.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            $("#showAvatarUploadAnchor").on("click", function (e) {
+                e.preventDefault();
+                $("#avatarImageInputId").trigger('click');
+            })
+            $(".avatarImageInputId").change(function () {
+                var value = this.value.toString().split("\\")[2]
+                $("#placeholderTextForAvatar").val(value)
+                console.log(value)
+            });
+        })
+
+    </script>
+
+
 </body>
 </html>
 

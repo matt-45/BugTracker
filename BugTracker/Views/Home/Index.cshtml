@@ -24,74 +24,106 @@
 
         <!-- Info boxes -->
         <div class="row">
-            <div class="col">
-                <a href=@Url.Action("Index", "Projects") style="color: black">
-                    <div class="info-box mb-3">
-                        <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-edit"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text" style="font-size: large; font-weight: bold">Projects</span>
-                            <span class="info-box-number">@Model.Projects.Count</span>
-                        </div>
-                        <!-- /.info-box-content -->
+            <div class="col-lg-5">
+                <div class="row">
+                    <div class="col">
+                        <a href=@Url.Action("Index", "Projects") style="color: black">
+                            <div class="info-box mb-3">
+                                <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-edit"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text" style="font-size: large; font-weight: bold">Projects</span>
+                                    <span class="info-box-number">@Model.Projects.Count</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                        </a><!-- /.info-box -->
                     </div>
-                </a><!-- /.info-box -->
-            </div>
-            <!-- /.col -->
-            <div class="col">
-                <a href=@Url.Action("Index", "Tickets") style="color: black">
-                    <div class="info-box mb-3">
-                        <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-ticket-alt"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text" style="font-size: large; font-weight: bold">Tickets</span>
-                            <span class="info-box-number">@Model.Tickets.Where(t => t.TicketStatus.Name.Contains("Assigned")).Count() <small>Active</small></span>
-                        </div>
-                        <!-- /.info-box-content -->
+                    <!-- /.col -->
+                    <div class="col">
+                        <a href=@Url.Action("Index", "Tickets") style="color: black">
+                            <div class="info-box mb-3">
+                                <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-ticket-alt"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text" style="font-size: large; font-weight: bold">Tickets</span>
+                                    @if (Model.User.ReturnUserRole() == "Admin" || Model.User.ReturnUserRole() == "Manager")
+                                    {
+                                        <span class="info-box-number">@Model.Tickets.Where(t => t.TicketStatus.Name.Contains("Assigned")).ToList().Concat(Model.Tickets.Where(t => t.TicketStatus.Name.Contains("Unassigned"))).Count() <small>Active</small></span>
+
+                                    }
+                                    else if (Model.User.ReturnUserRole() == "Developer")
+                                    {
+                                        <span class="info-box-number">@Model.Tickets) <small>Active</small></span>
+
+                                    }
+                                    <span class="info-box-number">@Model.Tickets.Where(t => t.TicketStatus.Name.Contains("Assigned")).Count() <small>Active</small></span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                        </a>
+                        <!-- /.info-box -->
                     </div>
-                </a>
-                <!-- /.info-box -->
+                </div>
             </div>
+            
             <!-- /.col -->
             <!-- fix for small devices only -->
             <div class="clearfix hidden-md-up"></div>
 
-            <div class="col">
-                <div class="info-box mb-3">
-                    <span class="info-box-icon bg-success elevation-1"><i class="fas fa-male"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text" style="font-size: large; font-weight: bold">Managers</span>
-                        <span class="info-box-number">@Model.Managers.Count()</span>
-                    </div>
-                    <!-- /.info-box-content -->
+            @if (Model.User.ReturnUserRole() == "Admin" || Model.User.ReturnUserRole() == "Manager")
+            {
+        <div class="col-lg-7">
+            <div class="row">
+                <div class="col">
+                    <a href=@Url.Action("AllUsers", "Account", new { role = "Manager"}) style="color:black">
+                        <div class="info-box mb-3">
+                            <span class="info-box-icon bg-success elevation-1"><i class="fas fa-male"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text" style="font-size: large; font-weight: bold">Managers</span>
+                                <span class="info-box-number">@Model.Managers.Count()</span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                    </a>
+                    
+                    <!-- /.info-box -->
                 </div>
-                <!-- /.info-box -->
-            </div>
-            <!-- /.col -->
-            <div class="col">
-                <div class="info-box mb-3">
-                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-laptop"></i></span>
+                <!-- /.col -->
+                <div class="col">
+                    <a href=@Url.Action("AllUsers", "Account", new { role = "Developer"}) style="color:black">
+                        <div class="info-box mb-3">
+                            <span class="info-box-icon bg-info elevation-1"><i class="fas fa-laptop"></i></span>
 
-                    <div class="info-box-content">
-                        <span class="info-box-text" style="font-size: large; font-weight: bold">Developers</span>
-                        <span class="info-box-number">@Model.Developers.Count()</span>
-                    </div>
-                    <!-- /.info-box-content -->
+                            <div class="info-box-content">
+                                <span class="info-box-text" style="font-size: large; font-weight: bold">Developers</span>
+                                <span class="info-box-number">@Model.Developers.Count()</span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                    </a>
+                    
+                    <!-- /.info-box -->
                 </div>
-                <!-- /.info-box -->
-            </div>
-            <!-- /.col -->
-            <div class="col">
-                <div class="info-box mb-3">
-                    <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-check"></i></span>
+                <!-- /.col -->
+                <div class="col">
+                    <a href=@Url.Action("AllUsers", "Account", new { role = "Submitter"}) style="color:black">
+                        <div class="info-box mb-3">
+                            <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-check"></i></span>
 
-                    <div class="info-box-content">
-                        <span class="info-box-text" style="font-size: large; font-weight: bold">Submitters</span>
-                        <span class="info-box-number">@Model.Submitters.Count()</span>
-                    </div>
-                    <!-- /.info-box-content -->
+                            <div class="info-box-content">
+                                <span class="info-box-text" style="font-size: large; font-weight: bold">Submitters</span>
+                                <span class="info-box-number">@Model.Submitters.Count()</span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                    </a>
+                    
+                    <!-- /.info-box -->
                 </div>
-                <!-- /.info-box -->
             </div>
-            <!-- /.col -->
+        </div>
+                
+                <!-- /.col -->
+            }
         </div>
         <!-- Projects -->
         <div class="row">
@@ -166,19 +198,74 @@
         </div>
         <!-- Tables -->
         <div class="row">
+            <!-- TABLE: ALL USERS -->
+            @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).FirstOrDefault() == "Admin" || RoleHelper.ListUserRoles(User.Identity.GetUserId()).FirstOrDefault() == "Manager")
+            {
+                <div class="col">
+                    <div class="card collapsed-card">
+                        <a style="cursor: pointer" data-card-widget="collapse">
+                            <div class="card-header">
+                                <h3 class="card-title" style="font-weight: bold">All Users</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="card-body">
+                            <table id="allUsersTable" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Role</th>
+                                        <th>Projects</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
 
+                                    @foreach (var user in Model.ApplicationUsers)
+                                    {
+                                        <tr onclick="location.href = '@Url.Action("Index", "Account", new { id = user.Id })'" style="cursor: pointer">
+                                            <td>@user.FirstName</td>
+                                            <td>@user.LastName</td>
+                                            <td>@RoleHelper.ListUserRoles(user.Id).FirstOrDefault()</td>
+                                            <td>@user.Projects.Count()</td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Role</th>
+                                        <th>Projects</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="row">
+            
             <!-- TABLE: ALL TICKETS -->
             <div class="col">
                 <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title" style="font-weight: bold">All Tickets</h3>
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
+                    <a style="cursor: pointer" data-card-widget="collapse">
+                        <div class="card-header">
+                            <h3 class="card-title" style="font-weight: bold">All Tickets</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                            <!--Drop downs for filtering-->
                         </div>
-                        <!--Drop downs for filtering-->
-                    </div>
+                    </a>
                     <div class="card-body">
                         <table id="allTicketsTable" class="table table-bordered table-striped">
                             <thead>
@@ -197,7 +284,7 @@
                                 {
                                     <tr onclick="location.href = '@Url.Action("Details", "Tickets", new { id=ticket.Id })'" style="cursor: pointer">
                                         <td>@ticket.Title</td>
-                                        <td>@ticket.OwnerUser.DisplayName</td>
+                                        <td>@ticket.OwnerUser.FullName</td>
                                         <td>@ticket.TicketPriority.Name</td>
                                         <td>@ticket.TicketType.Name</td>
                                         <td>@ticket.TicketStatus.Name</td>
@@ -228,52 +315,7 @@
                     </div>
                 </div>
             </div>
-            <!-- TABLE: ALL USERS -->
-            @if (RoleHelper.ListUserRoles(User.Identity.GetUserId()).FirstOrDefault() == "Admin" || RoleHelper.ListUserRoles(User.Identity.GetUserId()).FirstOrDefault() == "Manager")
-            {
-                <div class="col-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title" style="font-weight: bold">All Users</h3>
-                            <div class="card-tools">
-                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <table id="allUsersTable" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>Role</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
 
-                                    @foreach (var user in Model.ApplicationUsers)
-                                    {
-                                        <tr onclick="location.href = '@Url.Action("Index", "Account", new { id = user.Id })'" style="cursor: pointer">
-                                            <td>@user.FirstName</td>
-                                            <td>@user.LastName</td>
-                                            <td>@RoleHelper.ListUserRoles(user.Id).FirstOrDefault()</td>
-                                        </tr>
-                                    }
-
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>Role</th>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            }
         </div>
     </div>
 </section>
@@ -285,7 +327,7 @@
                         "order": [[ 6, "desc" ]]
                     });
             $('#allUsersTable').DataTable({
-                        "order": [[ 2, "asc" ]]
+                "order": [[2, "asc"]]
                     });
         });
     </script>

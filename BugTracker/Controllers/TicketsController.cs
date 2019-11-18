@@ -26,7 +26,17 @@ namespace BugTracker.Controllers
         [Authorize]
         public ActionResult Index()
         {
-            var tickets = db.Tickets.Include(t => t.AssignedToUser).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
+            var user = db.Users.Find(User.Identity.GetUserId());
+            if (user.ReturnUserRole() == "Admin")
+            {
+                ViewBag.TicketIndexHeader = "All Tickets";
+            }
+            else
+            {
+                ViewBag.TicketIndexHeader = "Your Tickets";
+            }
+
+            var tickets = ticketHelper.ListMyTickets();
             return View(tickets.ToList());
         }
 
@@ -45,14 +55,26 @@ namespace BugTracker.Controllers
                 return HttpNotFound();
             }
             TicketDetailsViewModel viewModel = new TicketDetailsViewModel();
+            var user = db.Users.Find(User.Identity.GetUserId());
             viewModel.Ticket = ticket;
-            viewModel.User = db.Users.Find(User.Identity.GetUserId());
+            viewModel.User = user;
             viewModel.UserRole = roleHelper.ListUserRoles(User.Identity.GetUserId()).FirstOrDefault();
             viewModel.TicketPriorities = db.Priorities.ToList();
             viewModel.TicketStatuses = db.Statuses.ToList();
             viewModel.TicketTypes = db.Types.ToList();
             viewModel.Developers = roleHelper.UsersInRole("Developer").ToList();
 
+            if (user.ReturnUserRole() == "Developer")
+            {
+                if (ticket.AssignedToUserId == user.Id)
+                {
+                    return View(viewModel);
+                }
+                else
+                {
+                    RedirectToAction("Index", "Home");
+                }
+            }
             return View(viewModel);
         }
 
@@ -75,6 +97,7 @@ namespace BugTracker.Controllers
         // POST: Tickets/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Submitter")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(Ticket ticket, Project project, string typeName, string priorityName, string userId)
@@ -91,7 +114,15 @@ namespace BugTracker.Controllers
             ticket.TicketType = type;
             db.Tickets.Add(ticket);
             db.SaveChanges();
-            return RedirectToAction("Details", "Tickets", new { id = ticket.Id});
+            if (owner.IsDemoUser)
+            {
+                return RedirectToAction("Details", "Tickets", new { id = 1 });
+            }
+            else
+            {
+                return RedirectToAction("Details", "Tickets", new { id = ticket.Id });
+            }
+            
 
            // return View();
         }
@@ -121,6 +152,7 @@ namespace BugTracker.Controllers
             //return RedirectToAction("Details", "Tickets", new { id });
             return PartialView("~/Views/Shared/_TicketHistories.cshtml", viewModel);
         }
+        [Authorize]
         public ActionResult EditPriority(int id, int priorityId)
         {
             var oldTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == id);
@@ -145,6 +177,7 @@ namespace BugTracker.Controllers
             //return RedirectToAction("Details", "Tickets", new { id });
             return PartialView("~/Views/Shared/_TicketHistories.cshtml", viewModel);
         }
+        [Authorize]
         public ActionResult EditType(int id, int typeId)
         {
             var oldTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == id);
@@ -169,7 +202,7 @@ namespace BugTracker.Controllers
             //return RedirectToAction("Details", "Tickets", new { id });
             return PartialView("~/Views/Shared/_TicketHistories.cshtml", viewModel);
         }
-
+        [Authorize]
         public ActionResult AssignDeveloperToTicket(int ticketId, string userId)
         {
             var oldTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == ticketId);
@@ -178,7 +211,7 @@ namespace BugTracker.Controllers
             notificationHelper.SendTicketNotification(oldTicket, newTicket);
             return RedirectToAction("Details", "Tickets", new { id = ticketId });
         }
-
+        [Authorize]
         public ActionResult SelectTicketNotification(int notificationId, int ticketId)
         {
             var notification = db.TicketNotifications.Find(notificationId);
@@ -186,6 +219,7 @@ namespace BugTracker.Controllers
             db.SaveChanges();
             return RedirectToAction("Details", "Tickets", new { id = ticketId });
         }
+        [Authorize]
         public ActionResult CreateComment(int ticketId, string userId, string commentBody)
         {
             var ticket = db.Tickets.Find(ticketId);
@@ -214,6 +248,7 @@ namespace BugTracker.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult CreateAttachment(HttpPostedFileBase file, string description, int ticketId)
         {
             TicketAttachment attachment = new TicketAttachment();
@@ -235,54 +270,7 @@ namespace BugTracker.Controllers
             return RedirectToAction("Details", "Tickets", new { id = ticketId});
         }
 
-
-
-
-
-
-        // GET: Tickets/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Ticket ticket = db.Tickets.Find(id);
-            if (ticket == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "FirstName", ticket.AssignedToUserId);
-            ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName", ticket.OwnerUserId);
-            ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);
-            ViewBag.TicketPriorityId = new SelectList(db.Priorities, "Id", "Name", ticket.TicketPriorityId);
-            ViewBag.TicketStatusId = new SelectList(db.Statuses, "Id", "Name", ticket.TicketStatusId);
-            ViewBag.TicketTypeId = new SelectList(db.Types, "Id", "Name", ticket.TicketTypeId);
-            return View(ticket);
-        }
-
-        // POST: Tickets/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,ProjectId,TicketTypeId,TicketPriorityId,TicketStatusId,OwnerUserId,AssignedToUserId,Title,Description,Created,Updated")] Ticket ticket)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(ticket).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "FirstName", ticket.AssignedToUserId);
-            ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName", ticket.OwnerUserId);
-            ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);
-            ViewBag.TicketPriorityId = new SelectList(db.Priorities, "Id", "Name", ticket.TicketPriorityId);
-            ViewBag.TicketStatusId = new SelectList(db.Statuses, "Id", "Name", ticket.TicketStatusId);
-            ViewBag.TicketTypeId = new SelectList(db.Types, "Id", "Name", ticket.TicketTypeId);
-            return View(ticket);
-        }
-
+        [Authorize]
         public ActionResult EditTicketAndAttachments(int ticketId, string ticketTitle, string ticketDescription, string[] attachmentDescriptions)
         {
             var ticket = db.Tickets.Find(ticketId);
@@ -299,33 +287,7 @@ namespace BugTracker.Controllers
 
             return RedirectToAction("Details", "Tickets", new { id = ticketId });
         }
-
-        // GET: Tickets/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Ticket ticket = db.Tickets.Find(id);
-            if (ticket == null)
-            {
-                return HttpNotFound();
-            }
-            return View(ticket);
-        }
-
-        // POST: Tickets/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Ticket ticket = db.Tickets.Find(id);
-            db.Tickets.Remove(ticket);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
-
+        [Authorize]
         public ActionResult DeleteAttachment(int id)
         {
             TicketAttachment attachment = db.Attachments.Find(id);
@@ -333,7 +295,7 @@ namespace BugTracker.Controllers
             db.SaveChanges();
             return RedirectToAction("Details", "Tickets", new { id = attachment.TicketId});
         }
-
+        [Authorize]
         public ActionResult EditComment(int id, string commentBody)
         {
             TicketComment comment = db.Comments.Find(id);
@@ -352,6 +314,7 @@ namespace BugTracker.Controllers
 
             return PartialView("~/Views/Shared/_TicketComments.cshtml", viewModel);
         }
+        [Authorize]
         public ActionResult DeleteComment(int id)
         {
             TicketComment comment = db.Comments.Find(id);
@@ -370,7 +333,7 @@ namespace BugTracker.Controllers
 
             return PartialView("~/Views/Shared/_TicketComments.cshtml", viewModel);
         }
-
+        [Authorize]
         public ActionResult DownloadFile(string filePath)
         {
             string fullName = Server.MapPath("~" + filePath);

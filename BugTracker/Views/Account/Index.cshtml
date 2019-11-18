@@ -11,7 +11,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0 text-dark" style="font-weight: bold; font-size: 300%">@Model.User.DisplayName's Profile</h1>
+                <h1 class="m-0 text-dark" style="font-weight: bold; font-size: 300%">@Model.User.FirstName's Profile</h1>
             </div><!-- /.col -->
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
@@ -29,7 +29,7 @@
                         <h5 class="widget-user-desc">@Model.UserRole</h5>
                     </div>
                     <div class="widget-user-image">
-                        <img class="img-circle elevation-2" src="file://C:/Users/mattp/Desktop/Resources/AdminLTE-3.0.0-rc.5/dist/img/user1-128x128.jpg">
+                        <img class="img-circle elevation-2" src=@Model.User.AvatarPath alt="error">
                     </div>
                     <div class="card-footer">
                         <div class="row">

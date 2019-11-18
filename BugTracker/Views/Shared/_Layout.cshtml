@@ -51,6 +51,9 @@
                 <li class="nav-item d-none d-sm-inline-block">
                     <a href=@Url.Action("Index", "Home") class="nav-link" style="font-weight: bold">Home</a>
                 </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href=@Url.Action("About", "Home") class="nav-link" style="font-weight: bold">About</a>
+                </li>
             </ul>
 
             <!-- SEARCH FORM -->
@@ -92,8 +95,8 @@
                                 </a>
                             }
                         }
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+                        @*<div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>*@
                     </div>
                 </li>
             </ul>
@@ -103,7 +106,7 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="index3.html" class="brand-link">
+            <a href="" class="brand-link">
                 @*<img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
                     style="opacity: .8">*@
                 <span class="brand-text font-weight-light" style="padding-left: 5%">Buggr</span>
@@ -114,7 +117,7 @@
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+                        <img src=@user.AvatarPath class="img-circle elevation-2" alt="Avatar">
                     </div>
                     <div class="info">
                         <a href=@Url.Action("Index", "Account", new { id = user.Id}) class="d-block">@user.DisplayName</a>
@@ -125,7 +128,7 @@
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
-    with font-awesome or any other icon font library -->
+        with font-awesome or any other icon font library -->
                         <li class="nav-item">
                             <a href=@Url.Action("Index", "Home") class="nav-link active">
                                 <i class="nav-icon fas fa-th"></i>
@@ -325,19 +328,19 @@
     <div id="createProjectModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <!-- Modal content-->
-            @using (Html.BeginForm("Create", "Projects", FormMethod.Post))
+            @using (Html.BeginForm("Create", "Projects", FormMethod.Post, new { id = "createProjectForm"}))
             {
                 @Html.AntiForgeryToken()
 
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h2 class="modal-title" style="font-weight: bold">Create a new Project</h2>
+                        <h2 class="modal-title" style="font-weight: bold" id="createProjectErrorHeader">Create Project</h2>
                     </div>
                     <div class="modal-body">
                         <h4>Title</h4>
-                        <input name="ProjectTitle" type="text" class="form-control" />
+                        @Html.TextBox("ProjectTitle", null, new { @class = "form-control", @id = "projectTitleTextBox", @maxlength = "15"})
                         <h4 style="padding-top: 3%">Description</h4>
-                        <input name="ProjectDescription" type="text" class="form-control" />
+                        @Html.TextBox("ProjectDescription", null, new { @class = "form-control", @id = "projectDescriptionTextBox", @maxlength = "40"})
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger mr-auto" data-dismiss="modal">Cancel</button>
@@ -396,7 +399,15 @@
     <script src="~/Scripts/lodash.js"></script>
     @RenderSection("scripts", required: false)
 
-
+    <script>
+        function createProject() {
+            var title = $("#projectTitleTextBox").val()
+            var description = $("#projectDescriptionTextBox").val()
+            
+            console.log(title)
+            console.log(description)
+        }
+    </script>
 
 </body>
 

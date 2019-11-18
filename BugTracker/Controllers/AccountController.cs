@@ -111,7 +111,7 @@ namespace BugTracker.Controllers
             ProjectHelper.ToggleUserOnProject(id, projectId);
             return RedirectToAction("Index", "Account", new { id = id });
         }
-
+        [Authorize]
         [HttpPost]
         public ActionResult Edit(string id, string displayName, string firstName, string lastName, string email, HttpPostedFileBase avatar)
         {
@@ -131,7 +131,7 @@ namespace BugTracker.Controllers
             return RedirectToAction("Index", "Account", new { id = id});
         }
 
-
+        [Authorize(Roles = "Admin, Manager")]
         public ActionResult AllUsers(string role)
         {
             var users = new List<ApplicationUser>();
@@ -154,19 +154,22 @@ namespace BugTracker.Controllers
             {
                 users = RoleHelper.UsersInRole(role).ToList();
                 viewModel.Users = users;
-                viewModel.Header = "Number of Projects";
+                viewModel.Header = "Managers";
+                viewModel.SpecialPropertyHeader = "Projects";
             }
             else if (role == "Developer")
             {
                 users = RoleHelper.UsersInRole(role).ToList();
                 viewModel.Users = users;
-                viewModel.Header = "Tickets Assigned To";
+                viewModel.Header = "Developers";
+                viewModel.SpecialPropertyHeader = "Tickets";
             }
             else if (role == "Submitter")
             {
                 users = RoleHelper.UsersInRole(role).ToList();
                 viewModel.Users = users;
-                viewModel.Header = "Tickets Created";
+                viewModel.Header = "Submitters";
+                viewModel.SpecialPropertyHeader = "Tickets Created";
             }
             return View(viewModel);
         }
@@ -209,6 +212,25 @@ namespace BugTracker.Controllers
                 default:
                     ModelState.AddModelError("", "Invalid login attempt.");
                     return View(model);
+            }
+        }
+
+        [AllowAnonymous]
+        public async Task<ActionResult> DemoAdminLoginAsync(string email, string password, string returnUrl)
+        {
+            var result = await SignInManager.PasswordSignInAsync(email, password, false, shouldLockout: false);
+            switch (result)
+            {
+                case SignInStatus.Success:
+                    return RedirectToAction("Index", "Home");
+                case SignInStatus.LockedOut:
+                    return View("Lockout");
+                case SignInStatus.RequiresVerification:
+                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = false });
+                case SignInStatus.Failure:
+                default:
+                    ModelState.AddModelError("", "Invalid login attempt.");
+                    return RedirectToAction("Login", "Account");
             }
         }
 
@@ -263,12 +285,18 @@ namespace BugTracker.Controllers
             return View();
         }
 
+        [AllowAnonymous]
+        public ActionResult Demo()
+        {
+            return View();
+        }
+
         //
         // POST: /Account/Register
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(RegisterViewModel model, HttpPostedFileBase avatar)
         {
             if (ModelState.IsValid)
             {
@@ -277,18 +305,31 @@ namespace BugTracker.Controllers
                     ModelState.AddModelError("Email", "Email already used.");
                     return View(model);
                 }
-                var user = new ApplicationUser { 
-                    UserName = model.Email, 
+
+                var user = new ApplicationUser {
+                    UserName = model.Email,
                     Email = model.Email,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
-                    DisplayName = model.DisplayName
+                    DisplayName = model.DisplayName,
+                    IsDemoUser = false
                 };
+                
+                if (FileUploadValidator.IsWebFriendlyImage(avatar))
+                {
+                    var fileName = Path.GetFileName(avatar.FileName);
+                    avatar.SaveAs(Path.Combine(Server.MapPath("~/Uploads/"), fileName));
+                    user.AvatarPath = "/Uploads/" + fileName;
+                }
+                if (avatar == null)
+                {
+                    user.AvatarPath = "/Uploads/default-user.jpg";
+                }
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+                    RoleHelper.ChangeUserRoleTo(user.Id, "NewUser");
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);

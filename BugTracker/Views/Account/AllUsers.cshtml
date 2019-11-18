@@ -45,7 +45,7 @@
                             {
                                 if (Model.Role != "All")
                                 {
-                                    <th>@Model.Header</th>
+                                    <th>@Model.SpecialPropertyHeader</th>
                                 }
                             }
 
@@ -104,7 +104,7 @@
     <script>
         $(document).ready(function () {
             $("#allUsersTable").DataTable({
-                "order": [[2, "desc"]]
+                "order": [[2, "asc"]]
             });
         });
     </script>

@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
@@ -26,6 +27,7 @@ namespace BugTracker.Models
         [StringLength(50, MinimumLength = 1, ErrorMessage = "Display Name must be between 1 and 50 characters")]
         public string DisplayName { get; set; }
         public string? AvatarPath { get; set; }
+        public bool IsDemoUser { get; set; }
         public virtual ICollection<TicketComment> TicketComments { get; set; }
         public virtual ICollection<Project> Projects { get; set; }
         public virtual ICollection<TicketAttachment> TicketAttachments { get; set; }
@@ -92,8 +94,20 @@ namespace BugTracker.Models
         public DbSet<TicketHistory> Histories { get; set; }
         public DbSet<TicketType> Types { get; set; }
 
-        public System.Data.Entity.DbSet<BugTracker.Models.TicketNotification> TicketNotifications { get; set; }
+        public DbSet<TicketNotification> TicketNotifications { get; set; }
 
         //public System.Data.Entity.DbSet<BugTracker.Models.ApplicationUser> ApplicationUsers { get; set; }
+        /*public override int SaveChanges()
+        {
+            var user = this.Users.Find(HttpContext.Current.User.Identity.GetUserId());
+            if (user.IsDemoUser)
+            {
+                return 0;
+            }
+            else
+            {
+                return base.SaveChanges();
+            }
+        }*/
     }
 }

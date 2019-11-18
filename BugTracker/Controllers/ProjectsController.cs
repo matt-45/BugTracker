@@ -20,12 +20,14 @@ namespace BugTracker.Controllers
         private ProjectsHelper ProjectHelper = new ProjectsHelper();
 
         // GET: Projects
+        [Authorize]
         public ActionResult Index()
         {
             return View(db.Projects.ToList());
         }
 
         // GET: Projects/Details/5
+        [Authorize]
         public ActionResult Details(int? id)
         {
             ProjectDetailsViewModel viewModel = new ProjectDetailsViewModel();
@@ -35,6 +37,7 @@ namespace BugTracker.Controllers
             }
             var user = db.Users.Find(User.Identity.GetUserId());
             var userRole = RoleHelper.ListUserRoles(user.Id).FirstOrDefault();
+
             Project project = db.Projects.Find(id);
             viewModel.Project = project;
             //viewModel.Tickets = project.Tickets.ToList();
@@ -101,16 +104,10 @@ namespace BugTracker.Controllers
         }
 
 
-        // GET: Projects/Create
-        [Authorize(Roles = "Admin, Manager")]
-        public ActionResult Create()
-        {
-            return View();
-        }
-
         // POST: Projects/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin, Manager")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(string ProjectTitle, string ProjectDescription)
@@ -122,69 +119,34 @@ namespace BugTracker.Controllers
                 project.Description = ProjectDescription;
                 db.Projects.Add(project);
                 db.SaveChanges();
-                return RedirectToAction("Details", "Projects", new { id = project.Id});
+                if (db.Users.Find(User.Identity.GetUserId()).IsDemoUser)
+                {
+                    return RedirectToAction("Details", "Projects", new { id = 1 });
+                }
+                else
+                {
+                    return RedirectToAction("Details", "Projects", new { id = project.Id });
+                }
+                
             }
-
             return RedirectToAction("Index", "Home");
         }
 
         // GET: Projects/Edit/5
-        [Authorize(Roles = "Admin, Manager")]
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Project project = db.Projects.Find(id);
-            if (project == null)
-            {
-                return HttpNotFound();
-            }
-            return View(project);
-        }
 
         // POST: Projects/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin, Manager")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Description")] Project project)
+        public ActionResult Edit(string projectTitle, string projectDescription, int id)
         {
-            if (ModelState.IsValid)
-            {
-                db.Entry(project).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(project);
-        }
-
-        // GET: Projects/Delete/5
-        [Authorize(Roles = "Admin, Manager")]
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Project project = db.Projects.Find(id);
-            if (project == null)
-            {
-                return HttpNotFound();
-            }
-            return View(project);
-        }
-
-        // POST: Projects/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Project project = db.Projects.Find(id);
-            db.Projects.Remove(project);
+            var project = db.Projects.Find(id);
+            project.Name = projectTitle;
+            project.Description = projectDescription;
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Details", "Projects", new { id = id});
         }
 
         protected override void Dispose(bool disposing)
