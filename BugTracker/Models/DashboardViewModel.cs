@@ -10,6 +10,7 @@ namespace BugTracker.Models
     public class DashboardViewModel
     {
         public ApplicationUser User { get; set; }
+        public int ActiveTicketsCount { get; set; }
         public ICollection<ApplicationUser> ApplicationUsers { get; set; }
         public ICollection<ApplicationUser> Managers { get; set; }
         public ICollection<ApplicationUser> Developers { get; set; }

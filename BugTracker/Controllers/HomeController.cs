@@ -27,28 +27,38 @@ namespace BugTracker.Controllers
 
             if (RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Admin")
             {
+                var tickets = db.Tickets.ToList();
                 viewModel.Projects = db.Projects.ToList();
-                viewModel.Tickets = db.Tickets.ToList();
+                viewModel.Tickets = tickets;
+                viewModel.ActiveTicketsCount = tickets.Where(t => t.TicketStatus.Name == "Assigned").Concat(tickets.Where(t => t.TicketStatus.Name == "Unassigned")).Count();
             }
             else if (RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Manager")
             {
+                var tickets = ProjectHelper.ListUserProjects(user.Id).SelectMany(p => p.Tickets).ToList();
                 viewModel.Projects = ProjectHelper.ListUserProjects(user.Id);
-                viewModel.Tickets = ProjectHelper.ListUserProjects(user.Id).SelectMany(p => p.Tickets).ToList();
+                viewModel.Tickets = tickets;
+                viewModel.ActiveTicketsCount = tickets.Where(t => t.TicketStatus.Name == "Assigned").Concat(tickets.Where(t => t.TicketStatus.Name == "Unassigned")).Count();
             }
             else if (RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Developer")
             {
+                var tickets = db.Tickets.Where(t => t.AssignedToUserId == user.Id).ToList();
                 viewModel.Projects = ProjectHelper.ListUserProjects(user.Id);
-                viewModel.Tickets = db.Tickets.Where(t => t.AssignedToUserId == user.Id).ToList();
+                viewModel.Tickets = tickets;
+                viewModel.ActiveTicketsCount = tickets.Where(t => t.TicketStatus.Name == "Assigned").Concat(tickets.Where(t => t.TicketStatus.Name == "Unassigned")).Count();
             }
             else if (RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Submitter")
             {
+                var tickets = db.Tickets.Where(t => t.OwnerUserId == user.Id).ToList();
                 viewModel.Projects = ProjectHelper.ListUserProjects(user.Id);
-                viewModel.Tickets = db.Tickets.Where(t => t.OwnerUserId == user.Id).ToList();
+                viewModel.Tickets = tickets;
+                viewModel.ActiveTicketsCount = tickets.Where(t => t.TicketStatus.Name == "Assigned").Concat(tickets.Where(t => t.TicketStatus.Name == "Unassigned")).Count();
             }
             else
             {
+                var tickets = ProjectHelper.ListUserProjects(user.Id).SelectMany(p => p.Tickets).ToList();
                 viewModel.Projects = ProjectHelper.ListUserProjects(user.Id);
-                viewModel.Tickets = ProjectHelper.ListUserProjects(user.Id).SelectMany(p => p.Tickets).ToList();
+                viewModel.Tickets = tickets;
+                viewModel.ActiveTicketsCount = tickets.Where(t => t.TicketStatus.Name == "Assigned").Concat(tickets.Where(t => t.TicketStatus.Name == "Unassigned")).Count();
             }
 
             // load the dashboard viewmodel

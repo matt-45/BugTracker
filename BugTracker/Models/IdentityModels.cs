@@ -97,7 +97,7 @@ namespace BugTracker.Models
         public DbSet<TicketNotification> TicketNotifications { get; set; }
 
         //public System.Data.Entity.DbSet<BugTracker.Models.ApplicationUser> ApplicationUsers { get; set; }
-        /*public override int SaveChanges()
+        public override int SaveChanges()
         {
             var user = this.Users.Find(HttpContext.Current.User.Identity.GetUserId());
             if (user.IsDemoUser)
@@ -108,6 +108,6 @@ namespace BugTracker.Models
             {
                 return base.SaveChanges();
             }
-        }*/
+        }
     }
 }

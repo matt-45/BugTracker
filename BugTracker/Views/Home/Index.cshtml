@@ -45,17 +45,7 @@
                                 <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-ticket-alt"></i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-text" style="font-size: large; font-weight: bold">Tickets</span>
-                                    @if (Model.User.ReturnUserRole() == "Admin" || Model.User.ReturnUserRole() == "Manager")
-                                    {
-                                        <span class="info-box-number">@Model.Tickets.Where(t => t.TicketStatus.Name.Contains("Assigned")).ToList().Concat(Model.Tickets.Where(t => t.TicketStatus.Name.Contains("Unassigned"))).Count() <small>Active</small></span>
-
-                                    }
-                                    else if (Model.User.ReturnUserRole() == "Developer")
-                                    {
-                                        <span class="info-box-number">@Model.Tickets) <small>Active</small></span>
-
-                                    }
-                                    <span class="info-box-number">@Model.Tickets.Where(t => t.TicketStatus.Name.Contains("Assigned")).Count() <small>Active</small></span>
+                                    <span class="info-box-number">@Model.ActiveTicketsCount <small>Active</small></span>
                                 </div>
                                 <!-- /.info-box-content -->
                             </div>
