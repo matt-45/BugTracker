@@ -12,6 +12,7 @@ using BugTracker.Models;
 using BugTracker.Helpers;
 using System.IO;
 using System.Collections.Generic;
+using System.Net.Mail;
 
 namespace BugTracker.Controllers
 {
@@ -111,7 +112,7 @@ namespace BugTracker.Controllers
             ProjectHelper.ToggleUserOnProject(id, projectId);
             return RedirectToAction("Index", "Account", new { id = id });
         }
-        [Authorize]
+        [Authorize(Roles = "Admin, Manager, Developer, Submitter")]
         [HttpPost]
         public ActionResult Edit(string id, string displayName, string firstName, string lastName, string email, HttpPostedFileBase avatar)
         {
@@ -332,17 +333,22 @@ namespace BugTracker.Controllers
                     RoleHelper.ChangeUserRoleTo(user.Id, "NewUser");
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("NewUser", "Account");
                 }
                 AddErrors(result);
             }
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+        [Authorize]
+        public ActionResult NewUser()
+        {
+            return View();
         }
 
         //
@@ -376,7 +382,7 @@ namespace BugTracker.Controllers
             if (ModelState.IsValid)
             {
                 var user = await UserManager.FindByNameAsync(model.Email);
-                if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
+                if (user == null)
                 {
                     // Don't reveal that the user does not exist or is not confirmed
                     return View("ForgotPasswordConfirmation");
@@ -384,10 +390,19 @@ namespace BugTracker.Controllers
 
                 // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                 // Send an email with this link
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                // return RedirectToAction("ForgotPasswordConfirmation", "Account");
+                string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code, email = user.Email }, protocol: Request.Url.Scheme);		
+                //await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                var message = new MailMessage
+                {
+                    Subject = "Reset Password",
+                    Body = "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>",
+                    From = new MailAddress("mattpark102@outlook.com"),
+                    IsBodyHtml = true
+            };
+                message.To.Add(new MailAddress(user.Email));
+                SendEmail.Send(message);
+                return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
             // If we got this far, something failed, redisplay form
@@ -405,8 +420,9 @@ namespace BugTracker.Controllers
         //
         // GET: /Account/ResetPassword
         [AllowAnonymous]
-        public ActionResult ResetPassword(string code)
+        public ActionResult ResetPassword(string code, string email)
         {
+            ViewBag.UserEmailOnPasswordReset = email;
             return code == null ? View("Error") : View();
         }
 
@@ -433,6 +449,34 @@ namespace BugTracker.Controllers
                 return RedirectToAction("ResetPasswordConfirmation", "Account");
             }
             AddErrors(result);
+            return View();
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult ResendEmailConfirmation()
+        {
+            return View();
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ResendEmailConfirmation(ForgotPasswordViewModel model)
+        {
+            var user = await UserManager.FindByNameAsync(model.Email);
+            if (user != null)
+            {
+                string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                var callbackUrl = Url.Action("ConfirmEmail", "Account",
+                new { userId = user.Id, code = code }, protocol:
+                Request.Url.Scheme);
+                await UserManager.SendEmailAsync(user.Id, "Confirm your account",
+                "Please confirm your account by clicking <ahref =\"" + callbackUrl + "\">here</a>");
+            }
+            return RedirectToAction("ConfirmationSent");
+        }
+        public ActionResult ConfimationSent()
+        {
             return View();
         }
 

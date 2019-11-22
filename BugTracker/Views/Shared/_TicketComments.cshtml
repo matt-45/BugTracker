@@ -24,7 +24,7 @@
             var editModalId = "#editCommentModal" + loop;
             <div class="card-comment">
                 <!-- User image -->
-                <img class="img-circle img-sm" src="../dist/img/user3-128x128.jpg">
+                <img class="img-circle img-sm" src=@Model.User.AvatarPath>
                 <div class="comment-text">
                     <span class="username">
                         @comment.User.FullName

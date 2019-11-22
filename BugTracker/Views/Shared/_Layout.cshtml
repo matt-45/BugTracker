@@ -5,41 +5,44 @@
     ProjectsHelper ProjectHelper = new ProjectsHelper();
     UserRoleHelper RoleHelper = new UserRoleHelper();
     ApplicationUser user = db.Users.Find(User.Identity.GetUserId());
+    var userRole = user.ReturnUserRole();
 }
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Bug Tracker</title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="~/Content/fontawesome-free/css/all.min.css">
-    <!-- Ionicons -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <!-- Tempusdominus Bbootstrap 4 -->
-    <link rel="stylesheet" href="~/Content/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
-    <!-- iCheck -->
-    <link rel="stylesheet" href="~/Content/icheck-bootstrap/icheck-bootstrap.min.css">
-    <!-- JQVMap -->
-    <link rel="stylesheet" href="~/Content/jqvmap/jqvmap.min.css">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="~/Content/dist/css/adminlte.min.css">
-    <!-- overlayScrollbars -->
-    <link rel="stylesheet" href="~/Content/overlayScrollbars/css/OverlayScrollbars.min.css">
-    <!-- Daterange picker -->
-    <link rel="stylesheet" href="~/Content/daterangepicker/daterangepicker.css">
-    <!-- summernote -->
-    <link rel="stylesheet" href="~/Content/summernote/summernote-bs4.css">
-    <!-- Google Font: Source Sans Pro -->
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>de_bug</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link href="~/Content/datatables-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" />
-    <link href="~/Content/datatables-select/css/select.bootstrap4.min.css" rel="stylesheet" />
+        <link rel="shortcut icon" type="image/png" href="/favicon.png" />
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="~/Content/fontawesome-free/css/all.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+        <!-- Tempusdominus Bbootstrap 4 -->
+        <link rel="stylesheet" href="~/Content/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+        <!-- iCheck -->
+        <link rel="stylesheet" href="~/Content/icheck-bootstrap/icheck-bootstrap.min.css">
+        <!-- JQVMap -->
+        <link rel="stylesheet" href="~/Content/jqvmap/jqvmap.min.css">
+        <!-- Theme style -->
+        <link rel="stylesheet" href="~/Content/dist/css/adminlte.min.css">
+        <!-- overlayScrollbars -->
+        <link rel="stylesheet" href="~/Content/overlayScrollbars/css/OverlayScrollbars.min.css">
+        <!-- Daterange picker -->
+        <link rel="stylesheet" href="~/Content/daterangepicker/daterangepicker.css">
+        <!-- summernote -->
+        <link rel="stylesheet" href="~/Content/summernote/summernote-bs4.css">
+        <!-- Google Font: Source Sans Pro -->
+        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
-</head>
+        <link href="~/Content/datatables-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" />
+        <link href="~/Content/datatables-select/css/select.bootstrap4.min.css" rel="stylesheet" />
+
+    </head>
 <body class="hold-transition sidebar-mini layout-fixed">
-    <div class="wrapper">
+    <div class="wrapper" >
 
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -86,7 +89,7 @@
                             if (!notification.IsRead)
                             {
                                 <div class="dropdown-divider"></div>
-                                <a href=@Url.Action("SelectTicketNotification", "Tickets", new { notificationId = notification.Id, ticketId = notification.TicketId}) class="dropdown-item">
+                                <a href=@Url.Action("SelectTicketNotification", "Tickets", new { notificationId = notification.Id, ticketId = notification.TicketId }) class="dropdown-item">
                                     <i class="fas fa-ticket-alt mr-2"></i> 
                                     <p>
                                         @notification.NotificationBody
@@ -106,10 +109,8 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="" class="brand-link">
-                @*<img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
-                    style="opacity: .8">*@
-                <span class="brand-text font-weight-light" style="padding-left: 5%">Buggr</span>
+            <a href=@Url.Action("Index", "Home") class="brand-link">
+                <img src="/Uploads/de_bug-white-logo@2x.png" style="width: 64%; padding-left: 15px">
             </a>
 
             <!-- Sidebar -->
@@ -120,7 +121,7 @@
                         <img src=@user.AvatarPath class="img-circle elevation-2" alt="Avatar">
                     </div>
                     <div class="info">
-                        <a href=@Url.Action("Index", "Account", new { id = user.Id}) class="d-block">@user.DisplayName</a>
+                        <a href=@Url.Action("Index", "Account", new { id = user.Id }) class="d-block">@user.DisplayName</a>
                     </div>
                 </div>
 
@@ -128,7 +129,7 @@
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
-        with font-awesome or any other icon font library -->
+    with font-awesome or any other icon font library -->
                         <li class="nav-item">
                             <a href=@Url.Action("Index", "Home") class="nav-link active">
                                 <i class="nav-icon fas fa-th"></i>
@@ -150,20 +151,21 @@
                                         <p>View All</p>
                                     </a>
                                 </li>
-
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link project-Modal" data-toggle="modal" data-target="#createProjectModal">
-                                        <i class="fa fa-plus-circle nav-icon"></i>
-                                        <p>Create New</p>
-                                    </a>
-                                </li>
-
-                                @if (RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Admin")
+                                @if (userRole == "Admin" || userRole == "Manager")
+                                {
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link project-Modal" data-toggle="modal" data-target="#createProjectModal">
+                                            <i class="fa fa-plus-circle nav-icon"></i>
+                                            <p>Create New</p>
+                                        </a>
+                                    </li>
+                                }
+                                @if (userRole == "Admin")
                                 {
                                     foreach (var project in ProjectHelper.ListAllProjects())
                                     {
                                         <li class="nav-item">
-                                            <a href=@Url.Action("Details", "Projects", new { id = project.Id}) class="nav-link">
+                                            <a href=@Url.Action("Details", "Projects", new { id = project.Id }) class="nav-link">
                                                 <i class="far fa-circle nav-icon"></i>
                                                 <p>@project.Name</p>
                                             </a>
@@ -175,7 +177,7 @@
                                     foreach (var project in ProjectHelper.ListUserProjects(user.Id))
                                     {
                                         <li class="nav-item">
-                                            <a href=@Url.Action("Details", "Projects", new { id = project.Id}) class="nav-link">
+                                            <a href=@Url.Action("Details", "Projects", new { id = project.Id }) class="nav-link">
                                                 <i class="far fa-circle nav-icon"></i>
                                                 <p>@project.Name</p>
                                             </a>
@@ -201,13 +203,17 @@
                                         <p>View All</p>
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a href=@Url.Action("Index", "TicketHistories") class="nav-link">
-                                        <i class="fas fa-history nav-icon"></i>
-                                        <p>Histories</p>
-                                    </a>
-                                </li>
-                                @if (RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Submitter")
+                                @if (userRole == "Admin")
+                                {
+                                    <li class="nav-item">
+                                        <a href=@Url.Action("Histories", "Tickets") class="nav-link">
+                                            <i class="fas fa-history nav-icon"></i>
+                                            <p>Histories</p>
+                                        </a>
+                                    </li>
+                                }
+
+                                @if (userRole == "Submitter")
                                 {
                                     <li class="nav-item">
                                         <a href=@Url.Action("Create", "Tickets") class="nav-link">
@@ -219,7 +225,7 @@
 
                             </ul>
                         </li>
-                        @if (RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Admin" || RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Manager")
+                        @if (userRole == "Admin" || userRole == "Manager")
                         {
                             <li class="nav-item has-treeview">
                                 <a href="#" class="nav-link">
@@ -231,31 +237,31 @@
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
-                                        <a href=@Url.Action("AllUsers", "Account", new { role = "All"}) class="nav-link">
+                                        <a href=@Url.Action("AllUsers", "Account", new { role = "All" }) class="nav-link">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>View All</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href=@Url.Action("AllUsers", "Account", new { role = "Admin"}) class="nav-link">
+                                        <a href=@Url.Action("AllUsers", "Account", new { role = "Admin" }) class="nav-link">
                                             <i class="fa fa-user-tie nav-icon"></i>
                                             <p>Admins</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href=@Url.Action("AllUsers", "Account", new { role = "Manager"}) class="nav-link">
+                                        <a href=@Url.Action("AllUsers", "Account", new { role = "Manager" }) class="nav-link">
                                             <i class="fa fa-male nav-icon"></i>
                                             <p>Managers</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href=@Url.Action("AllUsers", "Account", new { role = "Developer"}) class="nav-link">
+                                        <a href=@Url.Action("AllUsers", "Account", new { role = "Developer" }) class="nav-link">
                                             <i class="fa fa-laptop nav-icon"></i>
                                             <p>Developers</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href=@Url.Action("AllUsers", "Account", new { role = "Submitter"}) class="nav-link">
+                                        <a href=@Url.Action("AllUsers", "Account", new { role = "Submitter" }) class="nav-link">
                                             <i class="fa fa-check nav-icon"></i>
                                             <p>Submitters</p>
                                         </a>
@@ -264,34 +270,34 @@
                             </li>
                         }
                     </ul>
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" style="padding-top: 250px">
+                        @if (userRole == "Admin" || userRole == "Manager")
+                        {
+                            <li class="nav-item">
+                                <a href="#" data-toggle="modal" data-target="#createProjectModal" class="project-Modal nav-link bg-green">
+                                    <i class="nav-icon fas fa-edit"></i>
+                                    <p>Create Project</p>
+                                </a>
+                            </li>
+                        }
+                        @if (userRole == "Submitter")
+                        {
+                            <li class="nav-item">
+                                <a href=@Url.Action("Create", "Tickets") class="bg-green nav-link">
+                                    <i class="nav-icon fas fa-edit"></i>
+                                    <p>Create Ticket</p>
+                                </a>
+                            </li>
 
+                        }
+                        <li class="nav-item" style="padding-top: 10px">
+                            <a href=@Url.Action("CustomLogOff", "Account") class="nav-link bg-red ">
+                                <i class="nav-icon fas fa-door-open"></i>
+                                <p>Log Off</p>
+                            </a>
+                        </li>
 
-                    @if (RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Submitter")
-                    {
-                        <a style="bottom: 20%; position: absolute; cursor: pointer; width: 100%" href=@Url.Action("Create", "Tickets")>
-                            <div class="row bg-green">
-                                <p style="font-weight: bold; font-size: medium; text-align:center; width: 100%; padding-right: 10%; padding-top: 5%"><i class="fas fa-ticket-alt fa-1x" style="padding-right: 10%"></i>Create Ticket</p>
-                            </div>
-                        </a>
-                    }
-
-                    @if (RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Admin" || RoleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Manager")
-                    {
-                        <a style="bottom: 120px; position: absolute; cursor: pointer; width: 100%" href="#" data-toggle="modal" data-target="#createProjectModal" class="project-Modal">
-                            <div class="row bg-green">
-                                <p style="font-weight: bold; font-size: medium; text-align:center; width: 100%; padding-right: 10%; padding-top: 5%"><i class="fas fa-edit fa-1x" style="padding-right: 10%"></i>Create Project</p>
-                            </div>
-                        </a>
-                    }
-
-
-
-
-                    <a style="bottom: 50px; position: absolute; cursor: pointer; width: 100%" href=@Url.Action("CustomLogOff", "Account")>
-                        <div class="row bg-red">
-                            <p style="font-weight: bold; font-size: medium; text-align:center;width: 100%; padding-right: 10%; padding-top: 5%"><i class="fas fa-door-open fa-1x" style="padding-right: 10%"></i>Log Out</p>
-                        </div>
-                    </a>
+                    </ul>
 
                 </nav>
 

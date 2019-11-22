@@ -15,7 +15,7 @@ namespace BugTracker.Controllers
         private ProjectsHelper ProjectHelper = new ProjectsHelper();
 
         // GET: Projects
-        [Authorize]
+        [Authorize(Roles = "Admin, Manager, Developer, Submitter")]
         public ActionResult Index(DashboardViewModel viewModel)
         {
             var user = db.Users.Find(User.Identity.GetUserId());
@@ -65,6 +65,7 @@ namespace BugTracker.Controllers
             return View(viewModel);
         }
 
+        [Authorize(Roles = "Admin, Manager, Developer, Submitter")]
         public ActionResult About()
         {
             return View();

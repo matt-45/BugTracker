@@ -4,12 +4,12 @@
     Layout = null;
 }
 
-
+    <link rel="shortcut icon" type="image/png" href="/favicon.png" />
 <html>
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Buggr | Login</title>
+    <title>de_bug | Login</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -27,7 +27,7 @@
 <body class="hold-transition login-page">
     <div class="login-box">
         <div class="login-logo">
-            <a href="../../index2.html"><b>Buggr</b></a>
+            <img src="/Uploads/de_bug-grey-logo@2x.png" width="340px" />
         </div>
         <!-- /.login-logo -->
         <div class="card">
@@ -84,9 +84,9 @@
                 <!-- /.social-auth-links -->
 
                 <p class="mb-1" style="padding-top: 5%">
-                    <a href="#">I forgot my password</a>
+                    <a href=@Url.Action("ForgotPassword", "Account")>I forgot my password</a>
                 </p>
-                <p class="mb-0">
+                <p class="mb-1">
                     @Html.ActionLink("Register a new account", "register", "account", new { @class = "text-center" })
                 </p>
                 <p class="mb-0">

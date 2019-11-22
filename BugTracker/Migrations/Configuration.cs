@@ -110,7 +110,7 @@ namespace BugTracker.Migrations
                     Email = "DemoAdmin@mailinator.com",
                     FirstName = "Fabio",
                     LastName = "Nobel",
-                    DisplayName = "Demo",
+                    DisplayName = "Demo Admin",
                     AvatarPath = "/Uploads/default-user.jpg",
                     IsDemoUser = true
                 }, "Abc&123");
@@ -123,7 +123,7 @@ namespace BugTracker.Migrations
                     Email = "DemoManager@mailinator.com",
                     FirstName = "Reema",
                     LastName = "Chung",
-                    DisplayName = "Demo",
+                    DisplayName = "Demo Manager",
                     AvatarPath = "/Uploads/default-user.jpg",
                     IsDemoUser = true
                 }, "Abc&123");
@@ -162,7 +162,7 @@ namespace BugTracker.Migrations
                     Email = "DemoDeveloper@mailinator.com",
                     FirstName = "Romany",
                     LastName = "Paine",
-                    DisplayName = "Demo",
+                    DisplayName = "Demo Developer",
                     AvatarPath = "/Uploads/default-user.jpg",
                     IsDemoUser = true
                 }, "Abc&123");
@@ -201,7 +201,7 @@ namespace BugTracker.Migrations
                     Email = "DemoSubmitter@mailinator.com",
                     FirstName = "Lisa",
                     LastName = "Chadwick",
-                    DisplayName = "Demo",
+                    DisplayName = "Demo Submitter",
                     AvatarPath = "/Uploads/default-user.jpg",
                     IsDemoUser = true
                 }, "Abc&123");
@@ -355,7 +355,7 @@ namespace BugTracker.Migrations
                         }
                     }
                 }
-                foreach (var user in roleHelper.UsersInRole("Manager").Concat(roleHelper.UsersInRole("Developer")).Concat(roleHelper.UsersInRole("Submitter")))
+                foreach (var user in roleHelper.UsersInRole("Developer").Concat(roleHelper.UsersInRole("Submitter")).Concat(roleHelper.UsersInRole("Manager")))
                 {
                     var randomNumber = random.Next(0, 2);
                     if (randomNumber == 0)
@@ -363,18 +363,10 @@ namespace BugTracker.Migrations
                         projectHelper.AddUserToProject(user.Id, project.Id);
                         context.SaveChanges();
                     }
-                    
                 }
-                
             }
-            /*foreach (var project in projects)
-            {
-                project.Users.Add(users.FirstOrDefault(u => u.Email.Contains("demosubmitter@mailinator.com")));
-            }*/
 
             context.SaveChanges();
-            // if I want to seed a ticket, I need the fk of at least the project.
-
         }
     }
 }

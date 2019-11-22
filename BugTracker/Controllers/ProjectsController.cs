@@ -20,14 +20,14 @@ namespace BugTracker.Controllers
         private ProjectsHelper ProjectHelper = new ProjectsHelper();
 
         // GET: Projects
-        [Authorize]
+        [Authorize(Roles = "Admin, Manager, Developer, Submitter")]
         public ActionResult Index()
         {
             return View(db.Projects.ToList());
         }
 
         // GET: Projects/Details/5
-        [Authorize]
+        [Authorize(Roles = "Admin, Manager, Developer, Submitter")]
         public ActionResult Details(int? id)
         {
             ProjectDetailsViewModel viewModel = new ProjectDetailsViewModel();
@@ -121,7 +121,7 @@ namespace BugTracker.Controllers
                 db.SaveChanges();
                 if (db.Users.Find(User.Identity.GetUserId()).IsDemoUser)
                 {
-                    return RedirectToAction("Details", "Projects", new { id = 1 });
+                    return RedirectToAction("Details", "Projects", new { id = project.Id });
                 }
                 else
                 {

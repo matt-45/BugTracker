@@ -23,7 +23,7 @@ namespace BugTracker.Controllers
         private NotificationHelper notificationHelper = new NotificationHelper();
 
         // GET: Tickets
-        [Authorize]
+        [Authorize(Roles = "Admin, Manager, Developer, Submitter")]
         public ActionResult Index()
         {
             var user = db.Users.Find(User.Identity.GetUserId());
@@ -41,7 +41,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Tickets/Details/5
-        [Authorize]
+        [Authorize(Roles = "Admin, Manager, Developer, Submitter")]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -76,6 +76,11 @@ namespace BugTracker.Controllers
                 }
             }
             return View(viewModel);
+        }
+        [Authorize(Roles = "Admin")]
+        public ActionResult Histories()
+        {
+            return View(db.Histories.ToList());
         }
 
         // GET: Tickets/Create
@@ -116,7 +121,7 @@ namespace BugTracker.Controllers
             db.SaveChanges();
             if (owner.IsDemoUser)
             {
-                return RedirectToAction("Details", "Tickets", new { id = 1 });
+                return RedirectToAction("Details", "Tickets", new { id = ticket.Id });
             }
             else
             {
@@ -152,7 +157,7 @@ namespace BugTracker.Controllers
             //return RedirectToAction("Details", "Tickets", new { id });
             return PartialView("~/Views/Shared/_TicketHistories.cshtml", viewModel);
         }
-        [Authorize]
+        [Authorize(Roles = "Admin, Manager, Developer, Submitter")]
         public ActionResult EditPriority(int id, int priorityId)
         {
             var oldTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == id);
@@ -177,7 +182,7 @@ namespace BugTracker.Controllers
             //return RedirectToAction("Details", "Tickets", new { id });
             return PartialView("~/Views/Shared/_TicketHistories.cshtml", viewModel);
         }
-        [Authorize]
+        [Authorize(Roles = "Admin, Manager, Developer, Submitter")]
         public ActionResult EditType(int id, int typeId)
         {
             var oldTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == id);
@@ -202,7 +207,7 @@ namespace BugTracker.Controllers
             //return RedirectToAction("Details", "Tickets", new { id });
             return PartialView("~/Views/Shared/_TicketHistories.cshtml", viewModel);
         }
-        [Authorize]
+        [Authorize(Roles = "Admin, Manager, Developer, Submitter")]
         public ActionResult AssignDeveloperToTicket(int ticketId, string userId)
         {
             var oldTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == ticketId);
@@ -211,7 +216,7 @@ namespace BugTracker.Controllers
             notificationHelper.SendTicketNotification(oldTicket, newTicket);
             return RedirectToAction("Details", "Tickets", new { id = ticketId });
         }
-        [Authorize]
+        [Authorize(Roles = "Admin, Manager, Developer, Submitter")]
         public ActionResult SelectTicketNotification(int notificationId, int ticketId)
         {
             var notification = db.TicketNotifications.Find(notificationId);
@@ -219,7 +224,7 @@ namespace BugTracker.Controllers
             db.SaveChanges();
             return RedirectToAction("Details", "Tickets", new { id = ticketId });
         }
-        [Authorize]
+        [Authorize(Roles = "Admin, Manager, Developer, Submitter")]
         public ActionResult CreateComment(int ticketId, string userId, string commentBody)
         {
             var ticket = db.Tickets.Find(ticketId);
@@ -248,7 +253,7 @@ namespace BugTracker.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        [Authorize(Roles = "Admin, Manager, Developer, Submitter")]
         public ActionResult CreateAttachment(HttpPostedFileBase file, string description, int ticketId)
         {
             TicketAttachment attachment = new TicketAttachment();
@@ -270,7 +275,7 @@ namespace BugTracker.Controllers
             return RedirectToAction("Details", "Tickets", new { id = ticketId});
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin, Manager, Developer, Submitter")]
         public ActionResult EditTicketAndAttachments(int ticketId, string ticketTitle, string ticketDescription, string[] attachmentDescriptions)
         {
             var ticket = db.Tickets.Find(ticketId);
@@ -287,7 +292,7 @@ namespace BugTracker.Controllers
 
             return RedirectToAction("Details", "Tickets", new { id = ticketId });
         }
-        [Authorize]
+        [Authorize(Roles = "Admin, Manager, Developer, Submitter")]
         public ActionResult DeleteAttachment(int id)
         {
             TicketAttachment attachment = db.Attachments.Find(id);
@@ -295,7 +300,7 @@ namespace BugTracker.Controllers
             db.SaveChanges();
             return RedirectToAction("Details", "Tickets", new { id = attachment.TicketId});
         }
-        [Authorize]
+        [Authorize(Roles = "Admin, Manager, Developer, Submitter")]
         public ActionResult EditComment(int id, string commentBody)
         {
             TicketComment comment = db.Comments.Find(id);
@@ -314,7 +319,7 @@ namespace BugTracker.Controllers
 
             return PartialView("~/Views/Shared/_TicketComments.cshtml", viewModel);
         }
-        [Authorize]
+        [Authorize(Roles = "Admin, Manager, Developer, Submitter")]
         public ActionResult DeleteComment(int id)
         {
             TicketComment comment = db.Comments.Find(id);
@@ -333,7 +338,7 @@ namespace BugTracker.Controllers
 
             return PartialView("~/Views/Shared/_TicketComments.cshtml", viewModel);
         }
-        [Authorize]
+        [Authorize(Roles = "Admin, Manager, Developer, Submitter")]
         public ActionResult DownloadFile(string filePath)
         {
             string fullName = Server.MapPath("~" + filePath);

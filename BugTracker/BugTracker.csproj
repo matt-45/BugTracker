@@ -361,7 +361,7 @@
     <Content Include="Content\summernote\summernote.css" />
     <Content Include="Content\tempusdominus-bootstrap-4\css\tempusdominus-bootstrap-4.css" />
     <Content Include="Content\tempusdominus-bootstrap-4\css\tempusdominus-bootstrap-4.min.css" />
-    <Content Include="favicon.ico" />
+    <Content Include="favicon.png" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap\js\bootstrap.bundle.js" />
@@ -671,6 +671,10 @@
     <Content Include="Scripts\tempusdominus-bootstrap-4\js\tempusdominus-bootstrap-4.js" />
     <Content Include="Scripts\tempusdominus-bootstrap-4\js\tempusdominus-bootstrap-4.min.js" />
     <Content Include="Uploads\default-user.jpg" />
+    <Content Include="Uploads\de_bug-blk-logo%402x.png" />
+    <Content Include="Uploads\de_bug-blk-logo.png" />
+    <Content Include="Uploads\de_bug-grey-logo%402x.png" />
+    <Content Include="Uploads\de_bug-white-logo%402x.png" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -688,7 +692,7 @@
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
     <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
-    <Content Include="Views\Account\ForgotPassword.cshtml" />
+    <Content Include="Views\Account\ForgotPasswordOld.cshtml" />
     <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
@@ -762,6 +766,9 @@
     <Content Include="Views\Account\AllUsers.cshtml" />
     <None Include="Properties\PublishProfiles\MatthewParkBugTracker - Web Deploy.pubxml" />
     <Content Include="Views\Account\Demo.cshtml" />
+    <Content Include="Views\Tickets\Histories.cshtml" />
+    <Content Include="Views\Account\ForgotPassword.cshtml" />
+    <Content Include="Views\Account\NewUser.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
