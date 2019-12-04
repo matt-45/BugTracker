@@ -350,7 +350,9 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger mr-auto" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-success">Save</button>
+                        <a onclick="submitProjectForm()" class="btn btn-success" style="color: white">
+                            Save
+                        </a>
                     </div>
                 </div>
             }
@@ -396,22 +398,38 @@
 
     <script src="~/Scripts/dist/js/adminlte.js"></script>
 
-
-    <script src="~/Scripts/datatables/jquery.dataTables.min.js"></script>
-    <script src="~/Scripts/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-    <script src="~/Scripts/datatables-select/js/dataTables.select.min.js"></script>
-    <script src="~/Scripts/datatables-select/js/select.bootstrap4.min.js"></script>
-
     <script src="~/Scripts/lodash.js"></script>
     @RenderSection("scripts", required: false)
 
     <script>
         function createProject() {
+            
+        }
+
+        function submitProjectForm() {
+            var titleIsEntered = false;
+            var descriptionIsEntered = false;
             var title = $("#projectTitleTextBox").val()
             var description = $("#projectDescriptionTextBox").val()
-            
-            console.log(title)
-            console.log(description)
+
+
+            if (description != "") {
+                descriptionIsEntered = true
+            } else {
+                $("#createProjectErrorHeader").text("Enter a Description")
+            }
+            if (title != "") {
+                titleIsEntered = true
+            } else {
+                $("#createProjectErrorHeader").text("Enter a Title")
+            }
+
+            if (descriptionIsEntered && titleIsEntered) {
+                $("#createProjectErrorHeader").text("Creating project...")
+                $("#createProjectForm").submit()
+            }
+
+
         }
     </script>
 
