@@ -95,6 +95,7 @@ namespace BugTracker.Controllers
                 viewModel.Projects = ProjectHelper.ListUserProjects(id);
                 viewModel.Tickets = db.Tickets.Where(t => t.OwnerUserId == id).ToList();
             }
+
             return View(viewModel);
         }
 

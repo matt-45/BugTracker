@@ -243,30 +243,32 @@
                     }
 
                 </div>
-                @if (Model.LoggedInUserRole == "Admin" || Model.LoggedInUserRole == "Manager")
+                @*@if (Model.LoggedInUserRole == "Admin" || Model.LoggedInUserRole == "Manager")
                 {
                     if (Model.UserRole == "Developer")
                     {
-                        <div class="info-box mb-3">
-                            <span class="info-box-icon bg-orange elevation-1"><i class="fas fa-ticket-alt"></i></span>
-                            <div class="info-box-content">
-                                <span class="info-box-text" style="font-size: large; font-weight: bold">Assign a Ticket</span>
+                        <a style="cursor: pointer" data-toggle="modal" data-target="#assignDeveloperModal">
+                            <div class="info-box mb-3">
+                                <span class="info-box-icon bg-orange elevation-1"><i class="fas fa-ticket-alt"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text" style="font-size: large; font-weight: bold">Assign a Ticket</span>
+                                </div>
+                                <i class="fas fa-plus-circle float-right"></i>
                             </div>
-                            <i class="fas fa-plus-circle float-right"></i>
-                        </div>
+                        </a>
                     }
 
-                }
+                }*@
                 @if (Model.User == Model.LoggedInUser)
                 {
-            <a data-target="#editAccountModal" data-toggle="modal" style="cursor: pointer; color: black">
-                <div class="info-box mb-3">
-                    <span class="info-box-icon bg-red elevation-1"><i class="fas fa-user-edit"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text" style="font-size: large; font-weight: bold">Edit Account</span>
-                    </div>
-                </div>
-            </a>
+                    <a data-target="#editAccountModal" data-toggle="modal" style="cursor: pointer; color: black">
+                        <div class="info-box mb-3">
+                            <span class="info-box-icon bg-red elevation-1"><i class="fas fa-user-edit"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text" style="font-size: large; font-weight: bold">Edit Account</span>
+                            </div>
+                        </div>
+                    </a>
                 }
             </div>
             <div class="col-8">
@@ -473,7 +475,7 @@
                         </div>
                         <div class="row">
                             <div class="col">
-                                @Html.TextBox("displayName", Model.User.DisplayName, new { @class = "form-control", @style = "text-align: center"})
+                                @Html.TextBox("displayName", Model.User.DisplayName, new { @class = "form-control", @style = "text-align: center" })
                             </div>
                         </div>
                         <div class="row" style="padding-top:2%">
@@ -503,7 +505,7 @@
                         </div>
                         <div class="row">
                             <div class="col">
-                                @Html.TextBox("email", Model.User.Email, new { @class = "form-control", @style = "text-align: center"})
+                                @Html.TextBox("email", Model.User.Email, new { @class = "form-control", @style = "text-align: center" })
                             </div>
                         </div>
 
@@ -522,6 +524,75 @@
     </div>
 
 
+    <!-- The Modal -->
+    @*<div class="modal fade" id="assignDeveloperModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                 Modal Header 
+                <div class="modal-header">
+                    <h4 class="modal-title" style="font-weight: bold">Select a Ticket</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                 Modal body 
+                <div class="modal-body">
+                    <table id="ticketsTable" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Creator</th>
+                                <th>Priority</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Updated</th>
+                                <th>Created</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var ticket in Model.TicketsForAssigningDeveloper)
+                            {
+                                <tr onclick="location.href = '@Url.Action("AssignDeveloperToTicket", "Tickets", new { ticketId = ticket.Id, userId = Model.User.Id })'" style="cursor: pointer">
+                                    <td>@ticket.Title</td>
+                                    <td>@ticket.OwnerUser.FullName</td>
+                                    <td>@ticket.TicketPriority.Name</td>
+                                    <td>@ticket.TicketType.Name</td>
+                                    <td>@ticket.TicketStatus.Name</td>
+                                    @if (ticket.Updated != null)
+                                    {
+                                        <td>@ticket.Updated</td>
+                                    }
+                                    else
+                                    {
+                                        <td>N/A</td>
+                                    }
+                                    <td>@ticket.Created</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Title</th>
+                                <th>Creator</th>
+                                <th>Priority</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Updated</th>
+                                <th>Created</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                 Modal footer 
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                </div>
+
+            </div>
+        </div>
+    </div>*@
+
 </section>
 
 
@@ -531,13 +602,16 @@
         $(document).ready(function () {
             $("#assignedProjectsTable").DataTable({
                         "order": [[ 1, "desc" ]]
-                    });
+            });
             $('#assignedTicketsTable').DataTable({
                         "order": [[ 6, "desc" ]]
-                    });
+            });
             $('#ticketHistoriesTable').DataTable({
                         "order": [[ 3, "desc" ]]
-                    });
+            });
+            //$('#ticketsTable').DataTable({
+            //            "order": [[ 6, "desc" ]]
+            //});
         });
     </script>
 }
