@@ -94,7 +94,6 @@
                                     <p>
                                         @notification.NotificationBody
                                     </p>
-                                    <span class="float-right text-muted text-sm">3 mins</span>
                                 </a>
                             }
                         }
@@ -371,6 +370,7 @@
     <script src="~/Scripts/jquery/jquery.min.js"></script>
     <!-- jQuery UI 1.11.4 -->
     <script src="~/Scripts/jquery-ui/jquery-ui.min.js"></script>
+
     <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
     <script>$.widget.bridge('uibutton', $.ui.button)</script>
     <!-- Bootstrap 4 -->
@@ -393,19 +393,21 @@
     <script src="~/Scripts/summernote/summernote-bs4.min.js"></script>
     <!-- overlayScrollbars -->
     <script src="~/Scripts/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+
+
+    <script src="~/Scripts/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+
     <!-- AdminLTE App -->
 
 
     <script src="~/Scripts/dist/js/adminlte.js"></script>
 
     <script src="~/Scripts/lodash.js"></script>
+
     @RenderSection("scripts", required: false)
 
     <script>
-        function createProject() {
-            
-        }
-
         function submitProjectForm() {
             var titleIsEntered = false;
             var descriptionIsEntered = false;
