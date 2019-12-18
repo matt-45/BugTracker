@@ -184,6 +184,10 @@ namespace BugTracker.Controllers
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("CustomLogOff", "Account");
+            }
             return View();
         }
 
@@ -290,6 +294,10 @@ namespace BugTracker.Controllers
         [AllowAnonymous]
         public ActionResult Demo()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("CustomLogOff", "Account");
+            }
             return View();
         }
 
